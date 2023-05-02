@@ -1,0 +1,34 @@
+{% extends './base.html' %}
+{% block content %}
+<h2>admin List</h2>
+<a href="{% url 'admincreate' %}"><button class="btn">Add admin</button></a>
+<table id="admins">
+  <tr>
+    <th>Username</th>
+    <th>First</th>
+    <th>Middle</th>
+    <th>Last</th>
+    <th>Birthdate</th>
+    <th>Active/Deactive</th>
+    <th>Access Type</th>
+      <th>Update</th>
+      <th>Delete</th>
+  </tr>
+  {% for admin in admin_list %}
+  <tr>
+  <tr>
+      <td>{{ admin.user.username }}</td>
+      <td>{{ admin.user.first_name }}</td>
+      <td>{{ admin.middle_name }}</td>
+      <td>{{ admin.user.last_name }}</td>
+      <td>{{ admin.birthdate }}</td>
+      <td>{{ admin.user.is_active }}</td>
+      <td>{{ admin.access_type }}</td>
+      <td><a href="{% url 'adminupdate' admin.id %}"><button>Edit</button></a></td>
+      <td><a href="{% url 'admindelete' admin.id %}"><button>Delete</button></a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
+<br>
+<a href="/">Back to Home</a>
