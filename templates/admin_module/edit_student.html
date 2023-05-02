@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content = "IE=edge">
+        <meta name = "viewport" content = "width=device-width,  initial-scale=1.0">
+        <title>
+            Edit Students
+        </title>
+    </head>
+    <body>
+        <form method="POST" action = "/sit-admin/student/update/updaterecord/{{ student.id }}"> <!-- be directed to this path -->
+            {% csrf_token %}
+            <div>
+                <p>Update Details</p>
+            </div>
+            <div>
+                <p>Program ID: </p><input type="text" name = "program_id" value = "{{student.program_id}}"/>
+            </div>
+            <div>
+                <p>Employee ID: </p><input type="text" name = "student_no" value = "{{student.student_no}}"/>
+            </div>
+            <div>
+                <p>Email : </p><input type="text" name = "email" value = "{{student.user.email}}"/>
+            </div>
+            <div>
+                <p>First Name: </p><input type="text" name = "firstname" value = "{{student.user.first_name}}"/>
+            </div>
+            <div>
+                <p>Middle Name: </p><input type="text" name = "middlename" value = "{{student.middlename}}"/>
+            </div>
+            <div>
+                <p>Last Name: </p><input type="text" name = "lastname" value = "{{student.user.last_name}}"/>
+            </div>
+            <div>
+                <p>Birthday: </p><input type="date" name = "birthdate" value = "{{student.birthdate | date:'Y-m-d'}}" type="date"/>
+            </div>
+            <div>
+                <p>Status : </p><input type="text" name = "employment_status" value = " {{student.employment_status}}"/>
+            </div>
+            <div>
+                <p>Active | Inactive : </p><input type="text" name = "active_deactive" value = "{{student.user.is_active}}"/>
+            </div>
+            <div>
+                <p>Access Type : </p><input type="text" name = "access_type" value = "{{student.access_type}}"/>
+            </div>
+            <div>
+                <button type="submit">Update</button>
+            </div>
+        </form>
+        <br>
+        <form method="post" action="/accounts/password_reset/">
+            {% csrf_token %}
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="submit" value="Reset Password" />
+          </form>
+    </body>
+    </html>
