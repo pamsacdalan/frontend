@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -45,32 +44,32 @@
                             <div class="col-lg-8 col-xl-6">
                                     
                                     <!-- Username input-->
-                                    {% comment %} <div class="form-floating mb-3">
+                                    <div class="form-floating mb-3">
                                         <input class="form-control" id="username" type="username" placeholder="name@example.com" data-sb-validations="required,email" />
                                         <label for="username">Username</label>
                                     
                                         <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
                                         <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
 
-                                    </div> {% endcomment %}
+                                    </div>
                                     <!-- Password input-->
-                                    {% comment %} <div class="form-floating mb-3">
+                                    <div class="form-floating mb-3">
                                         <input class="form-control" id="phone" type="tel" placeholder="ABC123!" data-sb-validations="required" />
                                         <label for="password">Password</label>
                                         <div class="invalid-feedback" data-sb-feedback="phone:required">A password is required.</div>
-                                    </div> {% endcomment %}
+                                    </div>
                                     
                                     <!-- Login Button -->
-                                    {% comment %} <form method="POST">
+                                    <form method="POST">
                                         {% csrf_token %}
                                         {{form.as_p}}
                                         <a class="btn btn-success my-2 my-sm-0" type="submit">Login</a>
                                         
-                                    </form> {% endcomment %}
+                                    </form>
                                     
                                     <!-- Submit success message-->
 
-                                    
+
                                     <!---->
                                     <!-- This is what your users will see when the form-->
                                     <!-- has successfully submitted-->
@@ -95,12 +94,6 @@
                                     <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                                     <!-- Submit Button-->
                                 
-                            <form class="login" method="post">
-                                <div>
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <input type="submit" value="Login"/>
-                                </div>
                             </div>
                         </div>
                     </div>

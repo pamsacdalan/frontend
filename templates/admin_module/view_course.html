@@ -7,7 +7,6 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-6">
                     <h3 class="h3 mb-0 text-gray-800"> ADMINISTRATOR </h3>
-                    {% include "admin_module/form_template.html"%}
                 </div>               
             </div>
 {% endblock Topbar %}
@@ -137,7 +136,7 @@
                                     <td name= 'course_title'>{{course.course_title}}</td>
                                     <td>
                                         <a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/course/edit_course/{{ course.course_id }}" data-toggle="tooltip" title="Edit">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                            <i class="fas fa-edit" aria-hidden="true"></i>
                                         </a> |
                                         <!--JQBM: Temp ko lalagyan para lang macheck ko na gumagana crud -->
                                         <!--

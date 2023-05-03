@@ -1,4 +1,6 @@
+
 {% extends './base.html' %}
+
 
 {% block Topbar %}
             <!-- Topbar -->
@@ -7,7 +9,6 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-6">
                     <h3 class="h3 mb-0 text-gray-800"> ADMINISTRATOR</h3>
-                    {% include "admin_module/form_template.html"%}
                 </div>               
             </div>
 {% endblock Topbar %}
@@ -15,6 +16,7 @@
 
 
 {% block sidebar %}
+
             <!-- Sidebar Menu -->
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -156,7 +158,7 @@
                                             <td>{{student.access_type  }}</td>
                                             <td>
                                                 <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-secondary btn-circle btn-sm" data-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-file" aria-hidden="true"></i>
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
                                                  </a>
                                             </td>
                                             <td>
@@ -184,4 +186,10 @@
                     </div>
                 </div>
 
+                <!-- Scroll to Top Button-->
+                <a class="scroll-to-top rounded" href="#page-top">
+                    <i class="fas fa-angle-up"></i>
+                </a>
+
 {% endblock content %}
+
