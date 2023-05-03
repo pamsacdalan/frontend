@@ -142,8 +142,35 @@
 
                 <!-- Main Content Here -->
                 <div id="content">
+                
+                
+                
+<section class="content" id="msg">
+
+        <div class="row">
+            <div class="col-md-12">
+            <div class="form-group">
+                {% if messages %}
+                {% for message in messages  %}
+                        
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success">
+                    {{message}}
+                </div>
+                {% else %}
+                <div class="alert alert-danger">
+                    {{message}}
+                </div>
+                {% endif %}
+                        
+                {% endfor %}
+                {% endif %}
+
                     
+                    </div></div></div></section>
+                   
                     {% block content %} 
+
                     {% endblock content %}
                 
                 </div>
@@ -200,6 +227,15 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // Hide the content after 5 seconds
+            setTimeout(function() {
+                $("#msg").fadeOut("slow");
+            }, 5000);
+        });
+    </script>
+
 
     <!-- Page level plugins -->
     <script src="{% static '/vendor/chart.js/Chart.min.js' %}"></script>

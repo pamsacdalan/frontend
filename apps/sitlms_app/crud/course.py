@@ -43,6 +43,7 @@ def add_course_info(request):
         course_title = request.POST['course_title']
         course = Course_Catalog(course_desc=course_desc, course_title=course_title)
         course.save()
+        messages.success(request, "Successfully Added")
         return HttpResponseRedirect('/sit-admin/course/view_course')
 
 
@@ -66,7 +67,7 @@ def edit_course(request, id):
                 course.course_title = course_title
 
                 course.save(update_fields=['course_desc', 'course_title'])
-
+                messages.success(request, "Successfully Edited")
                 return HttpResponseRedirect(reverse('view_course'))
 
         return render(request, "admin_module/update_course.html", context)
@@ -80,4 +81,5 @@ def delete_course(request, id):
                 course.delete()
                 return HttpResponseRedirect(reverse('view_course'))
 
+        messages.success(request, "Successfully Deleted")
         return render(request, 'admin_module/delete_course.html')
