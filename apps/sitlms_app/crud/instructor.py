@@ -40,6 +40,7 @@ def add_instructor_info(request):
         user.save()
         instructors = Instructor_Auth(user=user,middlename=middlename,birthdate=birthdate)
         instructors.save()
+        messages.success(request, "Successfully Added")
         return redirect('view_instructors')
 
     return HttpResponseRedirect(reverse('add_instructor'))
@@ -50,6 +51,7 @@ def delete_instructor(request,id):
  
     if request.method == "POST":
         instructor.delete()
+        messages.success(request, "Successfully Deleted")
         return redirect('view_instructors')
  
     return render(request, "admin_module/delete_instructor.html")
@@ -77,7 +79,7 @@ def edit_instructor(request,id):
 
         #instructor.save(update_fields=['username','password','firstname','middlename','lastname','birthdate'])
         instructor.save()
-
+        messages.success(request, "Successfully Edited")
         return redirect('view_instructors')
     
     return render(request, "admin_module/edit_instructor.html", context)

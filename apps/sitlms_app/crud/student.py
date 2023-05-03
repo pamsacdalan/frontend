@@ -64,6 +64,7 @@ def student(request):
                     employment_status=request.POST['employment_status']
                     student = Students_Auth(user=user, middlename=middlename, birthdate=birthdate, program_id=program_id, student_no=student_no, employment_status=employment_status)
                     student.save()
+                    messages.success(request, "Successfully Added")
                     return redirect("/sit-admin/student/view")
             except Exception as e:
                 print(str(e))
@@ -71,7 +72,7 @@ def student(request):
             print(form.errors)
     else:
         form = StudentForm()            #loads the student form with autofill on some fields
-
+    
     return render(request, 'admin_module/add_student.html', {'form':form, })
 
 def view_students(request):
@@ -95,6 +96,7 @@ def delete_student(request, id):
     student = Students_Auth.objects.get(id=id)
     # JQBM: Walang confirmation for delete?
     student.delete()
+    messages.success(request, "Successfully Deleted")
     return redirect("/sit-admin/student/view")
     
 def update_record(request, id):
@@ -126,4 +128,5 @@ def update_record(request, id):
     student.user.save()
     student.save()
 
+    messages.success(request, "Successfully Edited")
     return redirect("/sit-admin/student/view")
