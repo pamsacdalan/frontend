@@ -36,3 +36,14 @@ def password_reset(request, data):
 
 
 
+def student_profile(request):
+    
+    """ This function renders the admin module dashboard """
+    
+    return render(request, 'student_module/student.html')
+
+def student_course_details(request):
+    
+    """ This function renders the admin module dashboard """
+    
+    return render(request, 'student_module/courses_details.html')

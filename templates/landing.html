@@ -9,7 +9,7 @@
         <meta name="author" content="" />
         <title>Seven Seven LMS</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
         <!-- Custom Google font-->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,6 +38,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
                             {% endif %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'sit_admin_dashboard' %}">Admin</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'student_profile' %}">Student</a></li>
                         </ul>
                     </div>
                 </div>
