@@ -4,7 +4,8 @@ from apps.sitlms_app import views
 from .crud import student, instructor, course, sit_admin
 
 urlpatterns = [
-    path('', views.admin_index,name="sit_admin_dashboard"),
+    # path('', views.admin_index,name="sit_admin_dashboard"),
+    path('',views.home,name="home"),
     path('dashboard/', views.dashboard,name="sit_admin_dashboard"),
     path('sit-admin/list', sit_admin.AdminList.as_view(), name="adminlist"),
     path('sit-admin/create', sit_admin.sitadmin_register, name="admincreate"),

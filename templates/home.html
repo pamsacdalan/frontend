@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 {% block content %}
 
-{% if user.is_authenticated %}
+{% comment %} {% if user.is_authenticated %}
 <p><a href="{% url 'logout' %}">Log out</a></p>
 {% else %}
 <p><a href="{% url 'login' %}">Log in</a></p>
@@ -12,7 +12,7 @@
 </div>
 <div>
     <p>Please put the website landing page here. For testing ko lang to for now. TY. -JQBM</p>
-</div>
+</div> {% endcomment %}
 
 
 

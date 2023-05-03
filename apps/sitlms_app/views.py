@@ -9,6 +9,8 @@ def home(request):
     """ This function renders the home page """
     
     return render(request, 'home.html')
+    # return render(request, 'registration/login.html')
+    # return render(request, 'admin_module/index.html')
 
 def admin_index(request):
     
