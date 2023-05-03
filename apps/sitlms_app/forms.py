@@ -59,11 +59,11 @@ employment_status = (
 
 # CRUD - Create
 class AdminCreateForm(forms.Form):
-    email_address = forms.EmailField(label='Email Address', widget=forms.EmailInput(attrs={}))
-    first_name = forms.CharField(min_length=1, max_length = 150, label='First Name', widget=forms.TextInput(attrs={'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
-    last_name = forms.CharField(min_length=1, max_length = 150, label='Last Name', widget=forms.TextInput(attrs={'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
-    middle_name = forms.CharField(min_length=2, max_length = 150, label='Middle Name', widget=forms.TextInput(attrs={'placeholder': 'Middle Name', 'id': 'middle_name', 'autocomplete': 'off'}), required=False)
-    birthdate = forms.DateField(label='Birthdate', widget=forms.NumberInput(attrs={'type': 'date', 'autocomplete': 'off'}), required=True,
+    email_address = forms.EmailField(label='Email Address', widget=forms.EmailInput(attrs={'class':'form-control'}))
+    first_name = forms.CharField(min_length=1, max_length = 150, label='First Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
+    last_name = forms.CharField(min_length=1, max_length = 150, label='Last Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
+    middle_name = forms.CharField(min_length=2, max_length = 150, label='Middle Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Middle Name', 'id': 'middle_name', 'autocomplete': 'off'}), required=False)
+    birthdate = forms.DateField(label='Birthdate', widget=forms.NumberInput(attrs={'class':'form-control','type': 'date', 'autocomplete': 'off'}), required=True,
                     validators=[
                             MaxValueValidator((datetime_jqbm.now(timezone(timedelta(hours=8))) - timedelta(days=1*365.25)).date(),
                                 message="You must be at least 1 year old to apply."
@@ -86,18 +86,19 @@ class StudentForm(forms.Form):
     program_id = forms.IntegerField(
         min_value=0,
         max_value=5,
-        help_text='I think this should be a foreign key',
+        help_text='I think this should be a foreign key', 
+        widget=forms.TextInput(attrs={'class':'form-control'})
     )
     student_no = forms.CharField(max_length = 7, label='Employee ID', widget=forms.TextInput(attrs={'class':'form-control'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email Address', 'autocomplete': 'off'}))
-    first_name = forms.CharField(min_length=1, max_length = 150, label='first_name', widget=forms.TextInput(attrs={'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
-    middlename = forms.CharField(min_length=1, max_length = 150, label='middle_name', widget=forms.TextInput(attrs={'placeholder': 'Middle Name', 'id': 'middle_name', 'autocomplete': 'off'}), required=False)
-    last_name = forms.CharField(min_length=1, max_length = 150, label='last_name', widget=forms.TextInput(attrs={'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'Email Address', 'autocomplete': 'off'}))
+    first_name = forms.CharField(min_length=1, max_length = 150, label='first_name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
+    middlename = forms.CharField(min_length=1, max_length = 150, label='middle_name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Middle Name', 'id': 'middle_name', 'autocomplete': 'off'}), required=False)
+    last_name = forms.CharField(min_length=1, max_length = 150, label='last_name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
     birthdate = forms.DateField(widget=forms.NumberInput(attrs={'type': 'date', 'autocomplete': 'off'}), required=True,
                     validators=[
                             MaxValueValidator((datetime_jqbm.now(timezone(timedelta(hours=8))) - timedelta(days=1*365.25)).date(),
                                 message="You must be at least 1 year old to apply."
                             )
                         ])
-    employment_status = forms.CharField(label='gov_id', widget=forms.Select(choices=employment_status))
+    employment_status = forms.CharField(label='gov_id', widget=forms.Select(attrs={'class':'form-control'}, choices=employment_status))
 

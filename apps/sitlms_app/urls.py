@@ -11,7 +11,7 @@ urlpatterns = [
     path('sit-admin/update/<id>', sit_admin.sitadmin_update, name="adminupdate"),
     path('sit-admin/delete/<pk>', sit_admin.AdminDelete.as_view(), name="admindelete"),
     path('student/', student.student),
-    path('student/view', student.view_students,name='view_students'),
+    path('student/view/', student.view_students,name='view_students'),
     path('student/edit/<int:id>', student.edit_student),
     path('student/update/<int:id>', student.update_student),
     path('student/delete/<int:id>', student.delete_student),
@@ -25,7 +25,7 @@ urlpatterns = [
     path('course/', course.courses),
     path('course/add_course/', course.add_course, name='add_course'),
     path('course/add_course/add_course_info/', course.add_course_info, name='add_course_info'),
-    path('course/view_course', course.view_course, name='view_course'),
+    path('course/view_course/', course.view_course, name='view_course'),
     path('course/edit_course/<int:id>', course.edit_course, name='edit_course'),
     path('course/delete_course/<int:id>', course.delete_course, name='delete_course'),
     

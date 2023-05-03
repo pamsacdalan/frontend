@@ -28,7 +28,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-              <a class="nav-link" href="../dashboard/">
+              <a class="nav-link" href="/sit-admin/dashboard/">
                   <i class="fas fa-fw fa-tachometer-alt"></i>
                   <span>DASHBOARD</span>
               </a>
@@ -44,7 +44,7 @@
 
             <!-- Nav Item - Courses Collapse Menu-->
             <li class="nav-item active">
-                <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseCourses"
+                <a class="nav-link collapsed" href="../sit-admin/course/" data-toggle="collapse" data-target="#collapseCourses"
                 aria-expanded="true" aria-controls="collapseCourses">
                     <i class="fa fa-book"></i>
                     <span> COURSES </span>
@@ -61,7 +61,7 @@
 
             <!-- Nav Item - Instructors Collapse Menu-->
             <li class="nav-item">
-                <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseInst"
+                <a class="nav-link collapsed" href="../sit-admin/instructor/view/" data-toggle="collapse" data-target="#collapseInst"
                 aria-expanded="true" aria-controls="collapseInst">
                     <i class="fa fa-users" aria-hidden="true"></i>
                     <span>INSTRUCTORS</span>
@@ -70,8 +70,8 @@
                 <div id="collapseInst" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Options:</h6>
-                        <a class="collapse-item" href="/instructor/view/">View Instructors</a>
-                        <a class="collapse-item" href="/instructor/add/">Add Instructors</a>
+                        <a class="collapse-item" href="/sit-admin/instructor/view/">View Instructors</a>
+                        <a class="collapse-item" href="/sit-admin/instructor/add/">Add Instructors</a>
                     </div>
                 </div>
 
@@ -79,7 +79,7 @@
 
             <!-- Nav Item - Students Collapse Menu-->
             <li class="nav-item">
-                <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseStudents"
+                <a class="nav-link collapsed" href="../sit-admin/student/view/" data-toggle="collapse" data-target="#collapseStudents"
                 aria-expanded="true" aria-controls="collapseStudents">
                     <i class="fa fa-address-book" aria-hidden="true"></i>
                     <span> TRAINEES </span>
@@ -88,8 +88,25 @@
                 <div id="collapseStudents" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Options:</h6>
-                        <a class="collapse-item" href="/student/view">View Trainees</a>
-                        <a class="collapse-item" href="/student/">Add Trainees</a>
+                        <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
+                        <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Admmins Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/" data-toggle="collapse" data-target="#collapseAdmin"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fa fa-landmark" aria-hidden="true"></i>
+                    <span> ADMINS </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/list">View Admins</a>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/create">Add Admins</a>
                     </div>
                 </div>
             </li>
@@ -111,13 +128,14 @@
                                     <th>Course ID</th>
                                     <th>Course Description</th>
                                     <th>Course Title</th>
+                                    <th>Actions</th>
                                     </tr>
                                     <tr>{% for course in course_list %}
                                     <td name= 'course_id'>{{course.course_id}}</td>
                                     <td name= 'course_desc'>{{course.course_desc}}</td>
                                     <td name= 'course_title'>{{course.course_title}}</td>
                                     <td>
-                                        <a  class="btn btn-secondary" href="/sit-admin/course/edit_course/{{ course.course_id }}" data-toggle="tooltip" title="Edit">
+                                        <a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/course/edit_course/{{ course.course_id }}" data-toggle="tooltip" title="Edit">
                                             <i class="fa fa-file" aria-hidden="true"></i>
                                         </a> |
                                         <!--JQBM: Temp ko lalagyan para lang macheck ko na gumagana crud -->
@@ -127,9 +145,9 @@
                                         </button>    
                                         -->
                                         <a href="/sit-admin/course/delete_course/{{course.course_id}}">
-                                        <button type="button" class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                            <button type="button" class="btn btn-danger btn-circle btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </a>
 
                                     </td>
@@ -139,9 +157,13 @@
                                 <br>
                                 <br>
                                 <!-- Add Button -->
-                                <a class="btn btn-success my-3 my-sm-0" href="../course/add_course/">Add New</a>
+                                <a href="/sit-admin/course/add_course/" class="btn btn-dark btn-icon-split btn-sm">
+                                    <span class="icon text-white-50">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                    <span class="text">Add Course</span>
+                                </a>
                                 <br>
-                                
                                 </table>
                             </div>
 
