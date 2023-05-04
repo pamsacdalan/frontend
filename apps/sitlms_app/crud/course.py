@@ -82,4 +82,4 @@ def delete_course(request, id):
                 return HttpResponseRedirect(reverse('view_course'))
 
         messages.success(request, "Successfully Deleted")
-        return render(request, 'admin_module/delete_course.html')
+        return render(request, "admin_module/delete_course.html")

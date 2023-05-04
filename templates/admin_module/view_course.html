@@ -144,11 +144,12 @@
                                             <i class="fa fa-trash"></i>
                                         </button>    
                                         -->
-                                        <a href="/sit-admin/course/delete_course/{{course.course_id}}">
-                                            <button type="button" class="btn btn-danger btn-circle btn-sm">
+                                            <a  href="/sit-admin/course/delete_course/{{ course.course_id }}"
+                                                class="btn btn-danger btn-circle btn-sm" 
+                                                data-toggle="tooltip" 
+                                                title="Delete">
                                                 <i class="fa fa-trash"></i>
-                                            </button>
-                                        </a>
+                                            </a>
 
                                     </td>
                                     </tr>
@@ -157,7 +158,7 @@
                                 <br>
                                 <br>
                                 <!-- Add Button -->
-                                <a href="/sit-admin/course/add_course/" class="btn btn-dark btn-icon-split btn-sm">
+                                <a  class="btn btn-dark btn-icon-split btn-sm">
                                     <span class="icon text-white-50">
                                         <i class="fa fa-plus"></i>
                                     </span>
@@ -172,31 +173,5 @@
                 </div>
 
 
-                    <!-- Delete Modal-->
-                    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="deletemodalTitle">Delete Course</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="main">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        Do you want to delete this course ?
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal" href="/">Cancel</button>
-                              <button type="submit" class="btn btn-primary" value="Yes" href="/course/delete_course/{{course.course_id}}">Delete</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-
+                
   {% endblock content %}
