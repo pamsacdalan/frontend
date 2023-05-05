@@ -124,17 +124,18 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
-                            <tr>
-                                <th>instructor ID</th>
-                                <th>username</th>
-                                <th>first name</th>
-                                <th>middle name</th>
-                                <th>last name</th>
-                                <th>birth date</th>
-                                <th>Actions</th>
-            
-                            </tr>
+                        <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                            <thead class="table-dark" align="center">
+                                <tr>
+                                    <th>Instructor ID</th>
+                                    <th>Username</th>
+                                    <th>First name</th>
+                                    <th>Middle name</th>
+                                    <th>Last name</th>
+                                    <th>Birthdate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
                         <tr>{% for instructors in instructor_list%}
                             <td name= 'instructor_id'>{{instructors.id}}</td>
                             <td name= 'username'>{{instructors.user.username}}</td>
@@ -144,7 +145,7 @@
                             <td name= 'birthdate'>{{instructors.birthdate}}</td>
                             {% comment %} <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
                             <!-- JQBM: delete ko yung nakalagay sa access type, di ko gets point -->
-                            <td><a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/instructor/edit/{{ instructors.id }}">
+                            <td align="center"><a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/instructor/edit/{{ instructors.id }}">
                                     <i class="fas fa-edit" aria-hidden="true"></i>
                                 </a> |
                                 <!--JQBM: Temp ko lalagyan para lang macheck ko na gumagana crud -->
@@ -152,9 +153,45 @@
                                 <button type="button" class="btn btn-danger"  data-toggle="modal" data-target = "#instdeletemodal">
                                     <i class="fa fa-trash"></i>
                                 </button> -->                                
-                                <a  class="btn btn-danger btn-circle btn-sm" href="/sit-admin/instructor/delete/{{ instructors.id }}">
+                                {% comment %} <a  class="btn btn-danger btn-circle btn-sm" href="/sit-admin/instructor/delete/{{ instructors.id }}">
                                     <i class="fa fa-trash" ></i>
-                                </a>
+                                </a> {% endcomment %}
+
+                                <!-- Delete Button-->
+                                <a
+                                href="/sit-admin/instructor/delete/{{ instructors.id }}"
+                                class="btn btn-danger btn-circle btn-sm" 
+                                data-toggle="modal"
+                                data-target="#delete-item-modal"
+                                onclick="delete_instructor(this)"
+                            >
+                                <i class="fa fa-trash"></i>
+                            </a>
+
+                            <!-- Delete Modal Start-->
+                            <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <p>Remove this instructor from the list?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form method="post" id="item-delete-form">
+                                                <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
+                                                    {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger" id="confirm-delete-item-button">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function delete_instructor(selected_instructor){
+                                    document.getElementById("item-delete-form").action = selected_instructor.href
+                                }
+                            </script>
+                            <!-- Delete Modal End-->
                             
                         </tr>
                             {% endfor %}
@@ -175,36 +212,6 @@
                 </div>
             </div>
         </div>
-
-
-        <!-- Delete Modal-->
-        <div class="modal fade" id="instdeletemodal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="deletemodalTitle">Remove Instructor</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                    <div class="main">
-                        <form method="POST">
-                            <!-- Security token by Django -->
-                            {% csrf_token %}
-                            Do you want to delete this item ?
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal" href="/instructor/view/">Cancel</button>
-                  <button type="submit" class="btn btn-danger"  action="/instructor/delete/{{ instructors.instructor_id }}" value="Yes" >Delete</button>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-
 
 
 {% endblock content %}
