@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 from apps.sitlms_app.forms import  CourseForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # CRUD for Courses
@@ -50,8 +51,24 @@ def add_course_info(request):
 def view_course(request):
         template = loader.get_template('admin_module/view_course.html')
         course_list = Course_Catalog.objects.all()
-        context = {'course_list':course_list}
+        
+        
+        # for pagination
+        page = request.GET.get('page', 1) # default page (default to first page)
+        
+        items_per_page = 5
+        paginator = Paginator(course_list, items_per_page)
+        try:
+                courses_page = paginator.page(page)
+        except PageNotAnInteger:
+                courses_page = paginator.page(1)
+        except EmptyPage:
+                courses_page = paginator.page(paginator.num_pages)
+                
+        context = {'courses_page':courses_page, 'course_list': course_list}
         return HttpResponse(template.render(context,request))
+
+
 
 
 def edit_course(request, id):
@@ -82,4 +99,4 @@ def delete_course(request, id):
                 return HttpResponseRedirect(reverse('view_course'))
 
         messages.success(request, "Successfully Deleted")
-        return render(request, "admin_module/delete_course.html")
+        return render(request, "admin_module/view_course.html")

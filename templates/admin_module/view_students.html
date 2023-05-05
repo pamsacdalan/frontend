@@ -126,8 +126,8 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
-                                    <thread>
+                                <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                                    <thread class="table-dark" align="center">
                                         <tr>
                                             <th>Student Id</th>
                                             <th>Program Id</th>
@@ -157,15 +157,52 @@
                                             <td>{{student.user.is_active }}</td>
                                             <td>{{student.access_type  }}</td>
                                             <td>
+                                                <!-- Edit Button-->
                                                 <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-secondary btn-circle btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit" aria-hidden="true"></i>
                                                  </a>
                                             </td>
                                             <td>
-                                                <a href="/sit-admin/student/delete/{{student.id}}" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" title="Delete">
-                                                    <!-- Gagawin pa na modal -->
+                                                {% comment %} <a href="/sit-admin/student/delete/{{student.id}}" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" title="Delete">
+                                                    
                                                     <i class="fa fa-trash" aria-hidden="true"></i>
-                                                 </a>
+                                                 </a> {% endcomment %}
+
+                                                 <!-- Delete Button-->
+                                                 <a
+                                                    href="/sit-admin/student/delete/{{student.id}}"
+                                                    class="btn btn-danger btn-circle btn-sm" 
+                                                    data-toggle="modal"
+                                                    data-target="#delete-item-modal"
+                                                    onclick="delete_student(this)"
+                                                >
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+
+                                                <!-- Delete Modal Start-->
+                                                <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <p>Remove this student from the list?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form method="post" id="item-delete-form">
+                                                                    <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
+                                                                        {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-danger" id="confirm-delete-item-button">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                        
+                                                <script>
+                                                    function delete_student(selected_student){
+                                                        document.getElementById("item-delete-form").action = selected_student.href
+                                                    }
+                                                </script>
+                                                <!-- Delete Modal End-->
                                             </td>
                                         </tr>
                                         {% endfor %}
