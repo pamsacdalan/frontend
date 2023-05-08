@@ -1,0 +1,22 @@
+{% extends './landing.html' %}
+{% block content %}
+
+{% comment %} {% if user.is_authenticated %}
+<p><a href="{% url 'logout' %}">Log out</a></p>
+{% else %}
+<p><a href="{% url 'login' %}">Log in</a></p>
+{% endif %}
+
+<div>
+    <a href="{% url 'sit_admin_dashboard' %}">Admin Module</a>
+</div>
+<div>
+    <a href="{% url 'student_profile' %}">Student Module</a>
+</div>
+<div>
+    <p>Please put the website landing page here. For testing ko lang to for now. TY. -JQBM</p>
+</div> {% endcomment %}
+
+
+
+{% endblock %}
