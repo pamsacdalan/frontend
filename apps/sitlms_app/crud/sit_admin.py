@@ -84,6 +84,7 @@ def sitadmin_update(request, id):
             form2.save()
             user_model.username = form1.cleaned_data['email']
             user_model.save()
+            messages.success(request, "Successfully Edited")
             return redirect('adminlist')
         else:
             messages.info(request, 'Form submission not valid.')

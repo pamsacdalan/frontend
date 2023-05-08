@@ -3,11 +3,12 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
+from django.contrib import messages
 
 def home(request):
     
     """ This function renders the home page """
-    
+    messages.success(request,'You are successfully Log In')
     return render(request, 'home.html')
     # return render(request, 'registration/login.html')
     # return render(request, 'admin_module/index.html')
