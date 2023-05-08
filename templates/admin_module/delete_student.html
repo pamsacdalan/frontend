@@ -1,0 +1,13 @@
+<div class="main">
+        <!-- Security token by Django -->
+        <form method="POST" action = "/sit-admin/student/delete/confirm/{{ student.id }}">
+            {% csrf_token %}
+            Do you want to delete this student?
+            {{student.id}}
+            <div>  
+                <button type="submit">Confirm</button>
+                <a href="../view">Cancel</a>
+            </div>
+        </form>
+    </form>
+</div>

@@ -21,6 +21,10 @@ from django.utils.dateparse import parse_date
 import string
 import secrets
 import random
+from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_app.crud.access_test import is_admin
+from django.contrib.auth.mixins import UserPassesTestMixin
+
 
 def generate_random_string(length):
     letters = string.ascii_lowercase
@@ -29,13 +33,25 @@ def generate_random_string(length):
 class AdminList(ListView):
    model = Admin
    template_name='admin_module/admin_list.html'
+   
+   def test_func(self):
+       if not is_admin(self.request.user):
+           return is_admin(self.request.user)
+       return is_admin(self.request.user)
 
 # CRUD - (C)reate
 class AdminCreate(CreateView):
    model = Admin
    template_name = 'admin_module/admin_create_form.html'
    form_class = AdminCreateForm
+   
+   def test_func(self):
+       if not is_admin(self.request.user):
+           return is_admin(self.request.user)
+       return is_admin(self.request.user)
 
+
+@user_passes_test(is_admin)
 def sitadmin_register(request):
     if request.method == 'POST':
         form = AdminCreateForm(request.POST)
@@ -72,6 +88,8 @@ def sitadmin_register(request):
         form = AdminCreateForm()
         return render(request, 'admin_module/admin_create_form.html', {"form": form}) 
 
+
+@user_passes_test(is_admin)
 def sitadmin_update(request, id):
     if request.method == 'POST':
         sitadmin_model = Admin.objects.get(id=id)
@@ -102,4 +120,9 @@ class AdminDelete(DeleteView):
     model = Admin
     template_name = 'admin_module/admin_delete_form.html'
     success_url = '/sit-admin/sit-admin/list'
+    
+    def test_func(self):
+        if not is_admin(self.request.user):
+            return is_admin(self.request.user)
+        return is_admin(self.request.user)
 

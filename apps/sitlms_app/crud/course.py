@@ -11,11 +11,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # CRUD for Courses
-
+@user_passes_test(is_admin)
 def courses(request):
         return render(request, 'admin_module/courses.html')
 
-
+@user_passes_test(is_admin)
 def add_course(request):
         form = CourseForm(request.POST or None)
         template = loader.get_template('admin_module/add_course.html')
@@ -41,7 +41,7 @@ def add_course(request):
         #return HttpResponse(template.render({},request, context))
         return render(request, 'admin_module/add_course.html', context)
 
-
+@user_passes_test(is_admin)
 def add_course_info(request):
         course_desc = request.POST['course_desc']
         course_title = request.POST['course_title']
@@ -50,7 +50,7 @@ def add_course_info(request):
         messages.success(request, "Successfully Added")
         return HttpResponseRedirect('/sit-admin/course/view_course')
 
-
+@user_passes_test(is_admin)
 def view_course(request):
         template = loader.get_template('admin_module/view_course.html')
         course_list = Course_Catalog.objects.all()
@@ -73,7 +73,7 @@ def view_course(request):
 
 
 
-
+@user_passes_test(is_admin)
 def edit_course(request, id):
         course = Course_Catalog.objects.get(course_id=id)
         context = {'course': course}
@@ -93,7 +93,7 @@ def edit_course(request, id):
         return render(request, "admin_module/update_course.html", context)
 
 
-
+@user_passes_test(is_admin)
 def delete_course(request, id):
         course = Course_Catalog.objects.get(course_id=id)
 

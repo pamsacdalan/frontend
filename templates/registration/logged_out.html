@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% comment %} {% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'website_landing' %}">{% translate 'Home' %}</a></div>{% endblock %} {% endcomment %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'website_landing' %}">{% translate 'Home' %}</a></div>{% endblock %}
 
 {% block nav-sidebar %}{% endblock %}
 
 {% block content %}
 
-{% comment %} <p><a href="{% url 'login' %}">{% translate 'Log in again' %}</a></p> {% endcomment %}
+<p>{% translate "Thanks for spending some quality time with the web site today." %}</p>
+
+<p><a href="{% url 'login' %}">{% translate 'Log in again' %}</a></p>
 
 {% endblock %}

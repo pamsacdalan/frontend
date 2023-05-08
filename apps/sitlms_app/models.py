@@ -89,10 +89,18 @@ class Admin(models.Model):
 
     def get_absolute_url(self):
         return '/admin_module/list'
-    
+
+class Program(models.Model):
+    program_id= models.IntegerField(primary_key=True, unique=True)
+    program_code = models.CharField(max_length=50)      #JAVAFS1, JAVAFS2
+    program_title = models.CharField(max_length=50)     #Java Full Stack, ETL, MLE
+    def str(self):
+        return self.program_code
+
+
 class Students_Auth(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    program_id = models.IntegerField()
+    program_id = models.ForeignKey(Program, on_delete=models.CASCADE)
     student_no = models.CharField(max_length=7)
     #username = models.CharField(max_length=50)
     #password = models.CharField(max_length=50)
@@ -119,3 +127,13 @@ class Instructor_Auth(models.Model):
     birthdate = models.DateField()
     # active_deactive  = models.BooleanField(default=True)
     access_type = models.IntegerField(default=3, validators=[MaxValueValidator(3), MinValueValidator(1)])
+    
+
+class Csv(models.Model):
+    
+    file_name  = models.FileField(upload_to='files')
+    uploaded = models.DateTimeField(auto_now=True)
+    activated = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"File id: {self.id}"

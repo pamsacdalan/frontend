@@ -6,24 +6,27 @@ from django.urls import reverse
 from .sit_admin import generate_random_string
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_app.crud.access_test import is_admin
 
 # CRUD for Instructor
-
+@user_passes_test(is_admin)
 def instructor(request):
     return render(request,'admin_module/instructor.html')
 
-
+@user_passes_test(is_admin)
 def add_instructor(request):
     template = loader.get_template('admin_module/add_instructor.html')
     return HttpResponse(template.render({},request))
 
+@user_passes_test(is_admin)
 def view_instructors(request):
     template = loader.get_template('admin_module/view_instructor.html')
     instructor_list = Instructor_Auth.objects.all()
     context = {'instructor_list':instructor_list}
     return HttpResponse(template.render(context,request))
 
+@user_passes_test(is_admin)
 def add_instructor_info(request):
 
     if request.method == "POST":
@@ -45,7 +48,7 @@ def add_instructor_info(request):
 
     return HttpResponseRedirect(reverse('add_instructor'))
 
-
+@user_passes_test(is_admin)
 def delete_instructor(request,id):
     instructor = Instructor_Auth.objects.get(id=id)
  
@@ -54,9 +57,9 @@ def delete_instructor(request,id):
         messages.success(request, "Successfully Deleted")
         return redirect('view_instructors')
  
-    return render(request, "admin_module/delete_instructor.html")
+    return render(request, "admin_module/view_instructor.html")
 
-
+@user_passes_test(is_admin)
 def edit_instructor(request,id):
     instructor = Instructor_Auth.objects.get(id=id)
     context = {'instructor':instructor}

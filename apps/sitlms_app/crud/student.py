@@ -9,6 +9,8 @@ import secrets
 from .sit_admin import generate_random_string
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_app.crud.access_test import is_admin
 
 def pass_gen():
 
@@ -40,6 +42,7 @@ def validate(username):
                 return username
 
 
+@user_passes_test(is_admin)
 def student(request): 
 
     if request.method == "POST":
@@ -75,15 +78,19 @@ def student(request):
     
     return render(request, 'admin_module/add_student.html', {'form':form, })
 
+
+@user_passes_test(is_admin)
 def view_students(request):
     students = Students_Auth.objects.all()                           #access the model and show all the content
     return render(request, 'admin_module/view_students.html', {'students':students})  #passes the students as context to the show.html
 
+@user_passes_test(is_admin)
 def edit_student(request, id):
     student = Students_Auth.objects.get(id=id)     
     email_for_reset = student.user.email          #get the id of the student
     return render(request, 'admin_module/edit_student.html', {'student':student, 'email':email_for_reset})    #passes the student as context to the edit.html
 
+@user_passes_test(is_admin)
 def update_student(request, id):
     # JQBM: Ano difference ng update at edit na views?
     student = Students_Auth.objects.get(id=id)
@@ -92,13 +99,21 @@ def update_student(request, id):
     context = {'student': student, 'email':email_for_reset}
     return HttpResponse(template.render(context, request))
 
+@user_passes_test(is_admin)
+def confirm_delete(request, id):
+    student = Students_Auth.objects.get(id=id)
+    return render(request, 'admin_module/view_students.html', {'student':student})
+
+@user_passes_test(is_admin)
 def delete_student(request, id):
     student = Students_Auth.objects.get(id=id)
     # JQBM: Walang confirmation for delete?
     student.delete()
     messages.success(request, "Successfully Deleted")
     return redirect("/sit-admin/student/view")
-    
+
+
+@user_passes_test(is_admin)  
 def update_record(request, id):
     program_id = request.POST['program_id']
     student_no = request.POST['student_no']

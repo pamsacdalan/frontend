@@ -115,7 +115,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">User Profile</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.first_name }} {{ user.last_name }}</span>
                                 <img class="img-profile rounded-circle"
                                     src="{% static '/img/undraw_profile.svg' %}">
                             </a>
@@ -211,11 +211,6 @@
 
     </div>
     <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

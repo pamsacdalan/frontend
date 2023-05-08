@@ -6,6 +6,7 @@ import datetime
 from django.db.models import Max
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
+from .models import Csv
 
 '''
 class StudentForm(forms.ModelForm):
@@ -101,4 +102,9 @@ class StudentForm(forms.Form):
                             )
                         ])
     employment_status = forms.CharField(label='gov_id', widget=forms.Select(attrs={'class':'form-control'}, choices=employment_status))
+    
+class CsvModelForm(forms.ModelForm):
+    class Meta:
+            model = Csv
+            fields = ('file_name',)
 
