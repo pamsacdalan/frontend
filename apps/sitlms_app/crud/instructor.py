@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.crud.access_test import is_admin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # CRUD for Instructor
 @user_passes_test(is_admin)
@@ -23,8 +24,25 @@ def add_instructor(request):
 def view_instructors(request):
     template = loader.get_template('admin_module/view_instructor.html')
     instructor_list = Instructor_Auth.objects.all()
-    context = {'instructor_list':instructor_list}
+    # context = {'instructor_list':instructor_list}
+    
+    # for pagination
+    page = request.GET.get('page', 1) # default page (default to first page)
+        
+    items_per_page = 5
+    paginator = Paginator(instructor_list, items_per_page)
+    try:
+            instructor_page = paginator.page(page)
+    except PageNotAnInteger:
+            instructor_page = paginator.page(1)
+    except EmptyPage:
+            instructor_page = paginator.page(paginator.num_pages)
+                
+    context = {'instructor_page':instructor_page, 'instructor_list': instructor_list}
     return HttpResponse(template.render(context,request))
+    
+    
+    # return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_admin)
 def add_instructor_info(request):

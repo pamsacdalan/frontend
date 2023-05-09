@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.crud.access_test import is_admin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def pass_gen():
 
@@ -81,8 +82,26 @@ def student(request):
 
 @user_passes_test(is_admin)
 def view_students(request):
+    template = loader.get_template('admin_module/view_students.html')
     students = Students_Auth.objects.all()                           #access the model and show all the content
-    return render(request, 'admin_module/view_students.html', {'students':students})  #passes the students as context to the show.html
+    
+    # for pagination
+    page = request.GET.get('page', 1) # default page (default to first page)
+        
+    items_per_page = 5
+    paginator = Paginator(students, items_per_page)
+    try:
+            students_page = paginator.page(page)
+    except PageNotAnInteger:
+            students_page = paginator.page(1)
+    except EmptyPage:
+            students_page = paginator.page(paginator.num_pages)
+                
+    context = {'students_page':students_page, 'students': students}
+    return HttpResponse(template.render(context,request))
+    # return render(request, 'admin_module/view_students.html', {'students':students})  #passes the students as context to the show.html
+    
+    
 
 @user_passes_test(is_admin)
 def edit_student(request, id):

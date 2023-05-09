@@ -1,4 +1,3 @@
-
 {% extends './base.html' %}
 
 
@@ -43,7 +42,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Library
+                MODULES
             </div>
 
             <!-- Nav Item - Courses Collapse Menu-->
@@ -67,7 +66,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
                 aria-expanded="true" aria-controls="collapseInst">
-                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
                     <span>INSTRUCTORS</span>
                 </a>
                 <!-- Menu -->
@@ -94,6 +93,23 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
                         <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Program Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProgram"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                <i class="fa fa-users"></i>
+                    <span> CDP PROGRAM </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="#">View Programs</a>
+                        <a class="collapse-item" href="#">Add Program</a>
                     </div>
                 </div>
             </li>
@@ -128,8 +144,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
-                                    <thread class="table-dark" align="center">
-                                        <tr>
+                                    <thead class="table-dark">
                                             <th>Student Id</th>
                                             <th>Program Id</th>
                                             <th>Employee Id</th>
@@ -141,10 +156,10 @@
                                             <th>Status</th>
                                             <th>Active/Inactive</th>
                                             <th>Access Type</th>
-                                        </tr>
-                                    </thread>
+                                            <th>Actions</th>
+                                    </thead>
                                     <tbody>
-                                        {% for student in students %} <!-- iterate on each element of students(context passed) -->
+                                        {% for student in students_page %} <!-- iterate on each element of students(context passed) -->
                                         <tr>
                                             <td>{{student.user.id}}</td>
                                             <td>{{student.program_id }}</td>
@@ -162,8 +177,8 @@
                                                 <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-secondary btn-circle btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit" aria-hidden="true"></i>
                                                  </a>
-                                            </td>
-                                            <td>
+                                            {% comment %} </td>
+                                            <td> {% endcomment %}
 
                                                  <!-- Delete Button-->
                                                  <a
@@ -172,7 +187,7 @@
                                                     data-toggle="modal"
                                                     data-target="#delete-item-modal"
                                                     onclick="delete_student(this)"
-                                                >
+                                                 >
                                                     <i class="fa fa-trash"></i>
                                                 </a>
 
@@ -214,7 +229,31 @@
                                 </table>
                             </div>
 
-                            <br>
+                            <!-- For pagination-->
+                            {% if students_page.has_other_pages %}
+                                <ul class="pagination pagination-sm justify-content-end">
+                                    {% if students_page.has_previous %}
+                                        <a class="btn btn-outline-secondary btn-sm" href="?page={{ instructor_page.previous_page_number }}">Previous</a>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary btn-sm"disabled><span>Previous</span></button></li>
+                                    {% endif %}
+
+                                    {% for i in students_page.paginator.page_range %}
+                                        {% if students_page.number == i %}
+                                            <button class="btn btn-outline-secondary btn-sm active"><span>{{ i }} <span class="sr-only">(current)</span></span></button>
+                                        {% else %}
+                                            <a href="?page={{ i }}"class="btn btn-outline-secondary btn-sm">{{ i }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if students_page.has_next %}
+                                        <a href="?page={{ students_page.next_page_number }}" class="btn btn-outline-secondary btn-sm">Next</a>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary btn-sm" disabled><span>Next</span></button>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+
                             <!-- Add Button -->
                             <a href="/sit-admin/student" class="btn btn-dark btn-icon-split btn-sm">
                                 <span class="icon text-white-50">
@@ -222,10 +261,26 @@
                                 </span>
                                 <span class="text">Add Student</span>
                             </a>
-                            <a class="btn btn-success my-3 my-sm-0" href="/sit-admin/student/view/import_csv">Import CSV</a>
-                            <a class="btn btn-success my-3 my-sm-0" href="/sit-admin/student/view/csv_instruction">Download CSV Template</a>
-                            
 
+                            <!-- Import csv button -->
+                            <a href="/sit-admin/student/view/import_csv" class="btn btn-dark btn-icon-split btn-sm">
+                                <span class="icon text-white-50">
+                                    <i class="fa fa-upload" aria-hidden="true"></i>
+                                </span>
+                                <span class="text">Import CSV</span>
+                            </a>
+
+                            <!-- Download csv Template-->
+                            <a href="/sit-admin/student/view/csv_instruction" class="btn btn-dark btn-icon-split btn-sm">
+                                <span class="icon text-white-50">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </span>
+                                <span class="text">Download CSV Template</span>
+                            </a>
+
+                            {% comment %} <a class="btn btn-success my-3 my-sm-0" href="/sit-admin/student/view/import_csv">Import CSV</a> {% endcomment %}
+                            {% comment %} <a class="btn btn-success my-3 my-sm-0" href="/sit-admin/student/view/csv_instruction">Download CSV Template</a> {% endcomment %}
+                            
                         </div>
                     </div>
                 </div>

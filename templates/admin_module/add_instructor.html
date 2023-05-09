@@ -39,7 +39,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Library
+                MODULES
             </div>
 
             <!-- Nav Item - Courses Collapse Menu-->
@@ -63,7 +63,7 @@
             <li class="nav-item active">
                 <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
                 aria-expanded="true" aria-controls="collapseInst">
-                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
                     <span>INSTRUCTORS</span>
                 </a>
                 <!-- Menu -->
@@ -90,6 +90,23 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
                         <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Program Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProgram"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                <i class="fa fa-users"></i>
+                    <span> CDP PROGRAM </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="#">View Programs</a>
+                        <a class="collapse-item" href="#">Add Program</a>
                     </div>
                 </div>
             </li>
@@ -126,13 +143,11 @@
                                     {% csrf_token %}
                                         <div class="container-fluid">
                                             <div class ="row">
-                                                <div class = "col-1">
-                                                    <label for="username">Email:</label>
-                                                </div>
-
-                                                <div class = "col-5">
-                                                    <input type="text"  class="form-control" id="username" name="username" required>
-                                                    <br><br>
+                                                <div class = "col-6">
+                                                    <div class="input-group mb-4">
+                                                        <span for="username" class="input-group-text">Email:</span>
+                                                        <input type="text" class="form-control" id = "username" name="username" required>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -140,59 +155,51 @@
 
                                         <div class="container-fluid">
                                             <div class ="row">
-                                                <div class = "col-1">
-                                                    <label for="firstname">Firstname:</label>
-                                                </div>
-
-                                                <div class = "col-5">
-                                                    <input type="text" class="form-control" id="firstname" name="firstname" required>
-                                                    <br><br>
+                                                <div class = "col-6">
+                                                    <div class="input-group mb-4">
+                                                        <span for="firstname" class="input-group-text">Firstname:</span>
+                                                        <input type="text" class="form-control" id = "firstname" name="firstname" required>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="container-fluid">
                                             <div class ="row">
-                                                <div class = "col-1">
-                                                    <label for="middlename">Middlename:</label>
-                                                </div>
-
-                                                <div class = "col-5">
-                                                    <input type="text" class="form-control" id="middlename" name="middlename" required>
-                                                    <br><br>
+                                                <div class = "col-6">
+                                                    <div class="input-group mb-4">
+                                                        <span for="middlename" class="input-group-text">Middlename:</span>
+                                                        <input type="text" class="form-control" id="middlename" name="middlename" required>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="container-fluid">
                                             <div class ="row">
-                                                <div class = "col-1">
-                                                    <label for="lastname">Lastname</label>
-                                                </div>
-
-                                                <div class = "col-5">
-                                                    <input type="text" class="form-control" id="lastname" name="lastname" required>
-                                                    <br><br>
+                                                <div class = "col-6">
+                                                    <div class="input-group mb-4">
+                                                        <span for="lastname" class="input-group-text">Lastname:</span>
+                                                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="container-fluid">
                                             <div class ="row">
-                                                <div class = "col-1">
-                                                    <label for="birthdate">Birthdate</label>
-                                                </div>
-
-                                                <div class = "col-5">
-                                                    <input type="date" class="form-control" id="birthdate" name="birthdate" required>
-                                                    <br><br>
+                                                <div class = "col-6">
+                                                    <div class="input-group mb-4">
+                                                        <span for="birthdate" class="input-group-text">Birthdate:</span>
+                                                        <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <br><br>
                                         <!-- Add new -->
                                         <div class="container-fluid">
-                                            <button  class="btn btn-dark btn-icon-splitt btn-sm" type="submit" value="Submit">
+                                            <button  class="btn btn-dark btn-icon-split btn-sm" type="submit" value="Submit">
                                                 <span class="icon text-white-50">
                                                     <i class="fa fa-check"></i>
                                                 </span>
