@@ -139,3 +139,9 @@ def student_edit_profile(request):
     """ This function renders the student edit profile"""
     
     return render(request, 'student_module/edit_profile.html')
+
+def reset_pw_request_success(request):
+    
+    """ This function renders the success page for password reset request """
+    
+    return render(request, 'registration/reset_pw_email.html')

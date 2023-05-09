@@ -7,6 +7,7 @@ urlpatterns = [
     # path('', views.admin_index,name="sit_admin_dashboard"),
     path('',views.home,name="home"),
     path('dashboard/', views.dashboard,name="sit_admin_dashboard"),
+    path('registration/reset_pw_email',views.reset_pw_request_success, name="request_reset_pw"),
     path('sit-admin/list', sit_admin.AdminList.as_view(), name="adminlist"),
     path('sit-admin/create', sit_admin.sitadmin_register, name="admincreate"),
     path('sit-admin/update/<id>', sit_admin.sitadmin_update, name="adminupdate"),
