@@ -29,9 +29,6 @@
                         <a class="nav-link" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#profile">Profile</a>
-                    </li>  
-                    <li class="nav-item">
                         <a class="nav-link" href="#schedules">Schedules</a>
                     </li>                 
                     <li class="nav-item">
@@ -40,14 +37,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#report">Report Issue</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="- btn btn-primary rounded ml-4" href="#logout">Logout</a>
-                    </li>
+                    <div class="dropdown">
+                        <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Arnoselle 
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="ti-user"></i> Profile</a>
+                          <a class="dropdown-item" href="#"><i class="ti-comment"></i> Notifications</a>
+                          <a class="dropdown-item" href="#logout"><i class="ti-power-off"></i> Logout</a>
+                        </div>
+                      </div>
                 </ul>
             </div>
         </div>          
     </nav>
     <!-- End of page navibation -->
+    
 
     <!-- Page Header -->
     <header class="header" id="home">
@@ -58,8 +63,7 @@
                 <p>Data Engineer</p>
 
                 <div class="buttons pt-3">
-                    <button class="btn btn-primary rounded">Notifications</button>
-                    <button class="btn btn-dark rounded">Calendar</button>
+                    <button class="btn btn-primary rounded">Calendar</button>
                 </div>      
             </div>              
             <div class="img-holder">
@@ -85,34 +89,7 @@
     </header>
     <!-- End of Page Header -->
     
-    <!-- Profile Section -->
-    <section id="profile" class="section mt-3">
-        <div class="container mt-5">
-            <div class="row text-center text-md-left">
-                <div class="col-md-3">
-                    <img src="{% static 'student/assets/imgs/profile.png'%}" alt="" class="img-thumbnail mb-4">
-                </div>
-                <div class="pl-md-4 col-md-9">
-                    <h6 class="title">Arnoselle Gabales</h6>
-                    <p class="subtitle">Data Engineer</p>
-                    <ul>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Email Address:</strong> <span>agabales@77global.biz</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Contact Number:</strong> <span>+639457224898</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Address:</strong> <span>Cutie, Malaysia</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Birthday:</strong> <span>13 April 1998</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Age:</strong> <span>18</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Employee Number:</strong> <span>21-5776</span></li>
-                        <li><i class="bi bi-chevron-right"></i> <strong>Student Number:</strong> <span>20212101524</span></li>
-                        
-                      </ul>
-                    <button class="btn btn-primary rounded mt-3">EDIT PROFILE</button>                   
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
+  
 
 
        <!-- ======= Schedules Section ======= -->
@@ -177,9 +154,8 @@
                         <img src="{% static 'student/assets/imgs/folio-1.jpg'%}" alt="">
                         <div class="overlay">
                             <div class="overlay-infos">
-                                <h5>Course 1</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="{% url 'course_details' %}"><i class="ti-link"></i></a>
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
                             </div>  
                         </div>
                     </div>
@@ -187,10 +163,9 @@
                         <img src="{% static 'student/assets/imgs/folio-2.jpg'%}" alt="">
                         <div class="overlay">
                             <div class="overlay-infos">
-                                <h5>Course 2</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="javascript:void(0)"><i class="ti-link"></i></a>
-                            </div>                              
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
                         </div>
                     </div>                  
                 </div>
@@ -198,21 +173,21 @@
                     <div class="img-wrapper">
                         <img src="{% static 'student/assets/imgs/folio-3.jpg'%}" alt="">
                         <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>Course 3</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="javascript:void(0)"><i class="ti-link"></i></a>
-                            </div>  
+                            <div class="overlay">
+                                <div class="overlay-infos">
+                                    <h5>View Course</h5>
+                                    <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                                </div>  
+                            </div>
                         </div>
                     </div>
                     <div class="img-wrapper">
                         <img src="{% static 'student/assets/imgs/folio-4.jpg'%}"alt="">
                         <div class="overlay">
                             <div class="overlay-infos">
-                                <h5>Course 4</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="javascript:void(0)"><i class="ti-link"></i></a>
-                            </div>                              
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
                         </div>
                     </div>                  
                 </div>
@@ -221,9 +196,8 @@
                         <img src="{% static 'student/assets/imgs/folio-5.jpg'%}" alt="">
                         <div class="overlay">
                             <div class="overlay-infos">
-                                <h5>Course 5</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="javascript:void(0)"><i class="ti-link"></i></a>
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
                             </div>  
                         </div>
                     </div>
@@ -231,10 +205,9 @@
                         <img src="{% static 'student/assets/imgs/folio-6.jpg'%}" alt="">
                         <div class="overlay">
                             <div class="overlay-infos">
-                                <h5>Course 6</h5>
-                                <a href="javascript:void(0)"><i class="ti-zoom-in"></i></a>
-                                <a href="javascript:void(0)"><i class="ti-link"></i></a>
-                            </div>                              
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
                         </div>
                     </div>                  
                 </div>
@@ -322,6 +295,9 @@
             </div>
         </div>
     </section>      
+
+
+    
     <!-- End of logout section. -->
 
     <!-- Page Footer -->
