@@ -1,16 +1,28 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <title>403 Forbidden</title>
-</head>
-<body>
-  <h1>403 Forbidden</h1>
-  <p>You do not have access to this module.</p>
-  {% if messages %}
-  {% for message in messages %}
-    <p class="django-errors">{{ message }}</p>
-    {% endfor %}
-    {% endif %}
-</body>
-<p><a href="{% url 'website_landing' %}">Go Back to Home Page</a></p>
-</html>
+{% extends 'header.html' %}
+{% load i18n static %}
+
+{% block content %}
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+      <div class="col-md-8 col-lg-7 col-xl-6">
+        <img src="{% static 'img/denied.avif'%}"width="900" height="800" class="img-fluid" alt="Denied photo">
+      </div>
+      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+        <h2>{% translate 'You do not have access to this module' %}</h2>
+      
+      {% if messages %}
+      {% for message in messages %}
+        <p class="django-errors">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+     
+          <form action = "{% url 'home'%}" >
+              {% csrf_token %}
+              <input type="submit" value = "Back to Home" style = "background-color:#a70000" class="btn btn-primary btn-lg btn-block">
+          </form>
+      </div>           
+    </div>
+  </div>
+</section>
+{% endblock %}
