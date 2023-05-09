@@ -1,0 +1,18 @@
+<div>
+    {% csrf_token %}
+    <h2>Instructions for the csv template</h2>
+    <ul>
+        <li>Must follow the format of the given csv file</li>
+        <li>Check whether the downloaded csv file birthday is formatted to YYYY-MM-DD format</li>
+            <ul>
+                <h3>If not do the following:</h3>
+                <li>From the excel press CTRL + 1</li>
+                <li>Format cells will pop-up</li>
+                <li>Click custom tab</li>
+                <li>Under custom tab type in the format bar: YYYY-MM-DD and press OK.</li>
+                <li>After saving apply the given format to the column</li>
+            </ul>
+            <a href="/sit-admin/student/view/csv_instruction/downloadfile">Download CSV</a>&emsp;
+            <a href="../view">Back</a>
+    </ul>
+</div>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<body>
+    <h1>upload csv</h1>
+    <form method="POST" action = "" enctype="multipart/form-data">
+        {%csrf_token%}
+        <!-- <input type="file" name="my_excel">
+        <br>
+        <button type="submit">Submit</button> -->
+        {{form}}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
