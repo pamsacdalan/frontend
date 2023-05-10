@@ -162,7 +162,7 @@
                                         {% for student in students_page %} <!-- iterate on each element of students(context passed) -->
                                         <tr>
                                             <td>{{student.user.id}}</td>
-                                            <td>{{student.program_id }}</td>
+                                            <td>{{student.program_id.program_code }}</td>
                                             <td>{{student.student_no }}</td>
                                             <td>{{student.user.email }}</td>
                                             <td>{{student.user.first_name }}</td>

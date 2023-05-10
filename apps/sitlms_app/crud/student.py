@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from apps.sitlms_app.models import Students, Students_Auth
+from apps.sitlms_app.models import Students, Students_Auth, Program
 from apps.sitlms_app.forms import StudentForm
 from django.shortcuts import render, redirect
 from django.utils.dateparse import parse_date
@@ -63,7 +63,7 @@ def student(request):
                     user.save()
                     middlename=request.POST['middlename']
                     birthdate=request.POST['birthdate']
-                    program_id=request.POST['program_id']
+                    program_id=Program.objects.get(program_id=request.POST['program_id'])
                     student_no=request.POST['student_no']
                     employment_status=request.POST['employment_status']
                     student = Students_Auth(user=user, middlename=middlename, birthdate=birthdate, program_id=program_id, student_no=student_no, employment_status=employment_status)

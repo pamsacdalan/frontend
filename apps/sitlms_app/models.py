@@ -59,6 +59,9 @@ class Instructor(models.Model):
     class Meta:
         db_table = 'instructor'
 
+    def __str__(self):
+        return self.username
+    
 class Course_Catalog(models.Model):
     course_id = models.AutoField(primary_key=True)
     course_desc = models.CharField(max_length=100)
