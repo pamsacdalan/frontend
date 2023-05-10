@@ -1,0 +1,23 @@
+{% extends 'header.html' %}
+{% load i18n static %}
+
+{% block content %}
+   <section class="vh-100">
+            <div class="container py-5 h-100">
+              <div class="row d-flex align-items-center justify-content-center h-100">
+                <div class="col-md-8 col-lg-7 col-xl-6">
+                  <img src="{% static 'img/email_sent.avif'%}"width="900" height="800" class="img-fluid" alt="email sent photo">
+                </div>
+                <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                  <h4>{% translate "We received a request to reset your password. Please check your email and follow the link to set a new password. Thank you! " %}</h4>
+                  
+                  
+                    <form method="post" action = "{% url 'home' %}" >
+                        {% csrf_token %}
+                        <input type="submit" value = "Back to Home" style = "background-color:#a70000" class="btn btn-primary btn-lg btn-block">
+                    </form>
+                </div>           
+              </div>
+            </div>
+          </section>
+{% endblock %}
