@@ -1,0 +1,6 @@
+student_no,program_id,employee _id,email,firstname,middlename,lastname,birthday,employment_status,active_deactive,access_type
+2,236,5343,testTESTtest@gmail.com,asdasdf,fdgfdg,fdgh,7/6/1999,Training,Active,2
+3,8934,2125,sampdemo@gmail.com,dfgfd,dasda,sdfsf,7/7/1999,Training,Active,2
+4,1235,3456,loremipsumsum@gmail.com,fdgfdg,sdfds,sddf,7/8/1999,Training,Active,2
+5,345,2346,demosampleemail@gmail.com,asdasdf,asdasd,sdfdsf,7/9/1999,Training,Active,2
+2,2343,1231,pam@gmail.com,pam,pam,pam,4/12/1995,Deployed,Active,2
