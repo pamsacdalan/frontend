@@ -1,0 +1,41 @@
+<div style="padding-left:16px">
+    <h1>Edit Student Enrollment</h1>
+
+    <form method="post">
+    {% csrf_token %}
+
+
+    <p>Batch: {{enrollment.course_batch_id}}</p>
+    <p>Student: {{student.user.first_name}} {{student.middlename}} {{student.user.last_name}}</p>
+    <label for="status">Status</label>
+
+    <select name="status"  id="status">
+        {% if enrollment.status == "Ongoing" %}
+            <option value="Ongoing" selected>Ongoing</option>
+            <option value="Completed">Completed</option>
+        {% else %}
+            <option value="Ongoing" >Ongoing</option>
+            <option value="Completed" selected>Completed</option>
+        {% endif %}
+    </select>
+
+    <br><br>
+
+    <label for="grade">Choose Grade:</label>
+    <select name="grade" id="grade">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="F">F</option>
+    </select>
+
+    <input class="button" type="submit" value="Submit">
+        <a href='/course/view_student_enrollment/'>
+            <button>
+                Back
+            </button>
+        </a>
+    </form>
+</div>
+

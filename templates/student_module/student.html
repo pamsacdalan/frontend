@@ -1,0 +1,360 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Student Page</title>
+      <!-- Favicon -->
+      <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
+    <!-- font icons -->
+    <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
+    <!-- Bootstrap + Steller main styles -->
+	<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+
+    <!-- Page navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" data-spy="affix" data-offset-top="0">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/logo-red.png' %}" width = 150, height=65, alt="77SIT Logo" height="35"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#schedules">Schedules</a>
+                    </li>                 
+                    <li class="nav-item">
+                        <a class="nav-link" href="#courses">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#report">Report Issue</a>
+                    </li>
+                    <div class="dropdown">
+                        <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Arnoselle 
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="ti-user"></i> Profile</a>
+                          <a class="dropdown-item" href="#"><i class="ti-comment"></i> Notifications</a>
+                          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="ti-power-off"></i> Logout</a>
+                        </div>
+                      </div>
+                </ul>
+            </div>
+        </div>          
+    </nav>
+    <!-- End of page navibation -->
+    
+
+    <!-- Page Header -->
+    <header class="header" id="home">
+        <div class="container">
+            <div class="infos">
+                <h6 class="subtitle">Hello,</h6>
+                <h6 class="title">Arnoselle Gabales</h6>
+                <p>Data Engineer</p>
+
+                <div class="buttons pt-3">
+                    <button class="btn btn-primary rounded">Calendar</button>
+                </div>      
+            </div>              
+            <div class="img-holder">
+                <img src="{% static 'student/assets/imgs/man.svg' %}" alt="">
+            </div>      
+        </div>  
+
+        <!-- Header-widget -->
+        <div class="widget">
+            <div class="widget-item">
+                <h2>10</h2>
+                <p>Enrolled Courses</p>
+            </div>
+            <div class="widget-item">
+                <h2>3</h2>
+                <p>Ongoing Courses</p>
+            </div>
+            <div class="widget-item">
+                <h2>7</h2>
+                <p>Completed COurses</p>
+            </div>
+        </div>
+    </header>
+    <!-- End of Page Header -->
+    
+  
+
+
+       <!-- ======= Schedules Section ======= -->
+       <section id="schedules" class="section">
+        <div class="container mt-5"></div>
+        <div class="container text-center">
+           <h6 class="subtitle">Schedules</h6>
+          <div class="section-title">
+            
+            <p>Nagiisip pa kami paano i lilist ang schedules.</p>
+          </div>
+  
+          <div class="row">
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">1st Course</a></h4>
+              <p class="description">Details Details</p>
+            </div>
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">2nd Course</a></h4>
+              <p class="description">Deeets Deets</p>
+            </div>
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">3rd course</a></h4>
+              <p class="description">Deeets Deets</p>
+            </div>
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="300">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">4th Course</a></h4>
+              <p class="description">Deets Deets</p>
+            </div>
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="400">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">5th Course</a></h4>
+              <p class="description">Deets Deets</p>
+            </div>
+            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="500">
+              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+              <h4 class="title"><a href="">6th Course</a></h4>
+              <p class="description">Deets Deets</p>
+            </div>
+          </div>
+  
+        </div>
+      </section><!-- End Schedules Section -->
+
+
+
+
+
+
+
+    <!-- Courses section -->
+    <section id="courses" class="section">
+        <div class="container text-center">
+            <h6 class="subtitle">Courses</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-1.jpg'%}" alt="">
+                        <div class="overlay">
+                            <div class="overlay-infos">
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-2.jpg'%}" alt="">
+                        <div class="overlay">
+                            <div class="overlay-infos">
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
+                        </div>
+                    </div>                  
+                </div>
+                <div class="col-sm-4">
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-3.jpg'%}" alt="">
+                        <div class="overlay">
+                            <div class="overlay">
+                                <div class="overlay-infos">
+                                    <h5>View Course</h5>
+                                    <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-4.jpg'%}"alt="">
+                        <div class="overlay">
+                            <div class="overlay-infos">
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
+                        </div>
+                    </div>                  
+                </div>
+                <div class="col-sm-4">
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-5.jpg'%}" alt="">
+                        <div class="overlay">
+                            <div class="overlay-infos">
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="img-wrapper">
+                        <img src="{% static 'student/assets/imgs/folio-6.jpg'%}" alt="">
+                        <div class="overlay">
+                            <div class="overlay-infos">
+                                <h5>View Course</h5>
+                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
+                            </div>  
+                        </div>
+                    </div>                  
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- End of courses section -->
+
+
+
+
+
+    <!-- Report Section -->
+    <section id="report" class="position-relative section">
+        <div class="container text-center">
+            <h6 class="subtitle">Report Issues</h6>
+            <div class="contact text-left">
+                <div class="form">
+                    <h6 class="subtitle">Available 24/7</h6>
+                    <h6 class="section-title mb-4">Get In Touch</h6>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="contact-message" id="" cols="30" rows="5" class="form-control" placeholder="Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block rounded w-lg">Send Message</button>
+                    </form>
+                </div>
+                <div class="contact-infos">
+                    <div class="item">
+                        <i class="ti-location-pin"></i>
+                        <div class="">
+                            <h5>Location</h5>
+                            <p> 27th Floor, The Orient Square Building, 
+                                Emerald Avenue, Ortigas Center, Pasig City,
+                                Philippines 1605</p>
+                        </div>                          
+                    </div>
+                    <div class="item">
+                        <i class="ti-mobile"></i>
+                        <div>
+                            <h5>Phone Number</h5>
+                            <p>PH: +63279157747</p>
+                        </div>                          
+                    </div>
+                    <div class="item">
+                        <i class="ti-email"></i>
+                        <div class="mb-0">
+                            <h5>Email Address</h5>
+                            <p>itsupport@example.com</p>
+                        </div>
+                    </div>
+                </div>                  
+            </div>
+        </div>  
+        <div id="map">
+            <iframe src="https://snazzymaps.com/embed/61257"></iframe>
+        </div>      
+    </section>
+    <!-- End of Contact Section -->
+
+
+    <!-- Logout section -->
+    <section id="logout" class="section"></section>
+    <section class="bg-gray p-0 section">
+        <div class="container">
+            <div class="card bg-primary">
+                <div class="card-body text-light">
+                    <div class="row align-items-center">
+                        <div class="col-sm-9 text-center text-sm-left">
+                            <h5 class="mt-3">Are you sure to Logout?</h5>
+                            <p class="mb-3">Are you sure to Logout?</p>
+                        </div>
+                        <div class="col-sm-3 text-center text-sm-right">
+                            <button class="btn btn-light rounded">Logout!</button>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </section>      
+
+
+    
+    <!-- End of logout section. -->
+
+ <!-- Logout Modal-->
+ <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLabel">End current session?</h5>
+             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">×</span>
+             </button>
+         </div>
+         <div class="modal-body">Click "Logout" below if you are ready to end your current session.</div>
+         <div class="modal-footer">
+             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+             <a class="btn btn-danger"  href="{% url 'logout' %}">Logout</a>
+         </div>
+     </div>
+ </div>
+</div>
+
+
+
+
+
+
+
+
+
+    <!-- Page Footer -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <p>Copyright <script>document.write(new Date().getFullYear())</script> &copy; <a href="http://www.devcrud.com" target="_blank">Frontend Team</a></p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="socials">
+                        <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-facebook"></i></a>
+                        <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-github"></i></a>
+                        <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer> 
+    <!-- End of page footer -->
+	
+	<!-- core  -->
+    <script src="{% static 'student/assets/vendors/jquery/jquery-3.4.1.js'%}"></script>
+    <script src="{% static 'student/assets/vendors/bootstrap/bootstrap.bundle.js'%}"></script>
+    <!-- bootstrap 3 affix -->
+	<script src="{% static 'student/assets/vendors/bootstrap/bootstrap.affix.js'%}"></script>
+
+    <!-- steller js -->
+    <script src="{% static 'student/assets/js/steller.js'%}"></script>
+
+</body>
+</html>

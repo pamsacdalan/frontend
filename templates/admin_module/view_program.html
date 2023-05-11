@@ -1,0 +1,21 @@
+<h1>View Program</h1> 
+
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>CODE</th>
+    <th>TITLE</th>
+</tr>
+
+    {% for program in programs %}
+<tr>
+    <td>{{program.program_id}}</td>
+    <td>{{program.program_code}}</td>
+    <td>{{program.program_title}}</td>
+    <td><a href="/sit-admin/program/edit/{{ program.program_id }}">edit</a> | <a href="/sit-admin/program/delete/{{ program.program_id }}">delete</a></td>
+</tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/sit-admin/program/add/"><button>Add</button></a>

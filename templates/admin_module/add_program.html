@@ -1,0 +1,15 @@
+<h1>Add Program</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    
+        <label for="program_code">Program Code</label>
+        <input type="text" id="program_code" name="program_code" required>
+        <br><br>
+    
+        <label for="program_title">Program Title</label>
+        <input type="text" id="program_title" name="program_title" required>
+        <br><br>
+
+        <input class="button" type="submit" value="Submit">
+</form>
