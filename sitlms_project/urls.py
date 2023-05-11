@@ -23,6 +23,7 @@ urlpatterns = [
     path('sit-admin/', include('apps.sitlms_app.urls')),
     path("accounts/", include("django.contrib.auth.urls")),
     path('sit-student/',include('apps.sitlms_student.urls')),
+    path('sit-instructor/',include('apps.sitlms_instructor.urls')),
     path('',home,name='website_landing')
 
 ]
