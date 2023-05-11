@@ -60,6 +60,23 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Enrollment Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/course_enrollment/" data-toggle="collapse" data-target="#collapseEnroll"
+                aria-expanded="true" aria-controls="collapseEnroll">
+                    <i class="fas fa-id-card-alt" aria-hidden="true"></i>
+                    <span> ENROLLMENT </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseEnroll" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Nav Item - Instructors Collapse Menu-->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
@@ -106,8 +123,8 @@
                 <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Choose:</h6>
-                        <a class="collapse-item" href="#">View Programs</a>
-                        <a class="collapse-item" href="#">Add Program</a>
+                        <a class="collapse-item" href="/sit-admin/program/view/">View Programs</a>
+                        <a class="collapse-item" href="/sit-admin/program/add/">Add Program</a>
                     </div>
                 </div>
             </li>
@@ -209,6 +226,7 @@
                                 </table>
 
                                 <!-- For pagination-->
+                                <a>Showing {{courses_page.start_index}} - {{courses_page.end_index}} of {{courses_page.paginator.count}} entries</a>
                                 {% if courses_page.has_other_pages %}
                                     <ul class="pagination pagination-sm justify-content-end">
                                         {% if courses_page.has_previous %}

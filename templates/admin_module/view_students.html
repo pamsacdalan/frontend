@@ -62,6 +62,23 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Enrollment Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/course_enrollment/" data-toggle="collapse" data-target="#collapseEnroll"
+                aria-expanded="true" aria-controls="collapseEnroll">
+                    <i class="fas fa-id-card-alt" aria-hidden="true"></i>
+                    <span> ENROLLMENT </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseEnroll" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Nav Item - Instructors Collapse Menu-->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
@@ -108,8 +125,8 @@
                 <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Choose:</h6>
-                        <a class="collapse-item" href="#">View Programs</a>
-                        <a class="collapse-item" href="#">Add Program</a>
+                        <a class="collapse-item" href="/sit-admin/program/view/">View Programs</a>
+                        <a class="collapse-item" href="/sit-admin/program/add/">Add Program</a>
                     </div>
                 </div>
             </li>
@@ -144,7 +161,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
-                                    <thead class="table-dark">
+                                    <thead class="table-dark" align="center">
                                             <th>Student Id</th>
                                             <th>Program Id</th>
                                             <th>Employee Id</th>
@@ -152,10 +169,10 @@
                                             <th>First Name</th>
                                             <th>Middle Name</th>
                                             <th>Last Name</th>
-                                            <th>Birthday</th>
+                                            <th>Birthdate</th>
                                             <th>Status</th>
-                                            <th>Active/Inactive</th>
-                                            <th>Access Type</th>
+                                            <th>Active</th>
+                                            {% comment %} <th>Access Type</th> {% endcomment %}
                                             <th>Actions</th>
                                     </thead>
                                     <tbody>
@@ -171,14 +188,12 @@
                                             <td>{{student.birthdate }}</td>
                                             <td>{{student.employment_status }}</td>
                                             <td>{{student.user.is_active }}</td>
-                                            <td>{{student.access_type  }}</td>
+                                            {% comment %} <td>{{student.access_type  }}</td> {% endcomment %}
                                             <td>
                                                 <!-- Edit Button-->
                                                 <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-secondary btn-circle btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit" aria-hidden="true"></i>
-                                                 </a>
-                                            {% comment %} </td>
-                                            <td> {% endcomment %}
+                                                 </a> |
 
                                                  <!-- Delete Button-->
                                                  <a
@@ -230,6 +245,7 @@
                             </div>
 
                             <!-- For pagination-->
+                            <a>Showing {{students_page.start_index}} - {{students_page.end_index}} of {{students_page.paginator.count}} entries</a>
                             {% if students_page.has_other_pages %}
                                 <ul class="pagination pagination-sm justify-content-end">
                                     {% if students_page.has_previous %}
@@ -253,7 +269,8 @@
                                     {% endif %}
                                 </ul>
                             {% endif %}
-
+                            <br>
+                            <br>
                             <!-- Add Button -->
                             <a href="/sit-admin/student" class="btn btn-dark btn-icon-split btn-sm">
                                 <span class="icon text-white-50">
