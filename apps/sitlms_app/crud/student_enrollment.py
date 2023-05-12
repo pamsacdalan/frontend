@@ -1,10 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
-from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Students_Auth, Student_Enrollment, Program
+from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Students_Auth, Student_Enrollment, Program, Schedule
 from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.models import User
 from datetime import date
+import json
 
 
 def enroll_student(request, id):
@@ -37,6 +38,16 @@ def enroll_student(request, id):
         for program in program_code:
             if student_list[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_list[x], **student_details[x], **program})
+
+        response = get_schedule_data(request)  # Fetch schedule data from the get_schedule_data view
+        schedules = json.loads(response.content)  # Parse the JSON data from the response content
+        schedules = json.dumps(schedules)  #should be list
+        print("afdcafsdafswafdgagfg")
+        print(schedules)
+
+
+
+
 
     context = {'student_list': new_list, 'id': id}
 
@@ -128,3 +139,30 @@ def edit_enrollment(request, course_batch, enrollment_id):
         return HttpResponseRedirect(reverse('view_enroll_students', kwargs={'id': course_batch}))
 
     return render(request, "admin_module/edit_student_enrollment.html", context)
+
+
+
+
+
+def get_schedule_data(request):
+    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
+    data = list(schedules)  # data may contain the schedule of instructor and students
+    '''This filters the students schedule'''
+    new_data = []
+    students_id = list(Students_Auth.objects.all().values_list('user_id', flat=True))   #gets all the user id present in instructorAuth
+    print(students_id)
+
+    for x in data:
+        if x['user_id'] in students_id:
+            new_data.append(x)
+            
+    return JsonResponse(new_data, safe=False)
+
+
+def get_schedule_data_edit(request,id):
+    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
+    data = list(schedules)  # Convert QuerySet to list of dictionaries
+    for x in data:
+        if x["course_batch"]==id:
+            data.remove(x)
+    return JsonResponse(data, safe=False)

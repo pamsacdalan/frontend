@@ -46,9 +46,9 @@ def frequency_rev(frequency):
         frequency="Weekly"
     return frequency
 
-def string_to_date(frequencies, start_date, end_date, start_time, end_time, course_batch, user_id):
-        print(frequencies, start_date, end_date, start_time, end_time, course_batch, user_id)
-        print(type(frequencies), type(start_date), type(end_date), type(start_time), type(end_time), type(course_batch), type(user_id))
+def string_to_date(frequencies, start_date, end_date, start_time, end_time, course_batch):
+        # print(frequencies, start_date, end_date, start_time, end_time, course_batch, user_id)
+        # print(type(frequencies), type(start_date), type(end_date), type(start_time), type(end_time), type(course_batch), type(user_id))
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
@@ -72,9 +72,8 @@ def string_to_date(frequencies, start_date, end_date, start_time, end_time, cour
                 end_time = end_time_obj,
                 # end_date = concatenated_end_datetime,
                 course_batch = Course_Enrollment.objects.get(course_batch=course_batch),
-                user_id = User.objects.get(id=user_id)      #save the user_id of the instructor from the user table
+
                 )
-            print(type(frequencies), type(start_date), type(end_date), type(start_time), type(end_time), type(course_batch), type(user_id))
             schedule.save()
             start_date += delta
 
@@ -96,9 +95,14 @@ def enrol_course(request):
 
     
     #adds fullname in schedules
+    #instructor
     for x in schedules:
-        fn = User.objects.values_list('first_name', flat=True).get(id=x['user_id'])
-        ln = User.objects.values_list('last_name', flat=True).get(id=x['user_id'])
+        inst_id = Course_Enrollment.objects.values_list('instructor_id', flat=True).get(course_batch=x['course_batch'])
+        # print("Instructor id", inst_id)
+        uid = Instructor_Auth.objects.values_list('user_id', flat=True).get(id=inst_id)
+        # print('uid', uid)
+        fn = User.objects.values_list('first_name', flat=True).get(id=uid)
+        ln = User.objects.values_list('last_name', flat=True).get(id=uid)
         x['fullname'] = fn + " " + ln
 
     context = {'option_course_id': option1_course_id,
@@ -159,7 +163,7 @@ def enrol_course_info(request):
         enrolled_course.save()
 
 
-        string_to_date(frequencies, start_date, end_date, start_time, end_time, course_batch, user_id)
+        string_to_date(frequencies, start_date, end_date, start_time, end_time, course_batch)
 
         return redirect('view_enrolled_course')
 
@@ -188,8 +192,12 @@ def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python
     
     #adds fullname in schedules
     for x in schedules:
-        fn = User.objects.values_list('first_name', flat=True).get(id=x['user_id'])
-        ln = User.objects.values_list('last_name', flat=True).get(id=x['user_id'])
+        inst_id = Course_Enrollment.objects.values_list('instructor_id', flat=True).get(course_batch=x['course_batch'])
+        # print("Instructor id", inst_id)
+        uid = Instructor_Auth.objects.values_list('user_id', flat=True).get(id=inst_id)
+        # print('uid', uid)
+        fn = User.objects.values_list('first_name', flat=True).get(id=uid)
+        ln = User.objects.values_list('last_name', flat=True).get(id=uid)
         x['fullname'] = fn + " " + ln
 
 
@@ -257,7 +265,7 @@ def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python
             deleted_scheduled_course = Schedule.objects.get(schedule_id=record['schedule_id'])
             deleted_scheduled_course.delete()
         
-        string_to_date(str(frequency), start_date, end_date, start_time, end_time, course_batch, user_id)
+        string_to_date(str(frequency), start_date, end_date, start_time, end_time, course_batch)
 
         return redirect('view_enrolled_course')
     
@@ -274,15 +282,14 @@ def delete_enrolled_course(request,id):
 
 
 def get_schedule_data(request):
-    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
+    schedules = Schedule.objects.all().values('course_batch', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # Convert QuerySet to list of dictionaries
     return JsonResponse(data, safe=False)
 
 
 def get_schedule_data_edit(request,id):
-    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
+    schedules = Schedule.objects.all().values('course_batch', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # Convert QuerySet to list of dictionaries
-    for x in data:
-        if x["course_batch"]==id:
-            data.remove(x)
-    return JsonResponse(data, safe=False)
+    list_course_batches = [x['course_batch'] for x in data] 
+    new_data = [row for row in data if row['course_batch'] !=id]
+    return JsonResponse(new_data, safe=False)   

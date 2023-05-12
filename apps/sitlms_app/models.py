@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from datetime import datetime
+from datetime import datetime, time
 # Create your models here.
 
 active_inactive = (
@@ -104,13 +104,13 @@ class Course_Catalog(models.Model):
 class Course_Enrollment(models.Model):
     course_batch = models.CharField(max_length=10, primary_key=True, unique=True)
     course_id = models.ForeignKey(Course_Catalog, on_delete=models.CASCADE)
-    instructor_id = models.ForeignKey(Instructor_Auth, on_delete=models.CASCADE, null=True)
-    session_details = models.URLField(max_length=1000)
+    instructor_id = models.ForeignKey(Instructor_Auth, on_delete=models.CASCADE)
+    session_details = models.URLField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
-    start_time = models.TimeField(default=datetime.now())
-    end_time = models.TimeField(default=datetime.now())
-    frequency = models.IntegerField(null=True)
+    start_time = models.TimeField(default=time(0,0,0))
+    end_time = models.TimeField(default=time(0,0,0))
+    frequency = models.IntegerField()
     course_mode = models.IntegerField()
 
     def __str__(self):
@@ -146,7 +146,7 @@ class Student_Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, default='Ongoing')
+    status = models.IntegerField()
     grades = models.CharField(max_length=3)
     date_enrolled = models.DateTimeField()
 
@@ -160,14 +160,13 @@ class Schedule(models.Model):
     start_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
     end_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-    
-class Csv(models.Model):
-    
+    # user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+
+
+class Csv(models.Model):  
     file_name  = models.FileField(upload_to='files')
     uploaded = models.DateTimeField(auto_now=True)
     activated = models.BooleanField(default=False)
     
     def __str__(self):
         return f"File id: {self.id}"
-

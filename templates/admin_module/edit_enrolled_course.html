@@ -69,7 +69,7 @@
     
     <label>Instructor:</label>
 
-    <select id="myDropdown" name="full_name">
+    <select id="myDropdown" name="full_name" required>
 
     </select>
     <script>
@@ -94,6 +94,9 @@
         let eformNumberTime = parseInt(endTime);       //eformNumberTime
 
 
+
+            var frequency = document.getElementById("frequency");
+    
         for (var i = 0; i < myList.length; i++) {
             var person = myList[i];
             var fullname = person.fullname;
@@ -111,6 +114,7 @@
 
             let elementToRemove = fullname;
             let index = professor.indexOf(elementToRemove);
+
 
             if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime()) ||  
             (ssdd.getTime() < startDate.getTime() && ssed.getTime() > endDate.getTime()) ||
@@ -141,8 +145,8 @@
                 }
 
             }
-            
-        }
+        
+    }
         call(professor);
     }
 
@@ -155,7 +159,10 @@
             // defaultOption.disabled = true;
             defaultOption.hidden = true;
             dropdown.appendChild(defaultOption);
-            
+
+            var duplicateOption = document.createElement("option");
+            duplicateOption.text = "{{iid}}";
+            defaultOption.value = "{{iid}}";
 
             for (var i = 0; i < professor.length; i++) {
             var option = document.createElement("option");
