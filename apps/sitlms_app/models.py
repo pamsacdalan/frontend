@@ -156,12 +156,11 @@ class Student_Enrollment(models.Model):
 
 class Schedule(models.Model):
     schedule_id = models.AutoField(primary_key=True)
-    start_date = models.DateTimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
-    end_date = models.DateTimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    session_date = models.DateField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    start_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    end_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-
-    #sched id, cb, day
     
 class Csv(models.Model):
     

@@ -39,7 +39,6 @@ urlpatterns = [
     path('course_enrollment/view_enrolled_course/', enrolled_course.view_enrolled_course, name='view_enrolled_course'),
     path('course_enrollment/edit_enrolled_course/<str:id>', enrolled_course.edit_enrolled_course, name='edit_enrolled_course'),
     path('course_enrollment/delete_enrolled_course/<str:id>', enrolled_course.delete_enrolled_course, name='delete_enrolled_course'),
-    path('course_enrollment/add_or_change_instructor', enrolled_course.add_change_instructor, name='add_or_change_instructor'),
     path('course_enrollment/enroll_student/<str:id>', student_enrollment.enroll_student, name='enroll_student'),
     path('course_enrollment/<str:id>/view_students', student_enrollment.view_enrolled_students, name='view_enroll_students'),
     path('course_enrollment/<str:course_batch>/delete_enrollment/<str:enrollment_id>', student_enrollment.delete_enrollment, name='delete_enrollment'),

@@ -26,9 +26,8 @@
         {% endif %}
     </td>
     <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
-
     <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
-  
+    
     
     <td name= 'start_date'>{{course.start_date}}</td>
     <td name= 'end_date'>{{course.end_date}}</td>
@@ -57,12 +56,7 @@
 
     </td> -->
     
-    <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | 
-        <a href="/sit-admin/course_enrollment/add_instructor">add/change instructor</a> |
-        <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | 
-        <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit course</a> | 
-        <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete course</a> 
-    </td>
+    <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a></td>
     
 </tr>
 

@@ -1,10 +1,12 @@
-<div style="padding-left:16px">
+<!DOCTYPE html>
+<html>
     <h1>Edit Enrolled Course</h1>
     
     <form method="post">
     {% csrf_token %}
+    <body onload="loading()">
         <div>
-    <label for="course_batch">course_batch</label>
+    <label for="course_batch">Course Batch</label>
     <input type="text"  id="course_batch" name="course_batch" placeholder="{{enrolled_course.course_batch}}" value="{{enrolled_course.course_batch}}"required readonly="readonly">
     <br><br>
     
@@ -14,55 +16,34 @@
         <option selected hidden >{{sid}}</option>
         {% for value in option_course_id %}
             <option value="{{value}}">{{value}}</option>
-            <!-- {% if value == sid %}
-                <option selected >{{sid}}</option>
-            {% endif %} -->
         {% endfor %}
 
     </select>
 
-    
 
     <br><br>
     
-    <label>Instructor:</label>
-
-    <select id="full_name" name="full_name">
-        <option selected hidden >{{iid}}</option>
-        {% for value in full_name%}
-            <option value="{{value}}" >{{value}}</option>
-        {% endfor %}
-
-    </select>
-
-    <br><br>
-    
-    <!-- <label for="instructor_id">instructor_id</label>
-    <input type="text" id="instructor_id" name="instructor_id" placeholder="{{enrolled_course.instructor_id}}" value="{{enrolled_course.instructor_id}}" required>
-    <br><br> -->
-    
-    <label for="session_details">session_details</label>
+    <label for="session_details">Session Details</label>
     <input type="text" id="session_details" name="session_details" placeholder="{{enrolled_course.session_details}}" value="{{enrolled_course.session_details}}" required>
     <br><br>
 
-    <label for="start_date">start_date</label>
-    <input type="date" id="start_date" name="start_date" placeholder="{{enrolled_course.start_date | date:'Y-m-d'}}" value="{{enrolled_course.start_date | date:'Y-m-d'}}" required>
+    <label for="start_date">Start Date</label>
+    <input type="date" id="start_date" name="start_date" placeholder="{{enrolled_course.start_date | date:'Y-m-d'}}" value="{{enrolled_course.start_date | date:'Y-m-d'}}" onchange="updateDropdown()" required>
     <br><br>
 
-    <label for="end_date">end_date</label>
-    <input type="date" id="end_date" name="end_date" placeholder="{{enrolled_course.end_date | date:'Y-m-d'}}" value="{{enrolled_course.end_date | date:'Y-m-d'}}" required>
+    <label for="end_date">End Date</label>
+    <input type="date" id="end_date" name="end_date" placeholder="{{enrolled_course.end_date | date:'Y-m-d'}}" value="{{enrolled_course.end_date | date:'Y-m-d'}}" onchange="updateDropdown()" required>
     <br><br>
 
 
     
     <label for="start_time">Start Time</label>
-    <input type="time" id="start_time" name="start_time" placeholder="{{enrolled_course.start_time}}" value="{{enrolled_course.start_time}}" required>
+    <input type="time" id="start_time" name="start_time" placeholder="{{enrolled_course.start_time}}" value="{{enrolled_course.start_time}}" onchange="updateDropdown()" required>
 
     <br><br>
     <label for="end_time">End Time</label>
-    <input type="time" id="end_time" name="end_time" placeholder="{{enrolled_course.end_time}}" value="{{enrolled_course.end_time}}" required>
+    <input type="time" id="end_time" name="end_time" placeholder="{{enrolled_course.end_time}}" value="{{enrolled_course.end_time}}" onchange="updateDropdown()" required>
     
-    <!--Textbox for Frequency-->
     <br><br>
     
 
@@ -76,9 +57,6 @@
 		</select>
     <br><br>
 
-    <!-- <label for="course_mode">course_mode</label>
-    <input type="text" id="course_mode" name="course_mode" placeholder="{{enrolled_course.course_mode}}" value="{{enrolled_course.course_mode}}" required> -->
-
     <label>Course Mode: </label>
     <select name="course_mode">
         <option selected hidden >{{scm}}</option>
@@ -86,59 +64,170 @@
             <option value="{{value}}" >{{value}}</option>
         {% endfor %}
 
+    </select>
     <br><br>
     
-    <a href='course_enrollment/view_enrolled_course/'></a>
-    <input class="button" type="submit" value="Submit">
-    </form>
-    
+    <label>Instructor:</label>
 
+    <select id="myDropdown" name="full_name">
 
-
+    </select>
     <script>
-       function validateDates() {
+        function loading(){
+            var professor = {{ full_name | safe}};
+            updateDropdown(professor);
+        }
 
-        var errorMessage = document.getElementById('error-message');
-        var startDate = new Date(document.getElementById("start_date").value);
-        var endDate = new Date(document.getElementById("end_date").value);
-        var startTime = document.getElementById("start_time").value;
+        var dropdown = document.getElementById("myDropdown");
+        
+        function updateDropdown() {
+            var myList = {{ schedules|safe}};
+            var professor = {{ full_name | safe}};
+            const startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            const endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+            var startTime = document.getElementById("start_time").value;                //clock start time
+            startTime = startTime.split(":").join("");  
+            let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
+
         var endTime = document.getElementById("end_time").value;
-        var frequency = document.getElementById("frequency").value;
+        endTime = endTime.split(":").join("");
+        let eformNumberTime = parseInt(endTime);       //eformNumberTime
 
 
+        for (var i = 0; i < myList.length; i++) {
+            var person = myList[i];
+            var fullname = person.fullname;
+            // var ui = person.user_id;
+            var sd = person.session_date;
+            var ed = person.session_date;
+            var st = person.start_time.slice(0,5);
+            st = st.split(":").join("");
+            let schedule_s_Time = parseInt(st);          //schedule_s_Time
+            var et = person.end_time.slice(0, 5);         //schedule_e_Time
+            et = et.split(":").join("");
+            let schedule_e_Time = parseInt(et);
+            const ssdd = new Date(sd);    //start date in schedules (nth iteration))
+            const ssed = new Date(ed);    //end date in schedules (nth iteration)
 
-        if (startDate > endDate) {
-            errorMessage.textContent = 'End date must be after start date.';
-            return false;
+            let elementToRemove = fullname;
+            let index = professor.indexOf(elementToRemove);
+
+            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime()) ||  
+            (ssdd.getTime() < startDate.getTime() && ssed.getTime() > endDate.getTime()) ||
+            (ssdd.getTime() < startDate.getTime() && ssed.getTime() <= endDate.getTime() && startDate.getTime() <= ssed.getTime())
+            ) {
+
+                        
+                if (schedule_s_Time >= sformNumberTime) {
+                            
+                    if (schedule_s_Time < eformNumberTime){
+                        if (index > -1) {
+                            professor.splice(index, 1);
+                        }
+                    }
+                }
+
+                        
+                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
+                    if (index > -1) {
+                            professor.splice(index, 1);
+                    }       
+                }
+                    
+                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
+                    if (index > -1) {
+                            professor.splice(index, 1);
+                    }       
+                }
 
             }
-
-        else if (startDate < endDate) {
-            if (frequency == "0") {
-            errorMessage.textContent = 'Startdate should be equal to endDate.';
-            return false;
-            }
-
-            else{    
-            errorMessage.textContent = ''; // Clear the error message
-            return true;
-            }
-
             
-            }
-        else { //equal ang dates
+        }
+        call(professor);
+    }
+
+    function call(professor){
+    dropdown.innerHTML = "";
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "{{iid}}";  // Value for the default option
+            defaultOption.text = "{{iid}}";
+            defaultOption.selected = true;
+            // defaultOption.disabled = true;
+            defaultOption.hidden = true;
+            dropdown.appendChild(defaultOption);
             
-            if (startTime > endTime) {
-                errorMessage.textContent = 'End time must be after start time.';
-                return false;
-            }    
-            if (frequency !== "0" ) {
-                errorMessage.textContent = 'Frequency should be Once since start date = end date';
-                return false;
-            }
-            errorMessage.textContent = ''; // Clear the error message
-            return true;
+
+            for (var i = 0; i < professor.length; i++) {
+            var option = document.createElement("option");
+            option.text = professor[i];
+            option.value = professor[i];
+
+
+            dropdown.add(option);
+        }
+
+
+    }
+    </script>
+    </body>
+
+    <br><br>
+
+
+    
+    <a href='course_enrollment/view_enrolled_course/'></a>
+    <input class="button" type="submit" value="Submit" onclick="return validateDates() ">
+    </form>
+
+
+<script>
+
+    function validateDates() {
+
+    var errorMessage = document.getElementById('error-message');
+    var startDate = new Date(document.getElementById("start_date").value);
+    var endDate = new Date(document.getElementById("end_date").value);
+    var startTime = document.getElementById("start_time").value;
+    var endTime = document.getElementById("end_time").value;
+    var frequency = document.getElementById("frequency").value;
+
+    
+    
+    if (startDate > endDate) {
+        errorMessage.textContent = 'End date must be after start date.';
+        return false;
 
         }
+
+    else if (startDate < endDate) {
+        if (frequency == "0") {
+        errorMessage.textContent = 'Startdate should be equal to endDate.';
+        return false;
+        }
+
+        else{    
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+        }
+
+        
+        }
+    else { //equal ang dates
+        
+        if (startTime > endTime) {
+            errorMessage.textContent = 'End time must be after start time.';
+            return false;
         }    
-    </script>
+        if (frequency !== "0" ) {
+            errorMessage.textContent = 'Frequency should be Once since start date = end date';
+            return false;
+        }
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+
+    }
+    }    
+</script>
+
+
+</html>

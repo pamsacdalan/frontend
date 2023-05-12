@@ -1,10 +1,11 @@
-<div style="padding-left:16px">
-    <h1>Enrol Course</h1>
-    
-    <form action="enrol_course_info/" method="post">
+<!DOCTYPE html>
+<html>
+
+<h1>Enrol Course</h1>
+<form action="enrol_course_info/" method="post">
     {% csrf_token %}
 
-    <div>
+<body onload="loading()">
     <label for="course_batch">Course Batch</label>
     <input type="text"  id="course_batch" name="course_batch" required>
     
@@ -23,43 +24,28 @@
     <br><br>
     <label for="session_details">Session Details</label>
     <input type="text" id="session_details" name="session_details" required>
-
-    
     <br><br>
+
     <label for="start_date">Start Date</label>
-    <input type="date" id="start_date" name="start_date" required>
+    <input type="date" id="start_date" name="start_date" onchange="updateDropdown()" required>
 
     <br><br>
     <label for="end_date">End Date</label>
-    <input type="date" id="end_date" name="end_date" required>
-    
-    <br><br>
-    <!-- <label for="course_mode">Course Mode</label>
-    <input type="text" id="course_mode" name="course_mode" required>
+    <input type="date" id="end_date" name="end_date" onchange="updateDropdown()" required>
 
-    <p>Course Mode: </p>{{forms.course_mode}} -->
+    <br><br>
 
     <label for="start_time">Start Time</label>
-    <input type="time" id="start_time" name="start_time" required>
+    <input type="time" id="start_time" name="start_time" onchange="updateDropdown()" required>
 
     <br><br>
     <label for="end_time">End Time</label>
-    <input type="time" id="end_time" name="end_time" required>
-    
+    <input type="time" id="end_time" name="end_time" onchange="updateDropdown()" required>
 
-<br><br>
-<!-- <script>
-    function checkAll() {
-      var checkboxes = document.getElementsByName('frequency[]');
-      var checkAllCheckbox = document.getElementById('checkAll');
 
-      for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].checked = checkAllCheckbox.checked;
-      }
-    }
-  </script> -->
+    <br><br>
 
-		<label for="frequency">Frequency:</label>
+    <label for="frequency">Frequency:</label>
 		<select id="frequency" name="frequency" required>
             <option value "" selected disabled hidden> Choose Frequency </option>
 			<option value=0>Once</option>
@@ -81,77 +67,176 @@
     
     <br><br>
 
-
-   <!-- Instructor is moved-->
-    <!-- <label>Instructor:</label>
-
-    <select name="full_name" required>
-        <option value "" selected disabled hidden> Choose Instructor </option>
-
-        {% for value in full_name%}
-            <option value="{{value}}" >{{value}}</option>
-        {% endfor %}
-
-    </select> -->
-
-    <br><br>
+    <label>Instructor</label>
+    <select id="myDropdown" name="full_name" required>
+    </select>
 
 
-
-    <!-- <input class="button" type="submit" value="Submit" onclick="return validateDates()"> -->
-    <div id="form-container">
-        <input type="submit" value="Submit" onclick="return validateDates() ">
-        <div id="error-message" style="color: red;"></div>
-      </div>
-
-    <br><br>
-    </form>
 
     <script>
+        function loading(){
+            var professor = {{ full_name | safe}};
+            updateDropdown(professor);
+        }
 
-        function validateDates() {
 
-        var errorMessage = document.getElementById('error-message');
-        var startDate = new Date(document.getElementById("start_date").value);
-        var endDate = new Date(document.getElementById("end_date").value);
-        var startTime = document.getElementById("start_time").value;
+
+        var dropdown = document.getElementById("myDropdown");
+        
+        function updateDropdown() {
+            var myList = {{ schedules|safe}};
+            var professor = {{ full_name | safe}};
+            const startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            const endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+            var startTime = document.getElementById("start_time").value;                //clock start time
+            startTime = startTime.split(":").join("");  
+            let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
+
         var endTime = document.getElementById("end_time").value;
-        var frequency = document.getElementById("frequency").value;
+        endTime = endTime.split(":").join("");
+        let eformNumberTime = parseInt(endTime);       //eformNumberTime
 
-        
-        
-        if (startDate > endDate) {
-            errorMessage.textContent = 'End date must be after start date.';
-            return false;
+
+        for (var i = 0; i < myList.length; i++) {
+            var person = myList[i];
+            var fullname = person.fullname;
+            // var ui = person.user_id;
+            var sd = person.session_date;
+            var ed = person.session_date;
+            var st = person.start_time.slice(0,5);
+            st = st.split(":").join("");
+            let schedule_s_Time = parseInt(st);          //schedule_s_Time
+            var et = person.end_time.slice(0, 5);         //schedule_e_Time
+            et = et.split(":").join("");
+            let schedule_e_Time = parseInt(et);
+            const ssdd = new Date(sd);    //start date in schedules (nth iteration))
+            const ssed = new Date(ed);    //end date in schedules (nth iteration)
+;
+
+            let elementToRemove = fullname;
+            let index = professor.indexOf(elementToRemove);
+
+
+            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime()) ||  
+            (ssdd.getTime() < startDate.getTime() && ssed.getTime() > endDate.getTime()) ||
+            (ssdd.getTime() < startDate.getTime() && ssed.getTime() <= endDate.getTime() && startDate.getTime() <= ssed.getTime())
+            ) {
+
+                               
+                if (schedule_s_Time >= sformNumberTime) {
+                            
+                    if (schedule_s_Time < eformNumberTime){
+                        if (index > -1) {
+                            professor.splice(index, 1);
+                        }
+                    }
+                }
+
+                        
+                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
+                    if (index > -1) {
+                            professor.splice(index, 1);
+                    }       
+                }
+                     
+                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
+                    if (index > -1) {
+                            professor.splice(index, 1);
+                    }       
+                }
 
             }
+            
+        }
+        call(professor);
+    }
 
-        else if (startDate < endDate) {
-            if (frequency == "0") {
-            errorMessage.textContent = 'Startdate should be equal to endDate.';
-            return false;
-            }
-
-            else{    
-            errorMessage.textContent = ''; // Clear the error message
-            return true;
-            }
+    function call(professor){
+    dropdown.innerHTML = "";
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "";  // Value for the default option
+            defaultOption.text = "Choose Instructor";
+            defaultOption.selected = true;
+            defaultOption.disabled = true;
+            defaultOption.hidden = true;
+            dropdown.appendChild(defaultOption);
 
             
-            }
-        else { //equal ang dates
-            
-            if (startTime > endTime) {
-                errorMessage.textContent = 'End time must be after start time.';
-                return false;
-            }    
-            if (frequency !== "0" ) {
-                errorMessage.textContent = 'Frequency should be Once since start date = end date';
-                return false;
-            }
-            errorMessage.textContent = ''; // Clear the error message
-            return true;
+            for (var i = 0; i < professor.length; i++) {
+            // Create an option element and set its text and value
+            var option = document.createElement("option");
+            option.text = professor[i];
+            option.value = professor[i];
+
+
+            dropdown.add(option);
+        }
+    }
+
+
+
+    </script>
+</body>
+<div id="form-container">
+    <input type="submit" value="Submit" onclick="return validateDates() ">
+    <div id="error-message" style="color: red;"></div>
+  </div>
+
+</form>
+
+<script>
+
+
+    function validateDates() {
+
+    var errorMessage = document.getElementById('error-message');
+    var startDate = new Date(document.getElementById("start_date").value);
+    var endDate = new Date(document.getElementById("end_date").value);
+    var startTime = document.getElementById("start_time").value;
+    var endTime = document.getElementById("end_time").value;
+    var frequency = document.getElementById("frequency").value;
+
+    
+    
+    if (startDate > endDate) {
+        errorMessage.textContent = 'End date must be after start date.';
+        return false;
 
         }
+
+    else if (startDate < endDate) {
+        if (frequency == "0") {
+        errorMessage.textContent = 'Startdate should be equal to endDate.';
+        return false;
+        }
+
+        else{    
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+        }
+
+        
+        }
+    else { //equal ang dates
+        
+        if (startTime > endTime) {
+            errorMessage.textContent = 'End time must be after start time.';
+            return false;
         }    
-    </script>
+        if (frequency !== "0" ) {
+            errorMessage.textContent = 'Frequency should be Once since start date = end date';
+            return false;
+        }
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+
+    }
+    }    
+</script>
+
+
+
+
+
+
+</html>
