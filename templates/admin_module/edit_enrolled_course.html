@@ -48,7 +48,7 @@
     
 
 		<label for="frequency">Frequency:</label>
-		<select id="frequency" name= "frequency" required>
+		<select id="frequency" name= "frequency" onchange="updateDropdown()" required>
             <option selected hidden >{{sf}}</option>
 
 			{% for value in lof%}
@@ -69,7 +69,9 @@
     
     <label>Instructor:</label>
 
-    <select id="myDropdown" name="full_name" required>
+    <select id="myDropdown" name="full_name"  required>
+        <!-- <option selected hidden >{{iid}}</option> -->
+
 
     </select>
     <script>
@@ -83,26 +85,21 @@
         function updateDropdown() {
             var myList = {{ schedules|safe}};
             var professor = {{ full_name | safe}};
-            const startDate = new Date(document.getElementById("start_date").value);        //calendar start date
-            const endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
             var startTime = document.getElementById("start_time").value;                //clock start time
             startTime = startTime.split(":").join("");  
             let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
 
         var endTime = document.getElementById("end_time").value;
         endTime = endTime.split(":").join("");
-        let eformNumberTime = parseInt(endTime);       //eformNumberTime
+        let eformNumberTime = parseInt(endTime);       //eformNumberTime==clock in int
 
-
-
-            var frequency = document.getElementById("frequency");
     
         for (var i = 0; i < myList.length; i++) {
             var person = myList[i];
             var fullname = person.fullname;
-            // var ui = person.user_id;
             var sd = person.session_date;
-            var ed = person.session_date;
             var st = person.start_time.slice(0,5);
             st = st.split(":").join("");
             let schedule_s_Time = parseInt(st);          //schedule_s_Time
@@ -110,43 +107,63 @@
             et = et.split(":").join("");
             let schedule_e_Time = parseInt(et);
             const ssdd = new Date(sd);    //start date in schedules (nth iteration))
-            const ssed = new Date(ed);    //end date in schedules (nth iteration)
-
             let elementToRemove = fullname;
             let index = professor.indexOf(elementToRemove);
 
+            var freq = document.getElementById("frequency").value;
 
-            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime()) ||  
-            (ssdd.getTime() < startDate.getTime() && ssed.getTime() > endDate.getTime()) ||
-            (ssdd.getTime() < startDate.getTime() && ssed.getTime() <= endDate.getTime() && startDate.getTime() <= ssed.getTime())
-            ) {
+            if (freq !== "Weekly" ){
+            //do this if frequency is daily or once
+                if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime())  //sessiondate is within the calendar range
+                ) {
 
-                        
-                if (schedule_s_Time >= sformNumberTime) {
-                            
-                    if (schedule_s_Time < eformNumberTime){
-                        if (index > -1) {
-                            professor.splice(index, 1);
+                    if (schedule_s_Time >= sformNumberTime) {
+                        if (schedule_s_Time < eformNumberTime){
+                            if (index > -1) {
+                                professor.splice(index, 1);
+                            }
                         }
                     }
-                }
-
+                            
+                    if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
+                        if (index > -1) {
+                                professor.splice(index, 1);
+                        }       
+                    }
                         
-                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
-                    if (index > -1) {
-                            professor.splice(index, 1);
-                    }       
-                }
-                    
-                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
-                    if (index > -1) {
-                            professor.splice(index, 1);
-                    }       
+                    if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
+                        if (index > -1) {
+                                professor.splice(index, 1);
+                        }       
+                    }
+
                 }
 
             }
+            else if (freq == "Weekly") {//frequency is weekly
+            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            var endDate = new Date(document.getElementById("end_date").value);
+                while (startDate <= endDate) {
+
+                    if (startDate.getTime() === ssdd.getTime()){
+                        if(startTime>=schedule_s_Time && startTime < schedule_e_Time && schedule_e_Time < endTime || // if context is 10am-2pm bawal sa time si 11am to 3pm
+                        startTime>=schedule_s_Time && startTime < schedule_e_Time && endTime < schedule_e_Time && endTime > schedule_s_Time || // if context is 10am-2pm bawal sa time si 11am to 2pm
+                        startTime <= schedule_s_Time && endTime > schedule_s_Time && endTime < schedule_e_Time && startTime < schedule_s_Time//// if context is 10am-2pm bawal sa time si 8am to 11am or si 10am to 11am
+                        ){
+                            // alert(elementToRemove);
+                            if (index > -1) {
+                                    professor.splice(index, 1)
+                            }
+
+                        }
+
+                    }
+                    startDate.setDate(startDate.getDate() + 7);
+                }
+            //closing ni else
+            } 
         
-    }
+        }
         call(professor);
     }
 
@@ -155,23 +172,23 @@
             var defaultOption = document.createElement("option");
             defaultOption.value = "{{iid}}";  // Value for the default option
             defaultOption.text = "{{iid}}";
-            defaultOption.selected = true;
-            // defaultOption.disabled = true;
+            if (professor.includes(defaultOption)) {
+                defaultOption.selected = true;
+            }
+
             defaultOption.hidden = true;
             dropdown.appendChild(defaultOption);
 
-            var duplicateOption = document.createElement("option");
-            duplicateOption.text = "{{iid}}";
-            defaultOption.value = "{{iid}}";
 
             for (var i = 0; i < professor.length; i++) {
             var option = document.createElement("option");
             option.text = professor[i];
             option.value = professor[i];
-
-
             dropdown.add(option);
+
         }
+
+
 
 
     }
@@ -184,30 +201,29 @@
     
     <a href='course_enrollment/view_enrolled_course/'></a>
     <input class="button" type="submit" value="Submit" onclick="return validateDates() ">
+    <div id="error-message" style="color: red;"></div>
     </form>
 
 
 <script>
 
     function validateDates() {
-
     var errorMessage = document.getElementById('error-message');
     var startDate = new Date(document.getElementById("start_date").value);
     var endDate = new Date(document.getElementById("end_date").value);
     var startTime = document.getElementById("start_time").value;
     var endTime = document.getElementById("end_time").value;
-    var frequency = document.getElementById("frequency").value;
+    var frequency = document.getElementById("frequency").value; 
 
-    
-    
     if (startDate > endDate) {
         errorMessage.textContent = 'End date must be after start date.';
         return false;
 
         }
 
+    
     else if (startDate < endDate) {
-        if (frequency == "0") {
+        if (frequency == "Once") {
         errorMessage.textContent = 'Startdate should be equal to endDate.';
         return false;
         }
@@ -225,7 +241,7 @@
             errorMessage.textContent = 'End time must be after start time.';
             return false;
         }    
-        if (frequency !== "0" ) {
+        if (frequency !== "Once" ) {
             errorMessage.textContent = 'Frequency should be Once since start date = end date';
             return false;
         }

@@ -104,6 +104,8 @@ def enrol_course(request):
         fn = User.objects.values_list('first_name', flat=True).get(id=uid)
         ln = User.objects.values_list('last_name', flat=True).get(id=uid)
         x['fullname'] = fn + " " + ln
+    
+    # print(schedules)
 
     context = {'option_course_id': option1_course_id,
                 'full_name': full_name,
@@ -189,6 +191,7 @@ def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python
     response = get_schedule_data_edit(request, id)  # Fetch schedule data from the get_schedule_data view
     schedules = json.loads(response.content)  # Parse the JSON data from the response content
     
+    # print(schedules)
     
     #adds fullname in schedules
     for x in schedules:

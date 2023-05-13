@@ -46,7 +46,7 @@
     <br><br>
 
     <label for="frequency">Frequency:</label>
-		<select id="frequency" name="frequency" required>
+		<select id="frequency" name="frequency" onchange="updateDropdown()" required>
             <option value "" selected disabled hidden> Choose Frequency </option>
 			<option value=0>Once</option>
 			<option value=1>Daily</option>
@@ -74,7 +74,7 @@
 
 
     <script>
-        function loading(){
+        function loading(){                         
             var professor = {{ full_name | safe}};
             updateDropdown(professor);
         }
@@ -86,43 +86,38 @@
         function updateDropdown() {
             var myList = {{ schedules|safe}};
             var professor = {{ full_name | safe}};
-            const startDate = new Date(document.getElementById("start_date").value);        //calendar start date
-            const endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
             var startTime = document.getElementById("start_time").value;                //clock start time
             startTime = startTime.split(":").join("");  
             let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
 
         var endTime = document.getElementById("end_time").value;
         endTime = endTime.split(":").join("");
-        let eformNumberTime = parseInt(endTime);       //eformNumberTime
+        let eformNumberTime = parseInt(endTime);       //eformNumberTime==clock in int
 
 
         for (var i = 0; i < myList.length; i++) {
             var person = myList[i];
             var fullname = person.fullname;
-            // var ui = person.user_id;
             var sd = person.session_date;
-            var ed = person.session_date;
             var st = person.start_time.slice(0,5);
             st = st.split(":").join("");
-            let schedule_s_Time = parseInt(st);          //schedule_s_Time
-            var et = person.end_time.slice(0, 5);         //schedule_e_Time
+            let schedule_s_Time = parseInt(st);          //schedule_s_Time  === start time from schedule context
+            var et = person.end_time.slice(0, 5);         //schedule_e_Time === end time from schedule context
             et = et.split(":").join("");
             let schedule_e_Time = parseInt(et);
-            const ssdd = new Date(sd);    //start date in schedules (nth iteration))
-            const ssed = new Date(ed);    //end date in schedules (nth iteration)
-
-
+            const ssdd = new Date(sd);    //start date in schedule context (nth iteration))
             let elementToRemove = fullname;
             let index = professor.indexOf(elementToRemove);
 
+            var freq = document.getElementById("frequency").value;
 
-            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime()) ||  
-            (ssdd.getTime() < startDate.getTime() && ssed.getTime() > endDate.getTime()) ||
-            (ssdd.getTime() < startDate.getTime() && ssed.getTime() <= endDate.getTime() && startDate.getTime() <= ssed.getTime())
+            if (freq !== "7" ){
+            //do this if frequency is daily or once
+            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime())  //sessiondate is within the calendar range
             ) {
 
-                               
                 if (schedule_s_Time >= sformNumberTime) {
                             
                     if (schedule_s_Time < eformNumberTime){
@@ -131,7 +126,6 @@
                         }
                     }
                 }
-
                         
                 if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
                     if (index > -1) {
@@ -146,8 +140,32 @@
                 }
 
             }
-            
+        //closing nung if
         }
+
+        else if (freq == "7") {//frequency is weekly
+            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+            var endDate = new Date(document.getElementById("end_date").value);
+            while (startDate <= endDate) {
+                if (startDate.getTime() === ssdd.getTime()){
+                    if(startTime>=schedule_s_Time && startTime < schedule_e_Time && schedule_e_Time < endTime || // if context is 10am-2pm bawal sa time si 11am to 3pm
+                    startTime>=schedule_s_Time && startTime < schedule_e_Time && endTime < schedule_e_Time && endTime > schedule_s_Time || // if context is 10am-2pm bawal sa time si 11am to 2pm
+                    startTime <= schedule_s_Time && endTime > schedule_s_Time && endTime < schedule_e_Time && startTime < schedule_s_Time//// if context is 10am-2pm bawal sa time si 8am to 11am or si 10am to 11am
+                    ){
+
+                        if (index > -1) {
+                                professor.splice(index, 1)
+                        }
+
+                    }
+
+                }
+                startDate.setDate(startDate.getDate() + 7);
+            }
+        // //closing ni else
+        }    
+        }
+
         call(professor);
     }
 
@@ -159,16 +177,14 @@
             defaultOption.selected = true;
             defaultOption.disabled = true;
             defaultOption.hidden = true;
+            
             dropdown.appendChild(defaultOption);
 
-            
             for (var i = 0; i < professor.length; i++) {
             // Create an option element and set its text and value
             var option = document.createElement("option");
             option.text = professor[i];
             option.value = professor[i];
-
-
             dropdown.add(option);
         }
     }
