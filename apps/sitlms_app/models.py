@@ -146,7 +146,7 @@ class Student_Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
-    status = models.IntegerField()
+    status = models.CharField(max_length=10, default='Ongoing')
     grades = models.CharField(max_length=3)
     date_enrolled = models.DateTimeField()
 

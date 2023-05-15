@@ -1,0 +1,48 @@
+<table border="1">
+    <tr>
+        <th>Course Batch</th>
+        <th>Course Title</th>
+        <th>Course Mode</th>
+        <th>Session Details</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Frequency</th>
+        
+        
+      </tr>
+
+<tr>{% for course in course_enrolled_list%}
+
+    <td name= 'course_batch'>{{course.course_batch}}</td>
+    <td name= 'course_id'>{{course.course_id_id}}</td>
+    <td name= 'course_mode'>
+        {% if course.course_mode == 0%} Webinar
+        {% elif course.course_mode == 1%} Onsite
+        {% else %} Self-Paced
+        {% endif %}
+    </td>
+    <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
+    
+    
+    <td name= 'start_date'>{{course.start_date}}</td>
+    <td name= 'end_date'>{{course.end_date}}</td>
+    <td name= 'start_time'>{{course.start_time}}</td>
+    <td name= 'end_time'>{{course.end_time}}</td>
+    <td name= 'frequency'>
+        {% if course.frequency == 0%} Once
+        {% elif course.frequency == 1%} Daily
+        {% else %} Weekly
+        {% endif %}
+    </td>
+    <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a>
+        <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}">Request for Change Schedule</a> 
+    </td>
+    
+</tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<button><a style="color:#000; " href="/sit-instructor/instructor">Back</a></button>
