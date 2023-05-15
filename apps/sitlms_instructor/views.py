@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Instructor_Auth, Schedule
+from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Instructor_Auth, Student_Enrollment, Students_Auth, Program
+from django.contrib.auth.models import User
 from django.template import loader
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
@@ -45,3 +46,49 @@ def instructor_view_enrolled_course(request):
     
 
     return HttpResponse(template.render(context,request))
+
+
+
+def view_students(request, id):
+    template = loader.get_template('instructor_module/instructor_view_student.html')
+
+    # course = Course_Enrollment.objects.get(course_batch=id)
+    students = Student_Enrollment.objects.filter(course_batch=id).values('student_id_id')
+    # student_list = students.values().order_by('student_id_id')
+    # student_ids = student_list.values_list('student_id')
+    student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
+    user_ids = student_auth_details.values_list('user_id')
+    student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username').order_by('id')
+
+    program_ids = student_auth_details.values_list('program_id_id')
+    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
+
+    count = len(students)
+
+    # create a new list to pass as context
+    new_list = []
+
+
+    for x in range(count):
+        for program in program_code:
+            if student_auth_details[x]['program_id_id'] == program['program_id']:
+                new_list.append({**student_auth_details[x], **student_details[x], **program})
+
+    print(new_list)
+
+
+    context = {'new_list': new_list,
+               'id':id
+                }
+    
+    return HttpResponse(template.render(context,request))  
+
+
+def change_schedule(request, id):
+    template = loader.get_template('instructor_module/instructor_change_schedule.html')
+
+    context = {
+        'test': 'test'
+    }
+    return HttpResponse(template.render(context,request))  
+

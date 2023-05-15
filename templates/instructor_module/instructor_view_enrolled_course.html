@@ -36,7 +36,9 @@
         {% else %} Weekly
         {% endif %}
     </td>
-    <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a> </td>
+    <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a>
+        <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}">Request for Change Schedule</a> 
+    </td>
     
 </tr>
     {% endfor %}
