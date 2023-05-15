@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.sitlms_app',
+    'apps.sitlms_instructor',
+    'apps.sitlms_student',
     
 ]
 
