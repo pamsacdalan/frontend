@@ -38,6 +38,13 @@ def home(request):
     
     """ This function renders the home page """
     messages.success(request,'You have successfully logged in.')
+    if hasattr(request.user,'admin'):
+        return redirect('sit_admin_dashboard')
+    elif hasattr(request.user,'instructor_auth'):
+        return redirect('instructor')
+    elif hasattr(request.user,'student_auth'):
+        return redirect('student_profile')
+    print('Something went wrong')
     return render(request, 'landing.html')
     # return render(request, 'registration/login.html')
     # return render(request, 'admin_module/index.html')
