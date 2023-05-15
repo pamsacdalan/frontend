@@ -10,6 +10,8 @@ from django.forms import URLField
 from datetime import datetime, time, timedelta
 from django.utils import timezone
 import json
+from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_app.crud.access_test import is_admin
 
 
 list_course_mode = ["Webinar","Onsite","Self-Paced"]
@@ -78,7 +80,7 @@ def string_to_date(frequencies, start_date, end_date, start_time, end_time, cour
             start_date += delta
 
 
-
+@user_passes_test(is_admin)
 def enrol_course(request):
 
     template = loader.get_template('admin_module/enrol_course.html')
@@ -114,6 +116,7 @@ def enrol_course(request):
     
     return HttpResponse(template.render(context,request))
 
+@user_passes_test(is_admin)
 def view_enrolled_course(request):
     template = loader.get_template('admin_module/view_enrolled_course.html')
     course_enrolled_list = Course_Enrollment.objects.all()
@@ -122,6 +125,7 @@ def view_enrolled_course(request):
                 }
     return HttpResponse(template.render(context,request))
 
+@user_passes_test(is_admin)
 def enrol_course_info(request):
     
     if request.method == "POST":
@@ -172,6 +176,7 @@ def enrol_course_info(request):
     
     return HttpResponseRedirect(reverse('enrol_course'))
 
+@user_passes_test(is_admin)
 def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python101)
     enrolled_course = Course_Enrollment.objects.get(course_batch=id) #ex: Python101
 
@@ -274,7 +279,7 @@ def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python
     
     return render(request, "admin_module/edit_enrolled_course.html", context)
 
-
+@user_passes_test(is_admin)
 def delete_enrolled_course(request,id):
     enrolled_course = Course_Enrollment.objects.get(course_batch=id)
  
@@ -283,13 +288,13 @@ def delete_enrolled_course(request,id):
         return redirect('view_enrolled_course')
     return render(request, "admin_module/delete_enrolled_course.html")
 
-
+@user_passes_test(is_admin)
 def get_schedule_data(request):
     schedules = Schedule.objects.all().values('course_batch', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # Convert QuerySet to list of dictionaries
     return JsonResponse(data, safe=False)
 
-
+@user_passes_test(is_admin)
 def get_schedule_data_edit(request,id):
     schedules = Schedule.objects.all().values('course_batch', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # Convert QuerySet to list of dictionaries

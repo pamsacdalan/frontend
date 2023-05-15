@@ -6,8 +6,10 @@ from django.template import loader
 from django.contrib.auth.models import User
 from datetime import date
 import json
+from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_app.crud.access_test import is_admin
 
-
+@user_passes_test(is_admin)
 def enroll_student(request, id):
     ''' enroll one or more selected students '''
 
@@ -68,7 +70,7 @@ def enroll_student(request, id):
 
     return HttpResponse(template.render(context, request))
 
-
+@user_passes_test(is_admin)
 def view_enrolled_students(request, id):
 
 
@@ -106,7 +108,7 @@ def view_enrolled_students(request, id):
 
     return HttpResponse(template.render(context, request))
 
-
+@user_passes_test(is_admin)
 def delete_enrollment(request, course_batch, enrollment_id):
     "function to unenroll a student from a course"
     enrollment = Student_Enrollment.objects.get(enrollment_id=enrollment_id)
@@ -117,7 +119,7 @@ def delete_enrollment(request, course_batch, enrollment_id):
 
     return render(request, "admin_module/delete_student_enrollment.html", {'course_batch': course_batch})
 
-
+@user_passes_test(is_admin)
 def edit_enrollment(request, course_batch, enrollment_id):
     "function to edit grade and status of enrolled student for a certain course"
     enroll_id = Student_Enrollment.objects.filter(
@@ -143,7 +145,7 @@ def edit_enrollment(request, course_batch, enrollment_id):
 
 
 
-
+@user_passes_test(is_admin)
 def get_schedule_data(request):
     schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # data may contain the schedule of instructor and students
@@ -158,7 +160,7 @@ def get_schedule_data(request):
             
     return JsonResponse(new_data, safe=False)
 
-
+@user_passes_test(is_admin)
 def get_schedule_data_edit(request,id):
     schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
     data = list(schedules)  # Convert QuerySet to list of dictionaries
