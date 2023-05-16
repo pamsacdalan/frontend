@@ -1,8 +1,9 @@
 from django.shortcuts import render
+from django.urls import reverse
 from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Instructor_Auth, Student_Enrollment, Students_Auth, Program
 from django.contrib.auth.models import User
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -185,7 +186,41 @@ def add_assignment(request, id):
         form = ActivityForms()
     return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
 
+def update_assignment(request,id,pk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    act= Course_Activity.objects.get(id=pk)
+    context = {
+        'batch':batch,
+        'act':act,
+    }
+    if request.method == "POST":
+        title = request.POST['title']
+        desc = request.POST['description']
+        attach = request.POST['attachment']
+        end_date = request.POST['d1']
+        end_time = request.POST['t1']
+        dt = end_date+" "+end_time
+        grade = request.POST['gr']
 
+        act.activity_title = title
+        act.activity_desc = desc
+        act.activity_attachment = attach
+        act.deadline = dt
+        act.grading_percentage = grade
+        act.save(update_fields=['activity_title','activity_desc','activity_attachment','deadline','grading_percentage'])
+        return HttpResponseRedirect(reverse('view_assignments', kwargs={'id': id}))
+    return render(request, "instructor_module/edit_assignment.html", context)
+
+
+# def confirm_delete_assignment(request,id):
+#     activity =  Course_Activity.objects.get(id=Course_Activity.pk)
+#     return render(request, 'instructor_module/confirm_delete_assignment.html',{'activity':activity})
+
+# def approve_delete_assignment(request,id):
+#     activity = Course_Activity.objects.get(id=Course_Activity.pk)
+#     activity.delete()
+#     messages.success(request,'Activity deleted!')
+#     return render(request,'instructor_module/view_assignments.html')
 # temp course page
 @user_passes_test(is_instructor)
 def instructor_course(request, id):
