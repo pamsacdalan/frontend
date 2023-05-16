@@ -1,8 +1,9 @@
 <h1>
     Students for {{id}}
 </h1>
-
-<a href="{% url 'view_assignments' id %}">Assignments</a><br><br>
+<button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
+<button><a href="{% url 'view_assignments' id %}">Assignments</a></button>
+<br><br>
 <table border="1">
     <tr>
         <th>Program</th>
