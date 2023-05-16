@@ -8,13 +8,59 @@ from datetime import date
 import json
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.crud.access_test import is_admin
+from datetime import date, datetime ,timedelta
+from django.db.models import Max
+from datetimerange import DateTimeRange
+
+
+def get_redundant_schedule(course_batch):
+    """
+    return a list of all courses that have redundant schedule with the course to be enrolled
+    """
+
+    date_past24weeks = date.today() - timedelta(weeks=24)
+    schedule_exclude_past6months = Schedule.objects.values('course_batch_id').annotate(max_date=Max('session_date')).filter(session_date__gte=date_past24weeks) #tocheck
+    possible_courses =  [x['course_batch_id'] for x in schedule_exclude_past6months]
+
+    if course_batch in possible_courses:
+        possible_courses.remove(course_batch)
+
+    redundant_courses = [] #contain all courses that have redundant schedule with the given course
+
+    for course in possible_courses:
+        all_session = Schedule.objects.filter(course_batch_id=course).values()
+        for session in all_session:
+            #looping all session of the possible reduntant courses
+            occurences = Schedule.objects.filter(course_batch_id=course_batch).values()
+            for occurence in occurences:
+                #looping all session of the course to be enrolled
+
+                if session["session_date"] == occurence["session_date"]: #checks if the possible_reduntant_course's session date is equal to course_to_be_enrolled's session date
+
+                #concat session date with start and end time
+                    
+                    session_start = datetime.combine(session["session_date"], session["start_time"]).strftime('%Y-%m-%d %H:%M:%S')
+                    session_end = datetime.combine(session["session_date"], session["end_time"]).strftime('%Y-%m-%d %H:%M:%S')
+                    #concat occurence date to start and end time
+                    occurence_start = datetime.combine(occurence["session_date"], occurence["start_time"]).strftime('%Y-%m-%d %H:%M:%S')
+                    occurence_end = datetime.combine(occurence["session_date"], occurence["end_time"]).strftime('%Y-%m-%d %H:%M:%S')
+                    session_time_range = DateTimeRange(session_start, session_end)
+                    occurence_time_range = DateTimeRange(occurence_start, occurence_end)
+                    if session_time_range.is_intersection(occurence_time_range): 
+                        redundant_courses.append(course)
+                        break
+            if course in redundant_courses:
+                break   
+            
+    redundant_courses.append(course_batch)
+    return redundant_courses
 
 @user_passes_test(is_admin)
 def enroll_student(request, id):
     ''' enroll one or more selected students '''
 
     template = loader.get_template('admin_module/enroll_student.html')
-    student_available = Student_Enrollment.objects.values_list('student_id').filter(course_batch=id).distinct()
+    student_available = Student_Enrollment.objects.values_list('student_id').filter(course_batch__in=get_redundant_schedule(id)).distinct()
     students = Students_Auth.objects.exclude(id__in=student_available).filter(active_deactive="Active").values()  # can enroll only all active students
     student_list = students.values().order_by('user_id')
     student_ids = student_list.values_list('user_id')
@@ -40,16 +86,6 @@ def enroll_student(request, id):
         for program in program_code:
             if student_list[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_list[x], **student_details[x], **program})
-
-        response = get_schedule_data(request)  # Fetch schedule data from the get_schedule_data view
-        schedules = json.loads(response.content)  # Parse the JSON data from the response content
-        schedules = json.dumps(schedules)  #should be list
-        print("afdcafsdafswafdgagfg")
-        print(schedules)
-
-
-
-
 
     context = {'student_list': new_list, 'id': id}
 
@@ -145,26 +181,3 @@ def edit_enrollment(request, course_batch, enrollment_id):
 
 
 
-@user_passes_test(is_admin)
-def get_schedule_data(request):
-    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
-    data = list(schedules)  # data may contain the schedule of instructor and students
-    '''This filters the students schedule'''
-    new_data = []
-    students_id = list(Students_Auth.objects.all().values_list('user_id', flat=True))   #gets all the user id present in instructorAuth
-    print(students_id)
-
-    for x in data:
-        if x['user_id'] in students_id:
-            new_data.append(x)
-            
-    return JsonResponse(new_data, safe=False)
-
-@user_passes_test(is_admin)
-def get_schedule_data_edit(request,id):
-    schedules = Schedule.objects.all().values('course_batch', 'user_id', 'session_date', 'start_time', 'end_time')  # Query the necessary fields from the Schedule model
-    data = list(schedules)  # Convert QuerySet to list of dictionaries
-    for x in data:
-        if x["course_batch"]==id:
-            data.remove(x)
-    return JsonResponse(data, safe=False)

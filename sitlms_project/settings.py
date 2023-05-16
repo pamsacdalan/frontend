@@ -135,8 +135,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Uncomment when ready to test for production
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # Alternative email backend
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages')  # change this to a proper location # likely, di ito sa project, napunta sa akin sa D:\tmp\app-messages
+#EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+#EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages')  # change this to a proper location # likely, di ito sa project, napunta sa akin sa D:\tmp\app-messages
 
 LOGIN_REDIRECT_URL = '/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'user.test.only03@gmail.com'
+EMAIL_HOST_PASSWORD = 'zggtcaovnxqwswnh'
