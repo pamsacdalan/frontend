@@ -13,20 +13,19 @@ from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
+'''
 UserModel = get_user_model()
 
 @receiver(post_save, sender=UserModel)
 def send_password_reset(sender, instance, created, **kwargs):
     # WILL REMOVE THIS SIGNAL AND CREATE NON-SIGNAL VERION IN ADMIN CRUD
     if created:
-        '''
-         # Get the current site
-        current_site = Site.objects.get_current()
+        # Get the current site
+        # current_site = Site.objects.get_current()
         # Determine the protocol
-        protocol = 'https' if current_site.domain.startswith('https://') else 'http'
+        # protocol = 'https' if current_site.domain.startswith('https://') else 'http'
         # Determine the domain
-        domain = current_site.domain
-        '''
+        # domain = current_site.domain
         site_name = '127.0.0.1:8000'
         protocol = 'http'
         domain = '127.0.0.1:8000'
@@ -45,6 +44,7 @@ def send_password_reset(sender, instance, created, **kwargs):
             fail_silently=False, 
             html_message=html_message
         )
+'''
 
 @receiver(post_delete, sender=Admin)
 def auto_delete_user_with_admin(sender, instance, **kwargs):

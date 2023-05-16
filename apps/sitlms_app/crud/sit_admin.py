@@ -22,7 +22,7 @@ import string
 import secrets
 import random
 from django.contrib.auth.decorators import user_passes_test
-from apps.sitlms_app.crud.access_test import is_admin
+from apps.sitlms_app.crud.access_test import is_admin, send_initial_password_resest
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
@@ -80,6 +80,7 @@ def sitadmin_register(request):
                 birthdate=request.POST['birthdate']
                 sitadmin = Admin(user=user, middle_name=middle_name, birthdate=birthdate)
                 sitadmin.save()
+                send_initial_password_resest(request, user)
                 return redirect('sit_admin_dashboard')
         else:
             messages.info(request, 'Password Not The Same')

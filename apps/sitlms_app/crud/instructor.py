@@ -7,7 +7,7 @@ from .sit_admin import generate_random_string
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from apps.sitlms_app.crud.access_test import is_admin
+from apps.sitlms_app.crud.access_test import is_admin, send_initial_password_resest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # CRUD for Instructor
@@ -61,6 +61,7 @@ def add_instructor_info(request):
         user.save()
         instructors = Instructor_Auth(user=user,middlename=middlename,birthdate=birthdate)
         instructors.save()
+        send_initial_password_resest(request, user)
         messages.success(request, "Successfully Added")
         return redirect('view_instructors')
 
