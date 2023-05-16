@@ -7,7 +7,7 @@ class ActivityForms(forms.Form):
       course_batch = forms.CharField(max_length=10)
       activity_title = forms.CharField()
       activity_desc= forms.CharField(widget=forms.Textarea)
-      activity_attachment= forms.URLField(min_length=1)
+      activity_attachment= forms.URLField(min_length=1, required=False)
       deadline= SplitDateTimeField()    
     # grading_percentage= forms.IntegerField()
       class Meta:

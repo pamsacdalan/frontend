@@ -18,7 +18,7 @@ class Course_Activity(models.Model):
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
     activity_title = models.CharField(max_length=255)
     activity_desc = models.CharField(max_length=1000)
-    activity_attachment = models.URLField(max_length=200)
+    activity_attachment = models.URLField(max_length=200, blank=True)
     start_date = models.DateTimeField(default=datetime.now, blank=True)
     deadline = models.DateTimeField()
     grading_percentage = models.IntegerField(default=0)
