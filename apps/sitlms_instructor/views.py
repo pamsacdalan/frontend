@@ -11,7 +11,7 @@ from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
 from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
 from dateutil.parser import parse
-from datetime import date, datetime
+from datetime import datetime
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
