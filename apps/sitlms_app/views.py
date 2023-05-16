@@ -44,7 +44,7 @@ def home(request):
         return redirect('instructor')
     elif hasattr(request.user,'student_auth'):
         return redirect('student_profile')
-    print('Something went wrong')
+    # print('Something went wrong')
     return render(request, 'landing.html')
     # return render(request, 'registration/login.html')
     # return render(request, 'admin_module/index.html')
