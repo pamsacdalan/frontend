@@ -21,5 +21,4 @@ class Course_Activity(models.Model):
     activity_attachment = models.URLField(max_length=200)
     start_date = models.DateTimeField(default=datetime.now, blank=True)
     deadline = models.DateTimeField()
-    grading_percentage = models.IntegerField()
-
+    grading_percentage = models.IntegerField(default=0)

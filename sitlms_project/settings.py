@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.sitlms_instructor',
     'apps.sitlms_student',
     
+    
 ]
 
 MIDDLEWARE = [

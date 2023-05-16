@@ -1,12 +1,62 @@
-Hi !
-
-
 
 {% if user.is_authenticated %}
 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
-{% endif %}
+<h1>Hi! Instructor</h1>
+<form method="POST" action="{% url 'revert'%}">
+    {% csrf_token %}
+    <div>
+        <label>Title</label>
+        <br>
+        {{form.activity_title}}
+    </div>
+    <div>
+        <label>Description</label>
+        <br>
+        {{form.activity_desc}}
+        
+    </div>
+    <div>
+        <label>URL Attachment</label>
+        <br>
+        {{form.activity_attachment}}
+    </div>
+    <div>
+        <label>Due Date & Time</label>
+        <br>
+        {{form.deadline}}
+    </div>  
+    <button type="submit">Add Activity</button>
 
+</form>
+
+<div>
+    <table>
+        <th>Activity Title</th>
+        <th>Description</th>
+        <th>Attachment</th>
+        <th>Given Date</th>
+        <th>Due Date</th>
+        <th>Grading</th>
+        {% for activity in acts %}
+        <tr>
+           
+            <td>{{activity.activity_title}}</td>
+            <td>{{activity.activity_desc}}</td>
+            <td>{{activity.activity_attachment}}</td>
+            <td>{{activity.start_date}}</td>
+            <td>{{activity.deadline}}</td>
+            <td>{{activity.grading_percentage}}</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">View Courses</a></button>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+<h1>You don't have access to this module, sign in as instructor</h1>
+{% endif %}
+
+
+

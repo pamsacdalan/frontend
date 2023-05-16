@@ -4,18 +4,50 @@ from django.contrib.auth.models import User
 from django.template import loader
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
-
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib import messages
+from apps.sitlms_app.models import Course_Enrollment
+from apps.sitlms_instructor.forms import ActivityForms
+from apps.sitlms_instructor.models import Course_Activity
 
 
 
 # Create your views here.
 
-
 def instructor(request):
-    
     """ This function renders the student page """
-    
-    return render(request, 'instructor_module/instructor.html')
+    form = ActivityForms(request.POST)
+    acts = Course_Activity.objects.all()
+    context={
+        'acts':acts,
+        'form':form,
+    }
+    print(acts)
+    return render(request, 'instructor_module/instructor.html',context)
+
+def post_activity(request):
+    if request.method == "POST":
+        form = ActivityForms(request.POST)
+        
+        batch = Course_Enrollment.objects.filter(pk='test102').first()
+        title = request.POST['activity_title']
+        desc=request.POST['activity_desc']
+        attachment = request.POST['activity_attachment']
+        d1 = request.POST.get('deadline_0')
+        d2 = request.POST.get('deadline_1')
+        deadline = d1+" "+d2
+        # due_date = request.POST['deadline']
+        activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline)
+        print(request.POST['activity_title'])
+        print(d1)
+        print(d2)
+        activity_post.save()
+        messages.success(request,"Success!")
+        return redirect("/sit-instructor/instructor")
+    else:
+        form = ActivityForms()
+    return render(request, 'instructor_module/instructor.html',{'form':form,})
 
 
 def instructor_view_enrolled_course(request):
