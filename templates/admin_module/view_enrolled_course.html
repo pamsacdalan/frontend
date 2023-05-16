@@ -1,68 +1,269 @@
-<table border="1">
-    <tr>
-        <th>Course Batch</th>
-        <th>Course Title</th>
-        <th>Instructor</th>
-        <th>Course Mode</th>
-        <th>Session Details</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th>Frequency</th>
-        
-        
-      </tr>
+{% extends './base.html' %}
 
-<tr>{% for course in course_enrolled_list%}
+<!-- This page is for student enrollment-->
 
-    <td name= 'course_batch'>{{course.course_batch}}</td>
-    <td name= 'course_id'>{{course.course_id}}</td>
-    <td name= 'instructor_id'>{{course.instructor_id}}</td>
-    <td name= 'course_mode'>
-        {% if course.course_mode == 0%} Webinar
-        {% elif course.course_mode == 1%} Onsite
-        {% else %} Self-Paced
-        {% endif %}
-    </td>
-    <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
-    <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
-    
-    
-    <td name= 'start_date'>{{course.start_date}}</td>
-    <td name= 'end_date'>{{course.end_date}}</td>
-    <td name= 'start_time'>{{course.start_time}}</td>
-    <td name= 'end_time'>{{course.end_time}}</td>
-    <td name= 'frequency'>
-        {% if course.frequency == 0%} Once
-        {% elif course.frequency == 1%} Daily
-        {% else %} Weekly
-        {% endif %}
-    </td>
-    
+{% block Topbar %}
+            <!-- Topbar -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-6">
+                    <h3 class="h3 mb-0 text-gray-800"> ADMINISTRATOR </h3>
+                    {% include "admin_module/form_template.html"%}
+                </div>               
+            </div>
+{% endblock Topbar %}
 
 
-    <!-- {% comment %} 
-    <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
 
-    <td name= 'course_mode' {% if course.course_mode == 0  %}  > Webinar
-        {% endif %}
+{% block sidebar %}
+            <!-- Sidebar Menu -->
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
 
-    <td name= 'course_mode' {% if course.course_mode == 1  %}  > Onsite
-        {% endif %}
+            <!-- Divider -->
+            <hr class="sidebar-divider">
 
-    <td name= 'course_mode' {% if course.course_mode == 2  %}  > SP
-        {% endif %}
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
 
-    </td> -->
-    
-    <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a></td>
-    
-</tr>
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+              <a class="nav-link" href="/sit-admin/dashboard/">
+                  <i class="fas fa-fw fa-tachometer-alt"></i>
+                  <span>DASHBOARD</span>
+              </a>
+          </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                MODULES
+            </div>
+
+            <!-- Nav Item - Courses Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/course/" data-toggle="collapse" data-target="#collapseCourses"
+                aria-expanded="true" aria-controls="collapseCourses">
+                    <i class="fa fa-book"></i>
+                    <span> COURSES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseCourses" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course/view_course">View Courses</a>
+                        <a class="collapse-item" href="/sit-admin/course/add_course">Add Courses</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Enrollment Collapse Menu-->
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="../sit-admin/course_enrollment/" data-toggle="collapse" data-target="#collapseEnroll"
+                aria-expanded="true" aria-controls="collapseEnroll">
+                    <i class="fas fa-id-card-alt" aria-hidden="true"></i>
+                    <span> ENROLLMENT </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseEnroll" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Instructors Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
+                aria-expanded="true" aria-controls="collapseInst">
+                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+                    <span>INSTRUCTORS</span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseInst" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/instructor/view/">View Instructors</a>
+                        <a class="collapse-item" href="/sit-admin/instructor/add/">Add Instructors</a>
+                    </div>
+                </div>
+
+            </li>
+
+            <!-- Nav Item - Students Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/student/view/" data-toggle="collapse" data-target="#collapseStudents"
+                aria-expanded="true" aria-controls="collapseStudents">
+                    <i class="fa fa-address-book" aria-hidden="true"></i>
+                    <span> TRAINEES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseStudents" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
+                        <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Program Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProgram"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                <i class="fa fa-users"></i>
+                    <span> CDP PROGRAM </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/program/view/">View Programs</a>
+                        <a class="collapse-item" href="/sit-admin/program/add/">Add Program</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Admmins Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/" data-toggle="collapse" data-target="#collapseAdmin"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fa fa-landmark" aria-hidden="true"></i>
+                    <span> ADMINS </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/list">View Admins</a>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/create">Add Admins</a>
+                    </div>
+                </div>
+            </li>
+
+{% endblock sidebar %}
 
 
-    {% endfor %}
-</table>
-<br>
-<br>
-<button><a style="color:#000; " href="/sit-admin/course_enrollment/">Add New</a></button>
+{% block content %}
+
+            <!-- Main Table -->
+            <div class="container-fluid">
+                <div class="card shadow mb-5">
+                    <div class="card-header py-3">
+                        <h6 class="m-1 font-weight-bold text-secondary">Enrolled Courses</h6>
+                    </div>
+                    <div class="card-body">
+                        <div align="right"> <!-- buttons here-->
+
+                            <!-- Add New Button -->
+                            <a href="/sit-admin/course_enrollment/" class="btn btn-info" data-toggle="tooltip" title="Enroll new course">
+                                <span>
+                                    <i class="fa fa-plus"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                                <thead class="table-dark" align="center">
+                                    <tr>
+                                        <th>Course Batch</th>
+                                        <th>Course Title</th>
+                                        <th>Instructor</th>
+                                        <th>Course Mode</th>
+                                        <th>Session Details</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Frequency</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                            
+                            <tr>{% for course in enrolled_courses_page %}
+                            
+                                <td name= 'course_batch'>{{course.course_batch}}</td>
+                                <td name= 'course_id'>{{course.course_id}}</td>
+                                <td name= 'instructor_id'>{{course.instructor_id}}</td>
+                                <td name= 'course_mode'>
+                                    {% if course.course_mode == 0%} Webinar
+                                    {% elif course.course_mode == 1%} Onsite
+                                    {% else %} Self-Paced
+                                    {% endif %}
+                                </td>
+                                <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
+                                <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
+                                <td name= 'start_date'>{{course.start_date}}</td>
+                                <td name= 'end_date'>{{course.end_date}}</td>
+                                <td name= 'start_time'>{{course.start_time}}</td>
+                                <td name= 'end_time'>{{course.end_time}}</td>
+                                <td name= 'frequency'>
+                                    {% if course.frequency == 0%} Once
+                                    {% elif course.frequency == 1%} Daily
+                                    {% else %} Weekly
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- {% comment %} 
+                                <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
+                            
+                                <td name= 'course_mode' {% if course.course_mode == 0  %}  > Webinar
+                                    {% endif %}
+                            
+                                <td name= 'course_mode' {% if course.course_mode == 1  %}  > Onsite
+                                    {% endif %}
+                            
+                                <td name= 'course_mode' {% if course.course_mode == 2  %}  > SP
+                                    {% endif %}
+                            
+                                </td> -->
+                                
+                                <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | 
+                                    <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | 
+                                    <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | 
+                                    <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a>
+                                </td>
+                            </tr>{% endfor %}
+                            </table>
+                            
+                            <!-- For pagination-->
+                            <a>Showing {{enrolled_courses_page.start_index}} - {{enrolled_courses_page.end_index}} of {{enrolled_courses_page.paginator.count}} entries</a>
+                            {% if enrolled_courses_page.has_other_pages %}
+                                <ul class="pagination pagination-sm justify-content-end">
+                                    {% if enrolled_courses_page.has_previous %}
+                                        <a class="btn btn-outline-secondary btn-sm" href="?page={{ enrolled_courses_page.previous_page_number }}">Previous</a>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary btn-sm"disabled><span>Previous</span></button></li>
+                                    {% endif %}
+
+                                    {% for i in enrolled_courses_page.paginator.page_range %}
+                                        {% if enrolled_courses_page.number == i %}
+                                            <button class="btn btn-outline-secondary btn-sm active"><span>{{ i }} <span class="sr-only">(current)</span></span></button>
+                                        {% else %}
+                                            <a href="?page={{ i }}"class="btn btn-outline-secondary btn-sm">{{ i }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if enrolled_courses_page.has_next %}
+                                        <a href="?page={{ enrolled_courses_page.next_page_number }}" class="btn btn-outline-secondary btn-sm">Next</a>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary btn-sm" disabled><span>Next</span></button>
+                                    {% endif %}
+                                </ul>
+                            {% endif %} 
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock content %}
+

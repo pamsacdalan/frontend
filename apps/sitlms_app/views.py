@@ -44,7 +44,7 @@ def home(request):
         return redirect('instructor')
     elif hasattr(request.user,'student_auth'):
         return redirect('student_profile')
-    print('Something went wrong')
+    # print('Something went wrong')
     return render(request, 'landing.html')
     # return render(request, 'registration/login.html')
     # return render(request, 'admin_module/index.html')
@@ -118,7 +118,7 @@ def view_csv(request):
                         messages.error(request, 'Invalid input')
                     except IntegrityError:
                         messages.error(request, 'Email already exists!')
-            return redirect("/sit-admin/student/view")
+            return redirect("/sit-admin/student/view")         
     return render(request,'admin_module/import_csv.html',{'form':form})
 
 @user_passes_test(is_admin)

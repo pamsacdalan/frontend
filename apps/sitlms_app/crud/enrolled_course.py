@@ -12,6 +12,7 @@ from django.utils import timezone
 import json
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.crud.access_test import is_admin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 list_course_mode = ["Webinar","Onsite","Self-Paced"]
@@ -123,6 +124,25 @@ def view_enrolled_course(request):
     context = {'course_enrolled_list':course_enrolled_list,
                'option_course_title': [x['course_title'] for x in Course_Catalog.objects.values('course_title').distinct()]
                 }
+    
+    # for pagination
+    page = request.GET.get('page', 1) # default page (default to first page)
+    
+    items_per_page = 5
+    paginator = Paginator(course_enrolled_list, items_per_page)
+    
+    try:
+        enrolled_courses_page = paginator.page(page)
+    except PageNotAnInteger:
+        enrolled_courses_page = paginator.page(1)
+    except EmptyPage:
+        enrolled_courses_page = paginator.page(paginator.num_pages)
+                
+    context = {'enrolled_courses_page':enrolled_courses_page, 'course_enrolled_list': course_enrolled_list}
+        
+    return HttpResponse(template.render(context,request))
+
+    
     return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_admin)
