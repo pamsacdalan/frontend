@@ -46,3 +46,7 @@
 <br>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor">Back</a></button>
+{% if user.is_authenticated %}
+<br><br>
+<a class="nav-link" href="{% url 'logout' %}">Log out</a>
+{% endif %}
