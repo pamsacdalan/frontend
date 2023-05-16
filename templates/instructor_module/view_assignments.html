@@ -1,0 +1,24 @@
+<a href="{% url 'add_assignment' id %}">Create Assignment</a><br><br>
+<div>
+    <table>
+        <th>Activity Title</th>
+        <th>Description</th>
+        <th>Attachment</th>
+        <th>Given Date</th>
+        <th>Due Date</th>
+        <th>Grading</th>
+        {% for activity in acts %}
+        <tr>
+           
+            <td>{{activity.activity_title}}</td>
+            <td>{{activity.activity_desc}}</td>
+            <td>{{activity.activity_attachment|urlize|safe}}</td>
+            <td>{{activity.start_date}}</td>
+            <td>{{activity.deadline}}</td>
+            <td>{{activity.grading_percentage}}</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<a href="{% url 'view_students' id %}">Back To Stream</a><br><br>

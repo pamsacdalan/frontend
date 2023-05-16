@@ -10,6 +10,8 @@ from django.contrib import messages
 from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
 from apps.sitlms_instructor.models import Course_Activity
+from dateutil.parser import parse
+from datetime import date, datetime
 
 
 
@@ -123,4 +125,38 @@ def change_schedule(request, id):
         'test': 'test'
     }
     return HttpResponse(template.render(context,request))  
+
+def view_assignments (request,id):
+    """ This function renders the student page """
+    acts = Course_Activity.objects.filter(course_batch=id)
+    context={
+        'acts':acts,
+        'id':id,
+    }
+    # print(acts)
+    return render(request, 'instructor_module/view_assignments.html',context)
+
+def add_assignment(request, id):
+    if request.method == "POST":
+        form = ActivityForms(request.POST)
+        
+        batch = Course_Enrollment.objects.filter(pk=id).first()
+        title = request.POST['activity_title']
+        desc=request.POST['activity_desc']
+        attachment = request.POST['activity_attachment']
+        d1 = request.POST.get('deadline_0')
+        d2 = request.POST.get('deadline_1')
+        deadline = d1+" "+d2
+        date_object = datetime.strptime(deadline, '%Y-%m-%d %H:%M')
+        if date_object <= datetime.now():
+            return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
+        else:
+            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline)
+            activity_post.save()
+            messages.success(request,"Success!")
+            return redirect("view_assignments",  id=id)
+    else:
+        form = ActivityForms()
+    return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
+
 
