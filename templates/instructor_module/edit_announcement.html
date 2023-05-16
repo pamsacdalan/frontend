@@ -1,0 +1,36 @@
+<h3>Edit Announcement</h3>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label for="announcement_text">Text:</label><br>
+    <textarea id="announcement_text" class="text" cols="60" rows ="20" name="announcement_text">{{ announcement.announcement_text }}</textarea><br><br>
+
+    <input class="button" type="submit" onclick = "return checkTextArea() " value="Update"/>
+    <!-- <input class="button" type="button" onclick="window.location.replace('/sit-instructor/instructor/course/{{ course_batch }}')" value="Cancel" /> -->
+    <a href='/sit-instructor/instructor/course/{{ course_batch }}'>Cancel </a>
+
+    <p id="warning" style="display:none">You need to write something!!</p>
+
+    <script>
+
+function trim_and_remove_blank_lines(string)
+{
+    return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+}
+        
+function checkTextArea() {
+var text_area = document.getElementById("announcement_text");
+var text = document.getElementById("warning");
+
+if (trim_and_remove_blank_lines(text_area.value)){
+    text.style.display = "none";
+    return true;
+} else{
+    text.style.display = "block";
+    return false;
+    }
+}
+</script>
+
+</form>

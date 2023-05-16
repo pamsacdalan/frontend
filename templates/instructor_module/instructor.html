@@ -1,6 +1,6 @@
 
 {% if user.is_authenticated %}
-<li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+<a class="nav-link" href="{% url 'logout' %}">Log out</a>
 <h1>Hi! Instructor</h1>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">View Courses</a></button>

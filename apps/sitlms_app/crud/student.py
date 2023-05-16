@@ -57,7 +57,7 @@ def student(request):
                 password=generate_random_string(8)
                 if User.objects.filter(email=email).exists():
                     messages.info(request, 'Email Already Used. Contact admin to edit profile instead.')
-                    return redirect('admincreate')
+                    return redirect('/sit-admin/student')
                 else:
                     user = User.objects.create_user(username=username, email = email, password=password, first_name=first_name, last_name=last_name, is_active=True,)
                     user.save()

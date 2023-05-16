@@ -20,4 +20,6 @@
         {% endfor %}
     </table>
 </div>
-<a href="{% url 'view_students' id %}">Back To Stream</a><br><br>
+<br>
+<button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
+<button><a href="{% url 'view_students' id %}">View Students</a></button>

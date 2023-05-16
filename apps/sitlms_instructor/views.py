@@ -5,19 +5,39 @@ from django.contrib.auth.models import User
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
-from apps.sitlms_instructor.models import Course_Activity
+from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
 from dateutil.parser import parse
-from datetime import date, datetime
+from datetime import datetime
+from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import user_passes_test
+from functools import partial
 
 
+def is_instructor(user):
+    try:
+        if hasattr(user,'instructor_auth'):
+            return True
+        raise PermissionDenied
+    except Exception as e:
+        raise PermissionDenied
+
+def is_correct_instructor_cbatch_id(instructor, cbatch_id):
+    try:
+        if Course_Enrollment.objects.filter(course_batch=cbatch_id).first().instructor_id==instructor:
+            pass
+        else:
+            raise PermissionDenied
+    except Exception as e:
+        raise PermissionDenied
 
 # Create your views here.
-
+@user_passes_test(is_instructor)
 def instructor(request):
     """ This function renders the student page """
     form = ActivityForms(request.POST)
@@ -29,6 +49,7 @@ def instructor(request):
     print(acts)
     return render(request, 'instructor_module/instructor.html',context)
 
+@user_passes_test(is_instructor)
 def post_activity(request):
     if request.method == "POST":
         form = ActivityForms(request.POST)
@@ -52,7 +73,7 @@ def post_activity(request):
         form = ActivityForms()
     return render(request, 'instructor_module/instructor.html',{'form':form,})
 
-
+@user_passes_test(is_instructor)
 def instructor_view_enrolled_course(request):
     template = loader.get_template('instructor_module/instructor_view_enrolled_course.html')
 
@@ -83,8 +104,9 @@ def instructor_view_enrolled_course(request):
     return HttpResponse(template.render(context,request))
 
 
-
+@user_passes_test(is_instructor)
 def view_students(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/instructor_view_student.html')
 
     # course = Course_Enrollment.objects.get(course_batch=id)
@@ -109,8 +131,6 @@ def view_students(request, id):
             if student_auth_details[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_auth_details[x], **student_details[x], **program})
 
-    print(new_list)
-
 
     context = {'new_list': new_list,
                'id':id
@@ -119,7 +139,9 @@ def view_students(request, id):
     return HttpResponse(template.render(context,request))  
 
 
+@user_passes_test(is_instructor)
 def change_schedule(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/instructor_change_schedule.html')
 
     context = {
@@ -127,8 +149,10 @@ def change_schedule(request, id):
     }
     return HttpResponse(template.render(context,request))  
 
+@user_passes_test(is_instructor)
 def view_assignments (request,id):
     """ This function renders the student page """
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     acts = Course_Activity.objects.filter(course_batch=id)
     context={
         'acts':acts,
@@ -137,7 +161,9 @@ def view_assignments (request,id):
     # print(acts)
     return render(request, 'instructor_module/view_assignments.html',context)
 
+@user_passes_test(is_instructor)
 def add_assignment(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     if request.method == "POST":
         form = ActivityForms(request.POST)
         
@@ -195,3 +221,84 @@ def update_assignment(request,id,pk):
 #     activity.delete()
 #     messages.success(request,'Activity deleted!')
 #     return render(request,'instructor_module/view_assignments.html')
+# temp course page
+@user_passes_test(is_instructor)
+def instructor_course(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    template = loader.get_template('instructor_module/instructor_course.html')
+
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
+    announcement_details = Course_Announcement.objects.filter(course_batch=id).values()
+
+    user = request.user
+    user_id = user.id
+    firstname = User.objects.values_list('first_name', flat=True).get(id=user_id)
+    lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
+
+    author_name = firstname + " " + lastname
+
+    context = {
+        'course_batch': id,
+        'course': course,
+        'announcements':announcement_details,
+        'author': author_name,
+    }
+
+    return HttpResponse(template.render(context,request))  
+
+@user_passes_test(is_instructor)
+def create_announcement(request,id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    template = loader.get_template('instructor_module/create_announcement.html')
+    
+    if request.method == "POST":
+        text = request.POST['announcement_text']
+
+        user = request.user
+        user_id = user.id
+
+        instructor_id = Instructor_Auth.objects.filter(user_id=user_id).values_list('id',flat=True)[0]
+
+        announcement = Course_Announcement(
+            announcement_text=text,
+            course_batch=Course_Enrollment.objects.get(course_batch=id),
+            author_id=instructor_id
+        )
+
+        announcement.save()
+
+        return redirect(f'/sit-instructor/instructor/course/{id}')
+    
+    context = {'course_batch':id}
+
+    return HttpResponse(template.render(context,request))  
+
+@user_passes_test(is_instructor)
+def remove_announcement(request, course_batch, schedule_id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
+    announcement = Course_Announcement.objects.get(id=schedule_id)
+
+    if request.method == "POST":
+        announcement.delete()
+        return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
+    
+    return render(request, "instructor_module/delete_announcement.html", {'course_batch': course_batch})
+
+@user_passes_test(is_instructor)
+def edit_announcement(request, course_batch, schedule_id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
+    announcement = Course_Announcement.objects.get(id=schedule_id)
+    context =  {'course_batch': course_batch, 'announcement': announcement}
+
+    if request.method == "POST":
+        announcement_text = request.POST['announcement_text']
+        announcement.announcement_text = announcement_text
+        announcement.date_posted = datetime.now()
+
+        announcement.save(update_fields=['announcement_text', 'date_posted'])
+
+        return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
+    
+    return render(request, "instructor_module/edit_announcement.html", context)
