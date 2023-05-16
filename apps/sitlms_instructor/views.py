@@ -4,14 +4,15 @@ from django.contrib.auth.models import User
 from django.template import loader
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
-from apps.sitlms_instructor.models import Course_Activity
+from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
 from dateutil.parser import parse
 from datetime import date, datetime
+from django.urls import reverse
 
 
 
@@ -108,14 +109,13 @@ def view_students(request, id):
             if student_auth_details[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_auth_details[x], **student_details[x], **program})
 
-    print(new_list)
-
 
     context = {'new_list': new_list,
                'id':id
                 }
     
     return HttpResponse(template.render(context,request))  
+
 
 
 def change_schedule(request, id):
@@ -160,3 +160,78 @@ def add_assignment(request, id):
     return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
 
 
+# temp course page
+def instructor_course(request, id):
+    template = loader.get_template('instructor_module/instructor_course.html')
+
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
+    announcement_details = Course_Announcement.objects.filter(course_batch=id).values()
+
+    user = request.user
+    user_id = user.id
+    firstname = User.objects.values_list('first_name', flat=True).get(id=user_id)
+    lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
+
+    author_name = firstname + " " + lastname
+
+    context = {
+        'course_batch': id,
+        'course': course,
+        'announcements':announcement_details,
+        'author': author_name,
+    }
+
+    return HttpResponse(template.render(context,request))  
+
+
+def create_announcement(request,id):
+    template = loader.get_template('instructor_module/create_announcement.html')
+    
+    if request.method == "POST":
+        text = request.POST['announcement_text']
+
+        user = request.user
+        user_id = user.id
+
+        instructor_id = Instructor_Auth.objects.filter(user_id=user_id).values_list('id',flat=True)[0]
+
+        announcement = Course_Announcement(
+            announcement_text=text,
+            course_batch=Course_Enrollment.objects.get(course_batch=id),
+            author_id=instructor_id
+        )
+
+        announcement.save()
+
+        return redirect(f'/sit-instructor/instructor/course/{id}')
+    
+    context = {'course_batch':id}
+
+    return HttpResponse(template.render(context,request))  
+
+def remove_announcement(request, course_batch, schedule_id):
+    announcement = Course_Announcement.objects.get(id=schedule_id)
+
+    if request.method == "POST":
+        announcement.delete()
+        return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
+    
+    return render(request, "instructor_module/delete_announcement.html", {'course_batch': course_batch})
+
+
+def edit_announcement(request, course_batch, schedule_id):
+    announcement = Course_Announcement.objects.get(id=schedule_id)
+    context =  {'course_batch': course_batch, 'announcement': announcement}
+
+    if request.method == "POST":
+        announcement_text = request.POST['announcement_text']
+        announcement.announcement_text = announcement_text
+        announcement.date_posted = datetime.now()
+
+        announcement.save(update_fields=['announcement_text', 'date_posted'])
+
+        return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
+    
+    return render(request, "instructor_module/edit_announcement.html", context)

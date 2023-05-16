@@ -1,0 +1,23 @@
+<h4>{{course.course_title}} - {{course.course_desc}}</h4>
+<p>batch: {{course_batch}} </p>
+
+
+<table border="1">
+    <tr>
+        <th>Announcement</th>
+        <th>Author</th>
+        <th>Date Posted</th>
+        <th>Actions</th>
+    </tr>
+<tr>{% for announcement in announcements %}
+    <td name= 'announcement_text'>{{announcement.announcement_text|linebreaks}}</td>
+    <td name= 'author_id'>{{author}}</td>
+    <td name= 'date_posted'>{{announcement.date_posted}}</td>
+    <td><a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}">Edit</a> | <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}">Remove</a></td>
+</tr>
+    {% endfor %}
+</table>
+
+<br><br>
+<button><a href="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">Create Announcement</a></button>
+<button><a href="/sit-instructor/instructor/view_students/{{course_batch}}">View Students</a></button>
