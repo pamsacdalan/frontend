@@ -13,11 +13,30 @@ from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
 from dateutil.parser import parse
 from datetime import date, datetime
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import user_passes_test
+from functools import partial
 
 
+def is_instructor(user):
+    try:
+        if hasattr(user,'instructor_auth'):
+            return True
+        raise PermissionDenied
+    except Exception as e:
+        raise PermissionDenied
+
+def is_correct_instructor_cbatch_id(instructor, cbatch_id):
+    try:
+        if Course_Enrollment.objects.filter(course_batch=cbatch_id).first().instructor_id==instructor:
+            pass
+        else:
+            raise PermissionDenied
+    except Exception as e:
+        raise PermissionDenied
 
 # Create your views here.
-
+@user_passes_test(is_instructor)
 def instructor(request):
     """ This function renders the student page """
     form = ActivityForms(request.POST)
@@ -29,6 +48,7 @@ def instructor(request):
     print(acts)
     return render(request, 'instructor_module/instructor.html',context)
 
+@user_passes_test(is_instructor)
 def post_activity(request):
     if request.method == "POST":
         form = ActivityForms(request.POST)
@@ -52,7 +72,7 @@ def post_activity(request):
         form = ActivityForms()
     return render(request, 'instructor_module/instructor.html',{'form':form,})
 
-
+@user_passes_test(is_instructor)
 def instructor_view_enrolled_course(request):
     template = loader.get_template('instructor_module/instructor_view_enrolled_course.html')
 
@@ -83,8 +103,9 @@ def instructor_view_enrolled_course(request):
     return HttpResponse(template.render(context,request))
 
 
-
+@user_passes_test(is_instructor)
 def view_students(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/instructor_view_student.html')
 
     # course = Course_Enrollment.objects.get(course_batch=id)
@@ -117,8 +138,9 @@ def view_students(request, id):
     return HttpResponse(template.render(context,request))  
 
 
-
+@user_passes_test(is_instructor)
 def change_schedule(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/instructor_change_schedule.html')
 
     context = {
@@ -126,8 +148,10 @@ def change_schedule(request, id):
     }
     return HttpResponse(template.render(context,request))  
 
+@user_passes_test(is_instructor)
 def view_assignments (request,id):
     """ This function renders the student page """
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     acts = Course_Activity.objects.filter(course_batch=id)
     context={
         'acts':acts,
@@ -136,7 +160,9 @@ def view_assignments (request,id):
     # print(acts)
     return render(request, 'instructor_module/view_assignments.html',context)
 
+@user_passes_test(is_instructor)
 def add_assignment(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     if request.method == "POST":
         form = ActivityForms(request.POST)
         
