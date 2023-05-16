@@ -187,7 +187,9 @@ def add_assignment(request, id):
 
 
 # temp course page
+@user_passes_test(is_instructor)
 def instructor_course(request, id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/instructor_course.html')
 
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
@@ -211,8 +213,9 @@ def instructor_course(request, id):
 
     return HttpResponse(template.render(context,request))  
 
-
+@user_passes_test(is_instructor)
 def create_announcement(request,id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     template = loader.get_template('instructor_module/create_announcement.html')
     
     if request.method == "POST":
@@ -237,7 +240,9 @@ def create_announcement(request,id):
 
     return HttpResponse(template.render(context,request))  
 
+@user_passes_test(is_instructor)
 def remove_announcement(request, course_batch, schedule_id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
     announcement = Course_Announcement.objects.get(id=schedule_id)
 
     if request.method == "POST":
@@ -246,8 +251,9 @@ def remove_announcement(request, course_batch, schedule_id):
     
     return render(request, "instructor_module/delete_announcement.html", {'course_batch': course_batch})
 
-
+@user_passes_test(is_instructor)
 def edit_announcement(request, course_batch, schedule_id):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
     announcement = Course_Announcement.objects.get(id=schedule_id)
     context =  {'course_batch': course_batch, 'announcement': announcement}
 
