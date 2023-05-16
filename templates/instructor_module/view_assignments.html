@@ -8,15 +8,14 @@
         <th>Due Date</th>
         <th>Grading</th>
         {% for activity in acts %}
-        <tr>
-           
+        <tr>    
             <td>{{activity.activity_title}}</td>
             <td>{{activity.activity_desc}}</td>
             <td>{{activity.activity_attachment|urlize|safe}}</td>
-            <td>{{activity.start_date}}</td>
+            <td>{{activity.start_date}}</td>    
             <td>{{activity.deadline}}</td>
             <td>{{activity.grading_percentage}}</td>
-            
+            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
         </tr>
         {% endfor %}
     </table>

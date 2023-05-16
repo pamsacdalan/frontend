@@ -13,5 +13,5 @@ urlpatterns = [
     path('instructor/view_courses/request_for_change_schedule/<str:id>', views.change_schedule, name='change_schedule'),
     path('instructor/view_courses/<str:id>/assignments', views.view_assignments, name='view_assignments'),
     path('instructor/view_courses/<str:id>/assignments/add', views.add_assignment, name='add_assignment'),
-   
+    path('instructor/view_courses/<str:id>/assignments/edit/<int:pk>', views.update_assignment, name='update_assignment'),
 ]
