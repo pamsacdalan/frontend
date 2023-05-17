@@ -1,0 +1,55 @@
+<table border="1">
+
+    <h1>History of Change Schedule Requests</h1>
+    
+    <tr>
+        <th>Request Date</th>
+        <th>Course Batch</th>
+        <th>Old Start Date</th>
+        <th>Old End Date</th>
+        <th>Old Start Time</th>
+        <th>Old End Time</th>
+        <th>Old Frequency</th>
+        <th>New Start Date</th>
+        <th>New End Date</th>
+        <th>New Start Time</th>
+        <th>New End Time</th>
+        <th>New Frequency</th>
+        <th>Approved/Rejected Date</th>
+
+        <th>Status</th>
+        
+      </tr>
+
+<tr>{% for schedule in change_schedule_list%}
+
+    <td name= 'request_date'>{{schedule.request_date}}</td>
+    <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
+    <td name= 'old_start_date'>{{schedule.old_start_date}}</td>
+    <td name= 'old_end_date'>{{schedule.old_end_date}}</td>
+    <td name= 'old_start_time'>{{schedule.old_start_time}} </td>
+    <td name= 'old_end_time'>{{schedule.old_end_time}}</td>
+    <td name= 'old_frequency'>
+        {% if schedule.old_frequency == 0%} Once
+        {% elif schedule.old_frequency == 1%} Daily
+        {% else %} Weekly
+        {% endif %}
+    </td>
+    <td name= 'new_start_date'>{{schedule.new_start_date}}</td>
+    <td name= 'new_end_date'>{{schedule.new_end_date}}</td>
+    <td name= 'new_start_time'>{{schedule.new_start_time}} </td>
+    <td name= 'new_end_time'>{{schedule.new_end_time}}</td>
+    <td name= 'new_frequency'>
+        {% if schedule.new_frequency == 0%} Once
+        {% elif schedule.new_frequency == 1%} Daily
+        {% else %} Weekly
+        {% endif %}
+    </td>
+    <td name= 'Approved_Rejected_Date'>{{schedule.approval_date}}</td> 
+    <td name= 'status'>{{schedule.status}}</td> 
+</tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<button><a style="color:#000; " href="/sit-admin/course_enrollment/change_schedule/">Back</a></button>

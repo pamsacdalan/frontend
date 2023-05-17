@@ -120,6 +120,7 @@ def enrol_course(request):
 def view_enrolled_course(request):
     template = loader.get_template('admin_module/view_enrolled_course.html')
     course_enrolled_list = Course_Enrollment.objects.all()
+    course_enrolled_list = sorted(course_enrolled_list, key=lambda course_enrolled_list: course_enrolled_list.start_date)
     context = {'course_enrolled_list':course_enrolled_list,
                'option_course_title': [x['course_title'] for x in Course_Catalog.objects.values('course_title').distinct()]
                 }
@@ -250,7 +251,6 @@ def edit_enrolled_course(request, id):  #id here is the coursebatch (i.e. Python
             frequency=1
         else:
             frequency=7
-
 
 
         enrolled_course.course_batch = course_batch
