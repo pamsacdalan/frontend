@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from apps.sitlms_app.models import *
@@ -399,11 +399,16 @@ def activity_comments(request, id, pk):
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
+    file_relative_url = activity.activity_attachment.url  # Get the relative URL of the uploaded file
+
+    # Construct the absolute URL by prepending the protocol and domain
+    file_url = request.build_absolute_uri(file_relative_url)
 
     context = {
         'batch':batch,
         'act':activity,
         'cmt':comment_items,
+        'file_url':file_url
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
@@ -412,6 +417,25 @@ def activity_comments(request, id, pk):
         comment.save()
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/activity_comment.html',context)
+
+def download_activity_attachment(request, id, pk):
+    # batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
+
+    # Perform any necessary checks or validations here
+
+    # Retrieve the file path or file object from the model and open it
+    file_path = activity.activity_attachment.path
+    print(file_path)
+    file = open(file_path, 'rb')
+
+    # Set the appropriate response headers
+    filename=str(activity.activity_attachment.name).split('/')[-1]
+    response = HttpResponse(file, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response
+
 def cancel_request(request, id):
     schedule = Change_Schedule.objects.filter(id=id)
     schedule.update(status='Cancelled', approval_date = datetime.now() )
@@ -444,4 +468,6 @@ def export_csv(request, id):
         writer.writerow([program_code['program_code'], student['last_name'], student['first_name'], student['username']])
         
     return response
+
+
     

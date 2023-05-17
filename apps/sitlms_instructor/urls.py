@@ -16,6 +16,7 @@ urlpatterns = [
     path('instructor/view_courses/<str:id>/assignments/edit/<int:pk>', views.update_assignment, name='update_assignment'),
     path('instructor/view_courses/<str:id>/assignments/delete/<int:pk>', views.delete_assignment, name='delete_assignment'),
     path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>', views.activity_comments, name='activity_comments'),
+    path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/download-attachment', views.download_activity_attachment, name='download_activity_attachment'),
     path('instructor/course/<str:id>', views.instructor_course, name='view_instructor_course'),
     path('instructor/course/<str:id>/create_announcement', views.create_announcement, name='create_announcement'),
     path('instructor/course/<str:course_batch>/remove_announcement/<int:schedule_id>', views.remove_announcement, name='delete_announcement'),
