@@ -165,20 +165,23 @@ def view_assignments (request,id):
 def add_assignment(request, id):
     is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     if request.method == "POST":
-        form = ActivityForms(request.POST)
+        form = ActivityForms(request.POST, request.FILES)
         
         batch = Course_Enrollment.objects.filter(pk=id).first()
         title = request.POST['activity_title']
         desc=request.POST['activity_desc']
-        attachment = request.POST['activity_attachment']
+        attachment=request.FILES['activity_attachment']
         d1 = request.POST.get('deadline_0')
         d2 = request.POST.get('deadline_1')
         deadline = d1+" "+d2
         date_object = datetime.strptime(deadline, '%Y-%m-%d %H:%M')
+        score = request.POST['scores']
+        percent = request.POST['percentage']
+
         if date_object <= datetime.now():
             return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
         else:
-            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline)
+            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline, max_score = score, grading_percentage = percent)
             activity_post.save()
             messages.success(request,"Success!")
             return redirect("view_assignments",  id=id)
@@ -196,18 +199,21 @@ def update_assignment(request,id,pk):
     if request.method == "POST":
         title = request.POST['title']
         desc = request.POST['description']
-        attach = request.POST['attachment']
+        # attach = request.FILES['attachment']
         end_date = request.POST['d1']
         end_time = request.POST['t1']
         dt = end_date+" "+end_time
+        items = request.POST['items']
         grade = request.POST['gr']
+        
 
         act.activity_title = title
         act.activity_desc = desc
-        act.activity_attachment = attach
+        # act.activity_attachment = attach
         act.deadline = dt
         act.grading_percentage = grade
-        act.save(update_fields=['activity_title','activity_desc','activity_attachment','deadline','grading_percentage'])
+        act.max_score = items
+        act.save(update_fields=['activity_title','activity_desc','deadline','grading_percentage','max_score'])
         return HttpResponseRedirect(reverse('view_assignments', kwargs={'id': id}))
     return render(request, "instructor_module/edit_assignment.html", context)
 
