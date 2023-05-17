@@ -109,7 +109,7 @@ def view_csv(request):
                         student.save()
                         print(row)
                         print(type(row))
-                    
+
                         obj.activated = True
                         obj.save()
                     except ValidationError:

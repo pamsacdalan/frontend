@@ -12,7 +12,7 @@ from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
 from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
 from dateutil.parser import parse
-from datetime import datetime
+from datetime import date, datetime
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
@@ -46,7 +46,7 @@ def instructor(request):
         'acts':acts,
         'form':form,
     }
-    print(acts)
+    
     return render(request, 'instructor_module/instructor.html',context)
 
 @user_passes_test(is_instructor)
@@ -211,17 +211,19 @@ def update_assignment(request,id,pk):
         return HttpResponseRedirect(reverse('view_assignments', kwargs={'id': id}))
     return render(request, "instructor_module/edit_assignment.html", context)
 
+def delete_assignment(request, id, pk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    act= Course_Activity.objects.get(id=pk)
+    context = {
+        'batch':batch,
+        'act':act,
+        'id':id,
+    }
+    if request.method == 'POST':
+        act.delete()
+        return redirect('view_assignments',id=id)
+    return render(request,'instructor_module/delete_assignment.html',context)
 
-# def confirm_delete_assignment(request,id):
-#     activity =  Course_Activity.objects.get(id=Course_Activity.pk)
-#     return render(request, 'instructor_module/confirm_delete_assignment.html',{'activity':activity})
-
-# def approve_delete_assignment(request,id):
-#     activity = Course_Activity.objects.get(id=Course_Activity.pk)
-#     activity.delete()
-#     messages.success(request,'Activity deleted!')
-#     return render(request,'instructor_module/view_assignments.html')
-# temp course page
 @user_passes_test(is_instructor)
 def instructor_course(request, id):
     is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
@@ -302,3 +304,6 @@ def edit_announcement(request, course_batch, schedule_id):
         return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
     
     return render(request, "instructor_module/edit_announcement.html", context)
+
+def render_calendar(request):
+    return render(request,'instructor/calendar.html')

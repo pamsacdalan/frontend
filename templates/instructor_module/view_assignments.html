@@ -16,6 +16,7 @@
             <td>{{activity.deadline}}</td>
             <td>{{activity.grading_percentage}}</td>
             <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
+            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
         </tr>
         {% endfor %}
     </table>
