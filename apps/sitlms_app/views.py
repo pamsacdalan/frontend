@@ -98,13 +98,17 @@ def view_csv(request):
             reader = csv.reader(f)
             for i, row in enumerate(reader):
                 #Remove header
-                if i==0:
+                if i==0 or i==1:
                     pass
+                
                 else:     
                     # row = "".join(row)
                     # row = row.replace(";", " ")
                     # row = row.split()
                     try:
+                        print(row[0])
+                        print(row[1])
+                        print(row[2])
                         username = row[3]
                         program_id = Program.objects.get(program_id=row[1])
                         user = User.objects.create_user(username=username, email = row[3], password=generate_random_string(8), first_name=row[4], last_name=row[6], is_active=True,)
