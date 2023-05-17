@@ -205,14 +205,21 @@
                                         <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <p>Remove this admin from the list?</p>
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title">Delete this admin?</h6>
+                                                        <!--Close-->
+                                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" align="left">
+                                                        Remove this admin from the list?
                                                     </div>
                                                     <div class="modal-footer">
                                                         <form method="post" id="item-delete-form">
                                                             <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
                                                                 {% csrf_token %}
-                                                            <button type="submit" class="btn btn-danger" id="confirm-delete-item-button">Delete</button>
+                                                            <button type="submit" class="btn btn-primary" id="confirm-delete-item-button">Delete</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -234,7 +241,7 @@
                           <br>
 
                           <!-- Add new admin Button -->
-                          <a href="{% url 'admincreate' %}" class="btn btn-dark btn-icon-split btn-sm">
+                          <a href="{% url 'admincreate' %}" class="btn btn-primary btn-icon-split btn-sm">
                             <span class="icon text-white-50">
                                 <i class="fa fa-plus"></i>
                             </span>
