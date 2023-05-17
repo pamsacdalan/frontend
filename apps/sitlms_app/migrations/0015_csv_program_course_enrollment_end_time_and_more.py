@@ -37,8 +37,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course_enrollment',
             name='frequency',
-            field=models.IntegerField(default=1),
-            preserve_default=False,
+            field=models.IntegerField(null=True),
         ),
         migrations.AddField(
             model_name='course_enrollment',
@@ -64,7 +63,7 @@ class Migration(migrations.Migration):
             name='Student_Enrollment',
             fields=[
                 ('enrollment_id', models.AutoField(primary_key=True, serialize=False)),
-                ('status', models.IntegerField()),
+                ('status', models.CharField(default='Ongoing', max_length=10)),
                 ('grades', models.CharField(max_length=3)),
                 ('date_enrolled', models.DateTimeField()),
                 ('course_batch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sitlms_app.course_enrollment')),

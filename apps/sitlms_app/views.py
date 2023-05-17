@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from .forms import CsvModelForm
-from .models import Csv
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -18,6 +18,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.models import Admin
 from django.core.exceptions import PermissionDenied
+from apps.sitlms_app.crud.enrolled_course import string_to_date 
+from datetime import datetime, date
+from django.db.models import Q
 
 
 # Custom test function that checks if the user is an admin
@@ -160,3 +163,77 @@ def reset_pw_request_success(request):
     """ This function renders the success page for password reset request """
     
     return render(request, 'registration/reset_pw_email.html')
+
+
+
+
+def change_schedule_approval(request):
+    
+    template = loader.get_template('admin_module/instructor_change_schedule_approval.html')
+    change_schedule_list = Change_Schedule.objects.filter(status='Pending').values()
+    # print(change_schedule_list)
+    context = {'change_schedule_list':change_schedule_list
+                }
+    return HttpResponse(template.render(context,request))
+
+
+
+def approve_change_schedule(request, id):
+
+    # For changing status from pending to approved
+    change_schedule = Change_Schedule.objects.filter(id=id)
+    change_schedule.update(status="Approved", approval_date = datetime.now())
+
+
+    # For changing schedules in course enrollment table
+    change_schedule_all = Change_Schedule.objects.get(id=id)
+    enrolled_course = Course_Enrollment.objects.filter(course_batch=change_schedule_all.course_batch) #ex: Python101
+    enrolled_course.update(
+        start_date = change_schedule_all.new_start_date,
+        end_date = change_schedule_all.new_end_date,
+        start_time = change_schedule_all.new_start_time,
+        end_time = change_schedule_all.new_end_time,
+        frequency = change_schedule_all.new_frequency
+    )
+    
+    #DELETES THE RECORD IN SCHEDULED TABLE, THEN SAVE ANOTHER RECORD
+    enrolled_course_all = Course_Enrollment.objects.get(course_batch=change_schedule_all.course_batch)
+    scheduled_course = list(Schedule.objects.filter(**{'course_batch':enrolled_course_all.course_batch}).values()) #gets each entry of the argument id from schedule table
+
+
+    frequency = enrolled_course_all.frequency
+    start_date = enrolled_course_all.start_date
+    end_date = enrolled_course_all.end_date
+    start_time = enrolled_course_all.start_time
+    end_time = enrolled_course_all.end_time
+    course_batch = enrolled_course_all.course_batch
+
+    print(type(start_date), type(end_date), str(start_time), str(end_time))
+
+
+    for record in scheduled_course:
+        deleted_scheduled_course = Schedule.objects.get(schedule_id=record['schedule_id'])
+        deleted_scheduled_course.delete()
+    
+    string_to_date(str(frequency), str(start_date), str(end_date), str(start_time)[:5], str(end_time)[:5], course_batch)
+
+    return redirect('/sit-admin/course_enrollment/change_schedule/')
+
+
+def reject_change_schedule(request, id):
+
+    change_schedule = Change_Schedule.objects.filter(id=id)
+    change_schedule.update(status="Rejected", approval_date = datetime.now())
+
+    return redirect('/sit-admin/course_enrollment/change_schedule/')
+
+def view_history(request):
+    
+    #change_schedule_list = Change_Schedule.objects.filter(status='Pending').values()
+    template = loader.get_template('admin_module/instructor_history_change_schedule_requests.html')
+    history_list = Change_Schedule.objects.filter(Q(status='Approved')| Q(status='Rejected') ).values()
+    print(history_list)
+    context = {'change_schedule_list':history_list}
+
+    return HttpResponse(template.render(context,request))
+ 

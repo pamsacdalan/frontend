@@ -20,7 +20,11 @@ urlpatterns = [
     path('instructor/course/<str:id>/create_announcement', views.create_announcement, name='create_announcement'),
     path('instructor/course/<str:course_batch>/remove_announcement/<int:schedule_id>', views.remove_announcement, name='delete_announcement'),
     path('instructor/course/<str:course_batch>/edit_announcement/<int:schedule_id>', views.edit_announcement, name='edit_announcement'),
-    
+    path('instructor/view_courses/view_pending_requests/', views.view_pending_requests, name = 'view_pending_requests'),
+    path('instructor/view_courses/view_pending_requests/cancel/<int:id>', views.cancel_request, name='cancel_request'),
+    path('instructor/view_courses/<str:id>/', views.export_csv, name='export_csv')
+
+      
     
 ]
    

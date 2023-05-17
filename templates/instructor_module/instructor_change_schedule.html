@@ -1,5 +1,92 @@
 <h1>Hello</h1>
 
+<form method="post">
+    {% csrf_token %}
+
+    <label for="start_date">Start Date</label>
+    <input type="date" id="start_date" name="start_date" placeholder="{{enrolled_course.start_date | date:'Y-m-d'}}" value="{{enrolled_course.start_date | date:'Y-m-d'}}"  required>
+    <br><br>
+
+    <label for="end_date">End Date</label>
+    <input type="date" id="end_date" name="end_date" placeholder="{{enrolled_course.end_date | date:'Y-m-d'}}" value="{{enrolled_course.end_date | date:'Y-m-d'}}"  required>
+    <br><br>
+
+
+    
+    <label for="start_time">Start Time</label>
+    <input type="time" id="start_time" name="start_time" placeholder="{{enrolled_course.start_time | date:'H:i'}}" value="{{enrolled_course.start_time | date:'H:i'}}"  required>
+
+    <br><br>
+    <label for="end_time">End Time</label>
+    <input type="time" id="end_time" name="end_time" placeholder="{{enrolled_course.end_time | date:'H:i'}}" value="{{enrolled_course.end_time | date:'H:i'}}"  required>
+    
+    <br><br>
+    <label for="new_frequency">New Frequency:</label>
+    <select id="new_frequency" name= "new_frequency" required>
+        <option selected hidden >{{old_frequency}}</option>
+        {% for value in lof%}
+        <option value="{{value}}">{{value}}</option>
+         {% endfor %}
+    </select>
+
+
+    <br><br>
+    <a href='/sit-instructor/instructor/view_courses'></a>
+    <input class="button" type="submit" value="Save" onclick="return validateDates()">
+    <div id="error-message" style="color: red;"></div>
+
+</form>
+
+
+<br><br>
 
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">Back</a></button>
+
+
+<script>
+
+    function validateDates() {
+    var errorMessage = document.getElementById('error-message');
+    var startDate = new Date(document.getElementById("start_date").value);
+    var endDate = new Date(document.getElementById("end_date").value);
+    var startTime = document.getElementById("start_time").value;
+    var endTime = document.getElementById("end_time").value;
+    var frequency = document.getElementById("frequency").value; 
+
+    if (startDate > endDate) {
+        errorMessage.textContent = 'End date must be after start date.';
+        return false;
+
+        }
+
+    
+    else if (startDate < endDate) {
+        if (frequency == 0) {
+        errorMessage.textContent = 'Startdate should be equal to endDate.';
+        return false;
+        }
+
+        else{    
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+        }
+
+        
+        }
+    else { //equal ang dates
+        
+        if (startTime > endTime) {
+            errorMessage.textContent = 'End time must be after start time.';
+            return false;
+        }    
+        if (frequency !== 0 ) {
+            errorMessage.textContent = 'Frequency should be Once since start date = end date';
+            return false;
+        }
+        errorMessage.textContent = ''; // Clear the error message
+        return true;
+
+    }
+    }    
+</script>

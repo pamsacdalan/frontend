@@ -47,8 +47,10 @@ urlpatterns = [
     path('program/add/',program.add,name="add_program"),
     path('program/edit/<int:id>',program.edit,name="edit_program"),
     path('program/delete/<int:id>',program.delete,name="delete_program"),
-    
-
+    path('course_enrollment/change_schedule/', views.change_schedule_approval, name='change_schedule'),
+    path('course_enrollment/change_schedule/approve/<int:id>/', views.approve_change_schedule, name='approve_change_schedule'),
+    path('course_enrollment/change_schedule/reject/<int:id>/', views.reject_change_schedule, name='reject_change_schedule'),
+    path('course_enrollment/change_schedule/view_history/', views.view_history, name='view_history'),
    
     
 ]
