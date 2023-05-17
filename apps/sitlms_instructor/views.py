@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from apps.sitlms_app.models import Course_Enrollment
 from apps.sitlms_instructor.forms import ActivityForms
-from apps.sitlms_instructor.models import Course_Activity, Course_Announcement
+from apps.sitlms_instructor.models import Activity_Comments, Course_Activity, Course_Announcement
 from dateutil.parser import parse
 from datetime import date, datetime
 from django.urls import reverse
@@ -311,5 +311,20 @@ def edit_announcement(request, course_batch, schedule_id):
     
     return render(request, "instructor_module/edit_announcement.html", context)
 
-def render_calendar(request):
-    return render(request,'instructor/calendar.html')
+def activity_comments(request, id, pk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
+
+    context = {
+        'batch':batch,
+        'act':activity,
+        'cmt':comment_items,
+             }
+    if request.method == "POST":
+        msg = request.POST['msg_area']
+        user = request.user
+        comment = Activity_Comments(course_activity = activity, uid = user,content = msg)
+        comment.save()
+        return redirect('activity_comments',id=id,pk=pk)
+    return render(request, 'instructor_module/activity_comment.html',context)

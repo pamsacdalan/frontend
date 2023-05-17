@@ -2,21 +2,11 @@
 <div>
     <table>
         <th>Activity Title</th>
-        <th>Description</th>
-        <th>Attachment</th>
-        <th>Given Date</th>
         <th>Due Date</th>
-        <th>Items</th>
-        <th>Grading</th>
         {% for activity in acts %}
         <tr>    
-            <td>{{activity.activity_title}}</td>
-            <td>{{activity.activity_desc}}</td>
-            <td>{{activity.activity_attachment}}</td>
-            <td>{{activity.start_date}}</td>    
+            <td><a href="{% url 'activity_comments' id activity.pk %}">{{activity.activity_title}}</a></td>    
             <td>{{activity.deadline}}</td>
-            <td>{{activity.max_score}}</td>
-            <td>{{activity.grading_percentage}}</td>
             <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
             <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
         </tr>
