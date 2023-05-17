@@ -140,8 +140,9 @@ def view_students(request, id):
     
     return HttpResponse(template.render(context,request))  
 
-
+@user_passes_test(is_instructor)
 def change_schedule(request, id): #need notif na nasend na yung request.. helllppp
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     # template = loader.get_template('instructor_module/instructor_change_schedule.html')
     enrolled_course = Course_Enrollment.objects.get(course_batch=id) #ex: Python101
     course_batch = enrolled_course.course_batch
@@ -226,7 +227,7 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
     
     return render(request, "instructor_module/instructor_change_schedule.html", context)
 
-
+@user_passes_test(is_instructor)
 def view_pending_requests(request):
     template = loader.get_template('instructor_module/instructor_view_pending_requests.html')
     pending_requests = Change_Schedule.objects.filter(status='Pending').values()
@@ -273,7 +274,9 @@ def add_assignment(request, id):
         form = ActivityForms()
     return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
 
+@user_passes_test(is_instructor)
 def update_assignment(request,id,pk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     context = {
@@ -301,7 +304,9 @@ def update_assignment(request,id,pk):
         return HttpResponseRedirect(reverse('view_assignments', kwargs={'id': id}))
     return render(request, "instructor_module/edit_assignment.html", context)
 
+@user_passes_test(is_instructor)
 def delete_assignment(request, id, pk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     context = {
@@ -395,7 +400,9 @@ def edit_announcement(request, course_batch, schedule_id):
     
     return render(request, "instructor_module/edit_announcement.html", context)
 
+@user_passes_test(is_instructor)
 def activity_comments(request, id, pk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
@@ -418,7 +425,9 @@ def activity_comments(request, id, pk):
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/activity_comment.html',context)
 
+@user_passes_test(is_instructor)
 def download_activity_attachment(request, id, pk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     # batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
@@ -436,13 +445,14 @@ def download_activity_attachment(request, id, pk):
 
     return response
 
+@user_passes_test(is_instructor)
 def cancel_request(request, id):
     schedule = Change_Schedule.objects.filter(id=id)
     schedule.update(status='Cancelled', approval_date = datetime.now() )
 
     return redirect('/sit-instructor/instructor/view_courses/view_pending_requests/')
 
-
+@user_passes_test(is_instructor)
 def export_csv(request, id):
     students = Student_Enrollment.objects.filter(course_batch=id).values('student_id_id')
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
@@ -471,8 +481,9 @@ def export_csv(request, id):
 
 
     
-
+@user_passes_test(is_instructor)
 def edit_comments(request,id,pk,fk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) 
     comment_id = Activity_Comments.objects.get(id=fk)
@@ -491,7 +502,9 @@ def edit_comments(request,id,pk,fk):
          return redirect('activity_comments', id=id,pk=pk)
     return render(request, "instructor_module/edit_comments.html", context)
 
+@user_passes_test(is_instructor)
 def delete_comments(request,id,pk,fk):
+    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     comment_id = Activity_Comments.objects.get(id=fk)
