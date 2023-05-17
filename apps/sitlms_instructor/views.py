@@ -471,3 +471,37 @@ def export_csv(request, id):
 
 
     
+
+def edit_comments(request,id,pk,fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk) 
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':activity,
+        'comment':comment_id,
+    }
+    if request.method == 'POST':
+         person = request.POST['target']
+         user  = request.user
+         msg = request.POST['txtmsg']
+         comment_id.uid = user
+         comment_id.content = msg
+         comment_id.save(update_fields=['uid','content'])
+         return redirect('activity_comments', id=id,pk=pk)
+    return render(request, "instructor_module/edit_comments.html", context)
+
+def delete_comments(request,id,pk,fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    act= Course_Activity.objects.get(id=pk)
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':act,
+        'comment':comment_id,
+        'id':id,
+    }
+    if request.method == 'POST':
+        comment_id.delete()
+        return redirect('activity_comments',id=id,pk=pk)
+    return render(request, 'instructor_module/delete_comments.html',context)

@@ -10,6 +10,7 @@
     <h3>Activity Total Items: {{act.max_score}}</h3>
     <h3>Activity Grading: {{act.grading_percentage}}</h3>
 
+    <h5>Comment here!</h5>
     <textarea rows="5" name="msg_area"></textarea><br>  
     <button type="submit">Send</button>
 </form>
@@ -24,8 +25,8 @@
         <td>{{items.content}}</td>
         <td>{{items.timestamp}}</td>
         
-        <td>Edit</td>
-        <td>Delete</td>
+        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a></td>
+        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a></td>
     </tr>
     {% endfor %}
 </table>
