@@ -3,22 +3,30 @@
 <form method="post">
     {% csrf_token %}
 
+    <h3>Old Start Date: {{enrolled_course.start_date}}</h3>
+    <h3>Old End Date: {{enrolled_course.end_date}}</h3>
+    <h3>Old Start Time: {{enrolled_course.start_time}}</h3>
+    <h3>Old End Time: {{enrolled_course.end_time}}</h3>
+    <h3>Old Frequency: {{old_frequency}}</h3>
+
+    
+
     <label for="start_date">Start Date</label>
-    <input type="date" id="start_date" name="start_date" placeholder="{{enrolled_course.start_date | date:'Y-m-d'}}" value="{{enrolled_course.start_date | date:'Y-m-d'}}"  required>
+    <input type="date" id="start_date" name="start_date" required>
     <br><br>
 
     <label for="end_date">End Date</label>
-    <input type="date" id="end_date" name="end_date" placeholder="{{enrolled_course.end_date | date:'Y-m-d'}}" value="{{enrolled_course.end_date | date:'Y-m-d'}}"  required>
+    <input type="date" id="end_date" name="end_date"  required>
     <br><br>
 
 
     
     <label for="start_time">Start Time</label>
-    <input type="time" id="start_time" name="start_time" placeholder="{{enrolled_course.start_time | date:'H:i'}}" value="{{enrolled_course.start_time | date:'H:i'}}"  required>
+    <input type="time" id="start_time" name="start_time"  required>
 
     <br><br>
     <label for="end_time">End Time</label>
-    <input type="time" id="end_time" name="end_time" placeholder="{{enrolled_course.end_time | date:'H:i'}}" value="{{enrolled_course.end_time | date:'H:i'}}"  required>
+    <input type="time" id="end_time" name="end_time"  required>
     
     <br><br>
     <label for="new_frequency">New Frequency:</label>
