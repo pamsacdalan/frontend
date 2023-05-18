@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from apps.sitlms_app import views
-from .crud import student, instructor, course, sit_admin, enrolled_course, student_enrollment, program
+from .crud import student, instructor, course, sit_admin, enrolled_course, student_enrollment, program, access_test
 
 urlpatterns = [
     # path('', views.admin_index,name="sit_admin_dashboard"),
@@ -51,6 +51,7 @@ urlpatterns = [
     path('course_enrollment/change_schedule/approve/<int:id>/', views.approve_change_schedule, name='approve_change_schedule'),
     path('course_enrollment/change_schedule/reject/<int:id>/', views.reject_change_schedule, name='reject_change_schedule'),
     path('course_enrollment/change_schedule/view_history/', views.view_history, name='view_history'),
+    path('accounts/password_reset_v2',access_test.CustomPasswordResetView.as_view(), name='password_reset_v2'),
    
     
 ]

@@ -169,7 +169,7 @@
                           </div>
                           </form>                  
                           <br>
-                          <form method="post" action="/accounts/password_reset/">
+                          <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
                             {% csrf_token %}
                             <input type="hidden" name="email" value="{{ email }}">
                             <input class="btn btn-dark" type="submit" value="Reset Password" />

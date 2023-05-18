@@ -182,9 +182,9 @@
 
                         </form>
                             
-                            <form method="post" action="/accounts/password_reset/">
+                            <form method="post" action="{% url 'password_reset_v2' %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="email" value="{{ instructor.user.email }}">
+                                <input type="hidden" name="email" value="{{ instructor.user.email }}"  target="_blank">
                                 <!-- <input type="submit" value="Reset Password" /> -->
 
                                 <input class="btn btn-secondary" type="submit" value="Reset Password">

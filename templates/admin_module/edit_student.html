@@ -234,7 +234,7 @@
 
                             <!-- reset Password -->
                             <div class="container-fluid">
-                                <form method="post" action="/accounts/password_reset/">
+                                <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
                                     {% csrf_token %}
                                     <div class="form-group mb-2">
                                         <div class="row">
