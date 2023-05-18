@@ -13,11 +13,21 @@ def view(request):
     template = loader.get_template('admin_module/view_program.html')
     programs = Program.objects.all()
 
-    context = {
-            'programs':programs,
-            }
-
+    # for pagination
+    page = request.GET.get('page', 1) # default page (default to first page)
+        
+    items_per_page = 5
+    paginator = Paginator(programs, items_per_page)
+    try:
+            programs_page = paginator.page(page)
+    except PageNotAnInteger:
+            programs_page = paginator.page(1)
+    except EmptyPage:
+            programs_page = paginator.page(paginator.num_pages)
+                
+    context = {'programs_page':programs_page, 'programs': programs}
     return HttpResponse(template.render(context,request))
+
 
 @user_passes_test(is_admin)
 def add(request):

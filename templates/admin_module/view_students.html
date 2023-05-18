@@ -273,7 +273,7 @@
                             {% if students_page.has_other_pages %}
                                 <ul class="pagination pagination-sm justify-content-end">
                                     {% if students_page.has_previous %}
-                                        <a class="btn btn-outline-secondary btn-sm" href="?page={{ instructor_page.previous_page_number }}">Previous</a>
+                                        <a class="btn btn-outline-secondary btn-sm" href="?page={{ students_page.previous_page_number }}">Previous</a>
                                     {% else %}
                                         <button class="btn btn-outline-secondary btn-sm"disabled><span>Previous</span></button></li>
                                     {% endif %}

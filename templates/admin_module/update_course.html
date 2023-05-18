@@ -152,31 +152,40 @@
             <div class="container-fluid">
                 <div class="card shadow mb-2">
                     <div class="card-header py-3">
-                        <h6 class="m-1 font-weight-bold text-secondary">Course Details</h6>
+                        <h6 class="m-1 font-weight-bold text-secondary">Edit Course Details</h6>
                     </div>
 
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
-                                <div>
-                                    <label for="course_desc">Course Description</label>
-                                    <input type="text"  class="form-control" id="course_desc" name="course_desc" placeholder="{{course.course_desc}}" value="{{course.course_desc}}">
-                                    <br><br>
-
-                                    <label for="course_title">Course Title</label>
-                                    <input type="text" class="form-control" id="course_title" name="course_title" placeholder="{{course.course_title}}" value="{{course.course_title}}">
-                                    <br><br>
-                                    <br><br>
-
-                                    <button class="btn btn-primary btn-icon-split btn-sm" type="submit">
-                                        <span class="icon text-white-50">
-                                            <i class="fa fa-check"></i>
-                                        </span>
-                                        <span class="text">Submit</span>
-                                    </button>
-                                
-                                    <br><br>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class = "col-4">
+                                        <label for="course_desc">Course Description:</label>
+                                        <input type="text"  class="form-control" id="course_desc" name="course_desc" placeholder="{{course.course_desc}}" value="{{course.course_desc}}">
+                                        <br><br>
+                                    </div>
                                 </div>
+                                <div class="row">
+                                    <div class = "col-4">
+                                        <label for="course_title">Course Title:</label>
+                                        <input type="text" class="form-control" id="course_title" name="course_title" placeholder="{{course.course_title}}" value="{{course.course_title}}">
+                                        <br><br>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br><br>
+                            <div class="container-fluid">
+                                <button class="btn btn-primary btn-icon-split" type="submit">
+                                    <span class="icon text-white-50">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    <span class="text">Submit</span>
+                                </button>
+                            </div>
+
+                                
                         </form>
                      </div>
                     

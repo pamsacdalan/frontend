@@ -1,16 +1,197 @@
-<h1>Edit Program</h1>
+{% extends './base.html' %}
 
-<form method="POST">
-    {% csrf_token %}
+{% block Topbar %}
+            <!-- Topbar -->
+            <div class="container-fluid">
 
-    <label for="program_code">Program Code</label>
-    <input type="text" id="program_code" name="program_code" placeholder="{{program.program_code}}" value="{{program.program_code}}" required>
-    <br><br>
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-6">
+                    <h3 class="h3 mb-0 text-gray-800"> ADMINISTRATOR </h3>
+                </div>               
+            </div>
+{% endblock Topbar %}
 
-    <label for="program_title">Program Title</label>
-    <input type="text" id="program_title" name="program_title" placeholder="{{program.program_title}}" value="{{program.program_title}}" required>
-    <br><br>
 
-    <input class="button" type="submit" value="Submit">
 
-</form>
+{% block sidebar %}
+            <!-- Sidebar Menu -->
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+              <a class="nav-link" href="/sit-admin/dashboard/">
+                  <i class="fas fa-fw fa-tachometer-alt"></i>
+                  <span>DASHBOARD</span>
+              </a>
+          </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                MODULES
+            </div>
+
+            <!-- Nav Item - Courses Collapse Menu-->
+            <li class="nav-item ">
+                <a class="nav-link collapsed" href="../sit-admin/course/" data-toggle="collapse" data-target="#collapseCourses"
+                aria-expanded="true" aria-controls="collapseCourses">
+                    <i class="fa fa-book"></i>
+                    <span> COURSES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseCourses" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course/view_course">View Courses</a>
+                        <a class="collapse-item" href="/sit-admin/course/add_course">Add Courses</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Enrollment Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/course_enrollment/" data-toggle="collapse" data-target="#collapseEnroll"
+                aria-expanded="true" aria-controls="collapseEnroll">
+                    <i class="fas fa-id-card-alt" aria-hidden="true"></i>
+                    <span> ENROLLMENT </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseEnroll" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Instructors Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
+                aria-expanded="true" aria-controls="collapseInst">
+                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+                    <span>INSTRUCTORS</span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseInst" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/instructor/view/">View Instructors</a>
+                        <a class="collapse-item" href="/sit-admin/instructor/add/">Add Instructors</a>
+                    </div>
+                </div>
+
+            </li>
+
+            <!-- Nav Item - Students Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/student/view/" data-toggle="collapse" data-target="#collapseStudents"
+                aria-expanded="true" aria-controls="collapseStudents">
+                    <i class="fa fa-address-book" aria-hidden="true"></i>
+                    <span> TRAINEES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseStudents" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
+                        <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Program Collapse Menu-->
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProgram"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                <i class="fa fa-users"></i>
+                    <span> CDP PROGRAM </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/program/view/">View Programs</a>
+                        <a class="collapse-item" href="/sit-admin/program/add/">Add Program</a>
+                    </div>
+                </div>
+            </li>
+            
+            <!-- Nav Item - Admmins Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/" data-toggle="collapse" data-target="#collapseAdmin"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fa fa-landmark" aria-hidden="true"></i>
+                    <span> ADMINS </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/list">View Admins</a>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/create">Add Admins</a>
+                    </div>
+                </div>
+            </li>
+
+{% endblock sidebar %}
+
+
+{% block content %}
+
+<!-- Main Table -->
+<div class="container-fluid">
+    <div class="card shadow mb-5">
+        <div class="card-header py-3">
+            <h6 class="m-1 font-weight-bold text-secondary">Edit Program</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class = "col-4">
+                            <label for="program_code">Program Code:</label>
+                            <input type="text" class="form-control" id="program_code" name="program_code" placeholder="{{program.program_code}}" value="{{program.program_code}}" required>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class = "col-4">
+                            <label for="program_title">Program Title:</label>
+                            <input type="text" class="form-control" id="program_title" name="program_title" placeholder="{{program.program_title}}" value="{{program.program_title}}" required>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <!-- Submit Button -->
+                    <button class="btn btn-primary btn-icon-split" type="submit">
+                        <span class="icon text-white-50">
+                            <i class="fa fa-check"></i>
+                        </span>
+                        <span class="text">Submit</span>
+                    </button>
+
+                </div>
+            
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

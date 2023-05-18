@@ -170,69 +170,79 @@
                             </a>
                         </div>
                         <br>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-hover table-bordered table-condensed table-sm" id="dataTable" width="100%" cellspacing="0">
                                 <thead class="table-dark" align="center">
                                     <tr>
+                                        <th></th>
                                         <th>Course Batch</th>
                                         <th>Course Title</th>
                                         <th>Instructor</th>
                                         <th>Course Mode</th>
                                         <th>Session Details</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                        <th>Frequency</th>
-                                        <th>Actions</th>
+
                                     </tr>
                                 </thead>
-                            
-                            <tr>{% for course in enrolled_courses_page %}
-                            
-                                <td name= 'course_batch'>{{course.course_batch}}</td>
-                                <td name= 'course_id'>{{course.course_id}}</td>
-                                <td name= 'instructor_id'>{{course.instructor_id}}</td>
-                                <td name= 'course_mode'>
-                                    {% if course.course_mode == 0%} Webinar
-                                    {% elif course.course_mode == 1%} Onsite
-                                    {% else %} Self-Paced
-                                    {% endif %}
-                                </td>
-                                <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
-                                <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
-                                <td name= 'start_date'>{{course.start_date}}</td>
-                                <td name= 'end_date'>{{course.end_date}}</td>
-                                <td name= 'start_time'>{{course.start_time}}</td>
-                                <td name= 'end_time'>{{course.end_time}}</td>
-                                <td name= 'frequency'>
-                                    {% if course.frequency == 0%} Once
-                                    {% elif course.frequency == 1%} Daily
-                                    {% else %} Weekly
-                                    {% endif %}
-                                </td>
-                                
-                                <!-- {% comment %} 
-                                <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
-                            
-                                <td name= 'course_mode' {% if course.course_mode == 0  %}  > Webinar
-                                    {% endif %}
-                            
-                                <td name= 'course_mode' {% if course.course_mode == 1  %}  > Onsite
-                                    {% endif %}
-                            
-                                <td name= 'course_mode' {% if course.course_mode == 2  %}  > SP
-                                    {% endif %}
-                            
-                                </td> -->
-                                
-                                <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | 
-                                    <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | 
-                                    <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | 
-                                    <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a>
-                                </td>
-                            </tr>{% endfor %}
+                                <tbody>
+                                    {% for course in enrolled_courses_page %}
+                                        <tr data-toggle="collapse" data-target="#table-enrolled-course" class="accordion-toggle">
+                                            <td align="center"><button class="btn btn-secondary btn-circle btn-sm"><span class="fas fa-eye"></span></button></td> 
+                                            <td name= 'course_batch'>{{course.course_batch}}</td>
+                                            <td name= 'course_id'>{{course.course_id}}</td>
+                                            <td name= 'instructor_id'>{{course.instructor_id}}</td>
+                                            <td name= 'course_mode'>
+                                                    {% if course.course_mode == 0 %} Webinar
+                                                    {% elif course.course_mode == 1 %} Onsite
+                                                    {% else %} Self-Paced
+                                                    {% endif %}
+                                            </td>
+                                            <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
+                                            <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
                             </table>
+                                    {% for course in enrolled_courses_page %}
+                                        <tr>
+                                            <td colspan="10" class="hiddenRow">
+                                                <div class="accordian-body collapse" id="table-enrolled-course">
+                                                    <table class="table table-hover table-responsive table-bordered table-condensed table-striped table-sm">
+                                                        <thead class="table-dark" align="center">
+                                                            <tr class="info">
+                                                                <th>Start Date</th>
+                                                                <th>End Date</th>
+                                                                <th>Start Time</th>
+                                                                <th>End Time</th>
+                                                                <th>Frequency</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr data-toggle="collapse"  class="accordion-toggle">
+                                                                <td name= 'start_date'>{{course.start_date}}</td>
+                                                                <td name= 'end_date'>{{course.end_date}}</td>
+                                                                <td name= 'start_time'>{{course.start_time}}</td>
+                                                                <td name= 'end_time'>{{course.end_time}}</td>
+                                                                <td name= 'frequency'>
+                                                                        {% if course.frequency == 0%} Once
+                                                                        {% elif course.frequency == 1%} Daily
+                                                                        {% else %} Weekly
+                                                                        {% endif %}
+                                                                </td>
+                                                                <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | 
+                                                                    <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | 
+                                                                    <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | 
+                                                                    <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                     </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                        
                             
                             <!-- For pagination-->
                             <a>Showing {{enrolled_courses_page.start_index}} - {{enrolled_courses_page.end_index}} of {{enrolled_courses_page.paginator.count}} entries</a>

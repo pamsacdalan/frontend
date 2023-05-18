@@ -169,12 +169,12 @@
                             <body onload="loading()">
                                 <div class="container-fluid">
                                     <div class ="row">
-                                        <div class = "col-3">
+                                        <div class = "col-2">
                                             <label for="course_batch">Course Batch</label>
                                             <input type="text"  class="form-control" id="course_batch" name="course_batch" required>
                                         </div>
             
-                                        <div class = "col-3">
+                                        <div class = "col-2">
                                             <label>Course Title</label>
                                             <select class="form-control" name="course_title" required>
                                                 <option value "" selected disabled hidden> Choose Course </option>
@@ -185,7 +185,7 @@
                                             </select>
                                         </div>
             
-                                        <div class = "col-6">
+                                        <div class = "col-4">
                                             <label for="session_details">Session Details</label>
                                             <input class="form-control" type="text" id="session_details" name="session_details" required>
                                         </div>
@@ -193,23 +193,23 @@
                                     </div>
                                     <br><br>
             
-                                    <div class ="row">
-                                        <div class = "col-3">
+                                    <div class ="row justify-content-evenly">
+                                        <div class = "col-2">
                                             <label for="start_date">Start Date</label>
                                             <input class="form-control" type="date" id="start_date" name="start_date" onchange="updateDropdown()" required>
                                         </div>
             
-                                        <div class = "col-3">
+                                        <div class = "col-2">
                                             <label for="end_date">End Date</label>
                                             <input class="form-control" type="date" id="end_date" name="end_date" onchange="updateDropdown()" required>
                                         </div>
             
-                                        <div class = "col-3">
+                                        <div class = "col-2">
                                             <label for="start_time">Start Time</label>
                                             <input class="form-control" type="time" id="start_time" name="start_time" onchange="updateDropdown()" required>
                                         </div>
             
-                                        <div class = "col-3">
+                                        <div class = "col-2">
                                             <label for="end_time">End Time</label>
                                             <input class="form-control" type="time" id="end_time" name="end_time" onchange="updateDropdown()" required>
                                         </div>
@@ -217,7 +217,7 @@
                                     <br><br>
             
                                     <div class ="row">
-                                        <div class = "col-4">
+                                        <div class = "col-2">
                                             <label for="frequency">Frequency:</label>
                                             <select class="form-control" id="frequency" name="frequency" onchange="updateDropdown()" required>
                                                 <option value "" selected disabled hidden> Choose Frequency </option>
@@ -228,7 +228,7 @@
                                             </select>
                                         </div>
             
-                                        <div class = "col-4">
+                                        <div class = "col-2">
                                             <label>Course Mode: </label>
                                             <select class="form-control" id="course_mode" name="course_mode">
                                                 <option value"" selected disabled hidden> Choose Mode </option>
@@ -243,26 +243,26 @@
                                             <label>Instructor</label>
                                             <select class="form-control" id="myDropdown" name="full_name" required></select>
                                         </div>
-                                </div>
+                                    </div>
             
-                                        <script>
-                                            function loading(){                         
-                                                var professor = {{ full_name | safe}};
-                                                updateDropdown(professor);
-                                            }
+                                    <script>
+                                        function loading(){                         
+                                            var professor = {{ full_name | safe}};
+                                            updateDropdown(professor);
+                                        }
             
             
             
-                                            var dropdown = document.getElementById("myDropdown");
+                                        var dropdown = document.getElementById("myDropdown");
                                             
-                                            function updateDropdown() {
-                                                var myList = {{ schedules|safe}};
-                                                var professor = {{ full_name | safe}};
-                                                var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
-                                                var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
-                                                var startTime = document.getElementById("start_time").value;                //clock start time
-                                                startTime = startTime.split(":").join("");  
-                                                let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
+                                        function updateDropdown() {
+                                            var myList = {{ schedules|safe}};
+                                            var professor = {{ full_name | safe}};
+                                            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+                                            var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+                                            var startTime = document.getElementById("start_time").value;                //clock start time
+                                            startTime = startTime.split(":").join("");  
+                                            let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
             
                                             var endTime = document.getElementById("end_time").value;
                                             endTime = endTime.split(":").join("");
@@ -342,7 +342,7 @@
                                         }
             
                                         function call(professor){
-                                        dropdown.innerHTML = "";
+                                                dropdown.innerHTML = "";
                                                 var defaultOption = document.createElement("option");
                                                 defaultOption.value = "";  // Value for the default option
                                                 defaultOption.text = "Choose Instructor";
@@ -361,20 +361,21 @@
                                             }
                                         }
             
-                                        </script>
-                                    </body>
+                                    </script>
+                                </div>
+                            </body>
                                 
-                                    <br><br>
-                                    <div id="form-container">
-                                        <button class="btn btn-primary btn-icon-split" type="submit" value="Submit" onclick="return validateDates() ">
-                                            <span class="icon text-white-50">
-                                                <i class="fa fa-check"></i>
-                                            </span>
-                                            <span class="text">Submit</span>
-                                        </button>
-                                        <div id="error-message" style="color: red;"></div>
-                                    </div>
-            
+                            <br><br>
+                            <div id="form-container">
+                                <button class="btn btn-primary btn-icon-split" type="submit" value="Submit" onclick="return validateDates() ">
+                                    <span class="icon text-white-50">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    <span class="text">Submit</span>
+                                </button>
+                                <div id="error-message" style="color: red;">
+                                </div>
+                            </div>
                         </form>
         
                                 <script>
@@ -423,9 +424,10 @@
                                     }
                                     }    
                                 </script>   
-                    </div>
+                            </div>
                     <!-- End Body -->
                 </div>
             </div>
+
 
 {% endblock content %}

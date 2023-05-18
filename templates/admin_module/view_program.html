@@ -181,7 +181,7 @@
                                     </tr>
                                 
                                 </thead>
-                                <tr>{% for program in programs %}
+                                <tr>{% for program in programs_page %}
                                         {% comment %} <td>{{program.program_id}}</td> {% endcomment %}
                                         <td>{{program.program_code}}</td>
                                         <td>{{program.program_title}}</td>
@@ -239,6 +239,32 @@
                                 </tr>{% endfor %}
                             </table>                            
                         </div>
+
+                        <!-- For pagination-->
+                        <a>Showing {{programs_page.start_index}} - {{programs_page.end_index}} of {{programs_page.paginator.count}} entries</a>
+                        {% if programs_page.has_other_pages %}
+                            <ul class="pagination pagination-sm justify-content-end">
+                                {% if programs_page.has_previous %}
+                                    <a class="btn btn-outline-secondary btn-sm" href="?page={{ programs_page.previous_page_number }}">Previous</a>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary btn-sm"disabled><span>Previous</span></button></li>
+                                {% endif %}
+
+                                {% for i in programs_page.paginator.page_range %}
+                                    {% if programs_page.number == i %}
+                                        <button class="btn btn-outline-secondary btn-sm active"><span>{{ i }} <span class="sr-only">(current)</span></span></button>
+                                    {% else %}
+                                        <a href="?page={{ i }}"class="btn btn-outline-secondary btn-sm">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if programs_page.has_next %}
+                                    <a href="?page={{ programs_page.next_page_number }}" class="btn btn-outline-secondary btn-sm">Next</a>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary btn-sm" disabled><span>Next</span></button>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
                     </div>
                 </div>
             </div>
