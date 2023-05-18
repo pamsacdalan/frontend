@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-
+{% load static %}
 
 {% block Topbar %}
             <!-- Topbar -->
@@ -156,26 +156,51 @@
                         <h6 class="m-1 font-weight-bold text-secondary">Update Admin Details</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-
-                          <form method="post">
-                          <div>
-                            {% csrf_token %} 
-                            {{ form2.as_p }}
-                            <hr>
-                            {{ form1.as_p }}  
-                            <br>  
-                            <input class="btn btn-primary" type="submit" value="Submit" />
-                          </div>
-                          </form>                  
-                          <br>
-                          <form method="post" action="/accounts/password_reset/">
-                            {% csrf_token %}
-                            <input type="hidden" name="email" value="{{ email }}">
-                            <input class="btn btn-dark" type="submit" value="Reset Password" />
+                        <br>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-1" align='right'>
+                                    <img class="img-thumbnail rounded-circle" src="{% static '/img/password.png' %}" width="50" height="50">
+                                </div>
+                                <div class="col-4">
+                                    <p>Would you like to reset the password for this admin?</p>
+                                </div>
+                                <div class="col-6">
+                                    <form method="post" action="/accounts/password_reset/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="email" value="{{ email }}">
+                                        <button class="btn btn-dark btn-icon-split button--loading" type="submit" value="Reset Password" />
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-undo"></i>
+                                            </span>
+                                            <span class="text">Reset Password</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="container">
+                            <div style="padding-left:16px">
+                                <form method="post">
+                                    <div>
+                                        {% csrf_token %} 
+                                        {{ form2.as_p }}
+                                        <hr>
+                                        {{ form1.as_p }}  
+                                        <br> 
+                                        <br> 
+                                        <button class="btn btn-primary btn-icon-split" type="submit" value="Submit" />
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Submit</span>
+                                        </button>
+                                    </div>
+                            </form>
+                                <br>                  
                             
-                          </form>
-
+                            </div>
 
                         </div>
 

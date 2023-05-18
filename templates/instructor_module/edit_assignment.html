@@ -1,0 +1,21 @@
+<div>
+    <h1>Edit Assignment</h1>
+    Edit Assignment for {{batch}}<br>
+    <form method="POST" action="{% url 'update_assignment' batch.course_batch act.id %}">
+      {%csrf_token%}
+      <br>
+      <label>Title</label><br>
+      <input type="text" value="{{act.activity_title}}" name="title"><br>
+      <label>Description</label><br>
+      <textarea rows="3" name="description">{{act.activity_desc}}</textarea><br>
+      <!-- <label>Attachment</label><br>
+      <input type="file" value="{{act.activity_attachment}}" name="attachment"><br> -->
+      <label>Due Date</label><br>
+      <input type="date" value="{{act.deadline|date:'Y-m-d'}}" name="d1"><input type="time" name ="t1" value="{{act.deadline|time:'H:i'}}"><br>
+      <label>Items</label><br>
+      <input type="text" value="{{act.max_score}}"name="items"><br>
+      <label>Grading</label><br>
+      <input type="text" value="{{act.grading_percentage}}"name="gr"><br>
+      <button type="submit">Update</button>
+    </form>
+</div>

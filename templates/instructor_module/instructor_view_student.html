@@ -1,7 +1,9 @@
 <h1>
     Students for {{id}}
 </h1>
-
+<button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
+<button><a href="{% url 'view_assignments' id %}">Assignments</a></button>
+<br><br>
 <table border="1">
     <tr>
         <th>Program</th>
@@ -13,7 +15,7 @@
 <tr>{% for detail in new_list%}
 
     <td name= 'program_code'>{{detail.program_code}}</td>
-    <td name= 'full_name'>{{detail.first_name}} {{detail.last_name}}</td>
+    <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
     <td name= 'email'>{{detail.username}}</td>
     
     <!-- <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a> </td> -->
@@ -21,6 +23,9 @@
 </tr>
     {% endfor %}
 </table>
+<br>
+<br>
+<button><a style="color: #000;" href="/sit-instructor/instructor/view_courses/{{id}}/">Download Student List</a></button>
 <br>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">Back</a></button>

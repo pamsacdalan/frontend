@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.sitlms_app',
+    'apps.sitlms_instructor',
+    'apps.sitlms_student',
+    
     
 ]
 
@@ -137,6 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages')  # change this to a proper location # likely, di ito sa project, napunta sa akin sa D:\tmp\app-messages
 
 LOGIN_REDIRECT_URL = '/'
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

@@ -1,5 +1,0 @@
-student_no,program_id,employee _id,email,firstname,middlename,lastname,birthday,employment_status,active_deactive,access_type
-3,1,3458,demo15@gmail.com,Test1,Middle1,Last1,1999-07-10,Training,Active,2
-4,2,3459,demo25@gmail.com,Test2,Middle2,Last2,1999-07-11,Deployed,Active,2
-5,3,3460,demo35@gmail.com,Test3,Middle3,Last3,1999-07-12,Training,Active,2
-4,5,3461,demo45@gmail.com,Test4,Middle4,Last4,1999-07-13,Training,Active,2

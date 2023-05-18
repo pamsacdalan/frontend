@@ -10,7 +10,7 @@ from .sit_admin import generate_random_string
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from apps.sitlms_app.crud.access_test import is_admin
+from apps.sitlms_app.crud.access_test import is_admin, send_initial_password_resest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def pass_gen():
@@ -57,7 +57,7 @@ def student(request):
                 password=generate_random_string(8)
                 if User.objects.filter(email=email).exists():
                     messages.info(request, 'Email Already Used. Contact admin to edit profile instead.')
-                    return redirect('admincreate')
+                    return redirect('/sit-admin/student')
                 else:
                     user = User.objects.create_user(username=username, email = email, password=password, first_name=first_name, last_name=last_name, is_active=True,)
                     user.save()
@@ -69,6 +69,7 @@ def student(request):
                     student = Students_Auth(user=user, middlename=middlename, birthdate=birthdate, program_id=program_id, student_no=student_no, employment_status=employment_status)
                     student.save()
                     messages.success(request, "Successfully Added")
+                    send_initial_password_resest(request, user)
                     return redirect("/sit-admin/student/view")
             except Exception as e:
                 print(str(e))

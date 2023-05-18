@@ -1,0 +1,18 @@
+<a href="{% url 'add_assignment' id %}">Create Assignment</a><br><br>
+<div>
+    <table>
+        <th>Activity Title</th>
+        <th>Due Date</th>
+        {% for activity in acts %}
+        <tr>    
+            <td><a href="{% url 'activity_comments' id activity.pk %}">{{activity.activity_title}}</a></td>    
+            <td>{{activity.deadline}}</td>
+            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
+            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<br>
+<button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
+<button><a href="{% url 'view_students' id %}">View Students</a></button>

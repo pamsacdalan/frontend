@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import datetime, time
+from django.utils import timezone
 # Create your models here.
 
 active_inactive = (
@@ -110,7 +111,7 @@ class Course_Enrollment(models.Model):
     end_date = models.DateField()
     start_time = models.TimeField(default=time(0,0,0))
     end_time = models.TimeField(default=time(0,0,0))
-    frequency = models.IntegerField()
+    frequency = models.IntegerField(null=True)
     course_mode = models.IntegerField()
 
     def __str__(self):
@@ -170,3 +171,21 @@ class Csv(models.Model):
     
     def __str__(self):
         return f"File id: {self.id}"
+    
+
+class Change_Schedule(models.Model):
+    id = models.AutoField(primary_key=True)
+    course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
+    old_start_date = models.DateField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    old_end_date = models.DateField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    old_start_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    old_end_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    new_start_date = models.DateField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    new_end_date = models.DateField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    new_start_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    new_end_time = models.TimeField(null= True, blank=True, auto_now_add=False, auto_now=False)
+    old_frequency = models.IntegerField(null=True)
+    new_frequency = models.IntegerField(null=True)
+    request_date = models.DateTimeField(default=timezone.now)
+    approval_date = models.DateTimeField(null=True)
+    status = models.CharField(max_length=255, default="Pending")

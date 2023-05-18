@@ -1,4 +1,9 @@
 <table border="1">
+
+    <a href="/sit-instructor/instructor/view_courses/view_pending_requests/">View Pending Change Schedule Requests</a>
+    <br>
+    <br>
+
     <tr>
         <th>Course Batch</th>
         <th>Course Title</th>
@@ -15,7 +20,7 @@
 
 <tr>{% for course in course_enrolled_list%}
 
-    <td name= 'course_batch'>{{course.course_batch}}</td>
+    <td name= 'course_batch'><a href="/sit-instructor/instructor/course/{{course.course_batch}}">{{course.course_batch}}</a></td>
     <td name= 'course_id'>{{course.course_id_id}}</td>
     <td name= 'course_mode'>
         {% if course.course_mode == 0%} Webinar
@@ -36,7 +41,7 @@
         {% else %} Weekly
         {% endif %}
     </td>
-    <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a>
+    <td> <a href="/sit-instructor/instructor/view_students/{{course.course_batch}}"> View Students</a>
         <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}">Request for Change Schedule</a> 
     </td>
     
@@ -46,3 +51,7 @@
 <br>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor">Back</a></button>
+{% if user.is_authenticated %}
+<br><br>
+<a class="nav-link" href="{% url 'logout' %}">Log out</a>
+{% endif %}

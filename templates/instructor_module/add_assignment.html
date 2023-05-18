@@ -1,0 +1,37 @@
+{{ error_msg }}
+<form method="POST" action="{% url 'add_assignment' id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+        <label>Title</label>
+        <br>
+        {{form.activity_title}}
+    </div>
+    <div>
+        <label>Description</label>
+        <br>
+        {{form.activity_desc}}
+        
+    </div>
+    <div>
+        <label>URL Attachment</label>
+        <br>
+        {{form.activity_attachment}}
+    </div>
+    <div>
+        <label>Due Date & Time</label>
+        <br>
+        {{form.deadline}}
+    </div>  
+    <div>
+        <label>Total Score</label>
+        <br>
+        {{form.scores}}
+    </div> 
+    <div>
+        <label>Assignment Percentage</label>
+        <br>
+        {{form.percentage}}
+    </div> 
+    <button type="submit">Add Activity</button>
+
+</form>

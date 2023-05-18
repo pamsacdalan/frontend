@@ -1,12 +1,12 @@
-Hi !
-
-
 
 {% if user.is_authenticated %}
-<li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
-{% endif %}
-
+<a class="nav-link" href="{% url 'logout' %}">Log out</a>
+<h1>Hi! Instructor</h1>
 <br>
 <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">View Courses</a></button>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+<h1>You don't have access to this module, sign in as instructor</h1>
+{% endif %}
+
+

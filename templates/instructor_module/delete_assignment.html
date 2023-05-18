@@ -1,0 +1,10 @@
+
+<div>
+    <form action = "{% url 'delete_assignment' batch.course_batch act.id %}" method="POST">
+        {%csrf_token%}
+        <h2>Are you sure you want to delete this assignment? </h2><br>
+        <h3>({{act.activity_title}})</h3>
+        <button type="submit">Confirm</button>
+        
+    </form>
+</div>
