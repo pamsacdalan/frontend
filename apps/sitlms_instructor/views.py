@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import user_passes_test
 from functools import partial
 from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
+from django.db.models import Q
 
 
 def is_instructor(user):
@@ -116,6 +117,8 @@ def view_students(request, id):
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
     user_ids = student_auth_details.values_list('user_id')
     student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username').order_by('id')
+    # print(student_details)
+    # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
     program_ids = student_auth_details.values_list('program_id_id')
     program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
@@ -131,7 +134,13 @@ def view_students(request, id):
             if student_auth_details[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_auth_details[x], **student_details[x], **program})
 
-    # print(new_list)
+    print(new_list)
+
+    def sort_by_name(dictionary):
+        return dictionary['last_name'].lower()
+
+    new_list = sorted(new_list, key=sort_by_name)
+    print(new_list)
 
 
     context = {'new_list': new_list,
@@ -230,7 +239,16 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
 @user_passes_test(is_instructor)
 def view_pending_requests(request):
     template = loader.get_template('instructor_module/instructor_view_pending_requests.html')
-    pending_requests = Change_Schedule.objects.filter(status='Pending').values()
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_id = Instructor_Auth.objects.get(user_id=user_id)
+    course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values('course_batch') 
+    print(course_enrolled)
+
+    pending_requests = Change_Schedule.objects.filter(status='Pending', course_batch__in=course_enrolled).values()
+    print(pending_requests)
     context = {'pending_requests':pending_requests}
     return HttpResponse(template.render(context,request))
 
@@ -458,6 +476,7 @@ def export_csv(request, id):
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
     user_ids = student_auth_details.values_list('user_id')
     student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username', 'id').order_by('id')
+    student_details = sorted(list(student_details), key=lambda x: x['last_name'].lower())
     
     program_ids = student_auth_details.values_list('program_id_id')
     program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')
@@ -470,6 +489,7 @@ def export_csv(request, id):
     writer = csv.writer(response)
     writer.writerow(['Program', 'Last_Name', 'First_Name', 'Email'])
 
+    
     
     for student in student_details:
         program = Students_Auth.objects.values('program_id').get(user_id = student['id'])
