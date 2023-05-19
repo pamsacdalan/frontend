@@ -75,6 +75,6 @@ class CustomPasswordResetView(PasswordResetView):
             fail_silently=False, 
             html_message=html_message,
         )
-        print('email sent')
+        # print('email sent')
         # return super().form_valid(form)
         return HttpResponseRedirect('/accounts/password_reset/done/')
