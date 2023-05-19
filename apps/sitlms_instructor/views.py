@@ -65,9 +65,9 @@ def post_activity(request):
         deadline = d1+" "+d2
         # due_date = request.POST['deadline']
         activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline)
-        print(request.POST['activity_title'])
-        print(d1)
-        print(d2)
+        # print(request.POST['activity_title'])
+        # print(d1)
+        # print(d2)
         activity_post.save()
         messages.success(request,"Success!")
         return redirect("/sit-instructor/instructor")
@@ -134,13 +134,13 @@ def view_students(request, id):
             if student_auth_details[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_auth_details[x], **student_details[x], **program})
 
-    print(new_list)
+    # print(new_list)
 
     def sort_by_name(dictionary):
         return dictionary['last_name'].lower()
 
     new_list = sorted(new_list, key=sort_by_name)
-    print(new_list)
+    # print(new_list)
 
 
     context = {'new_list': new_list,
@@ -245,10 +245,10 @@ def view_pending_requests(request):
 
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values('course_batch') 
-    print(course_enrolled)
+    # print(course_enrolled)
 
     pending_requests = Change_Schedule.objects.filter(status='Pending', course_batch__in=course_enrolled).values()
-    print(pending_requests)
+    # print(pending_requests)
     context = {'pending_requests':pending_requests}
     return HttpResponse(template.render(context,request))
 
@@ -453,7 +453,7 @@ def download_activity_attachment(request, id, pk):
 
     # Retrieve the file path or file object from the model and open it
     file_path = activity.activity_attachment.path
-    print(file_path)
+    # print(file_path)
     file = open(file_path, 'rb')
 
     # Set the appropriate response headers
