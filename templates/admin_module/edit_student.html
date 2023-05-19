@@ -1,4 +1,5 @@
 {% extends './base.html' %}
+{% load static %}
 
 {% block Topbar %}
             <!-- Topbar -->
@@ -152,107 +153,109 @@
 <div class="container-fluid">
     <div class="card shadow mb-5">
         <div class="card-header py-3">
-            <h6 class="m-1 font-weight-bold text-primary">Edit Trainee Details</h6>
+            <h6 class="m-1 font-weight-bold text-secondary">Edit Trainee Details</h6>
         </div>
         <div class="card-body">
+            <br>
+            <div class="container">
+                <div class="row">
+                    <div class="col-1" align="right">
+                        <img class="img-thumbnail rounded-circle" src="{% static '/img/password.png' %}" width="50" height="50">
+                    </div>
+                    <div class="col-4" align="left">
+                        <p>Would you like to reset the password for this trainee?</p>
+                    </div>
+                    <!-- reset Password -->
+                    <div class="col-7">
+                        <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
+                            {% csrf_token %}
+                            <div class="form-group mb-2">
+                                <div class="col-6">
+                                    <input class="form-control" type="hidden" name="email" value="{{ email }}"> 
+                                    <button class="btn btn-dark btn-icon-split btn-sm" type="submit" value="Reset Password" />
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-undo"></i>
+                                        </span>
+                                        <span class="text">Reset Password</span>
+                                    </button>
+                                </div>
+                            </div>
+                                    
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
             <div class="table-responsive">
-                <div style="padding-left:16px">
+                <div class="container">
                             <form method="POST" action = "/sit-admin/student/update/updaterecord/{{ student.id }}"> <!-- be directed to this path -->
                                 {% csrf_token %}
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-2">
                                             <p>Program ID: </p><input class = "form-control" type="text" name = "program_id" value = "{{student.program_id}}"/>
                                         </div>
 
-                                        <div class="col-6">
+                                        <div class="col-2">
                                             <p>Employee ID: </p><input class = "form-control" type="text" name = "student_no" value = "{{student.student_no}}"/>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <p>Email : </p><input class = "form-control" type="text" name = "email" value = "{{student.user.email}}"/>
                                         </div>
 
                                     </div>
                                 </div>
                                 <br>
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p>Email : </p><input class = "form-control" type="text" name = "email" value = "{{student.user.email}}"/>
-                                        </div>
-                                        <div class="col-6">
-                                            <p>First Name: </p><input class = "form-control" type="text" name = "firstname" value = "{{student.user.first_name}}"/>
-                                        </div>
-                                    </div>
-                                </div>
                                 <br>
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-3">
+                                            <p>First Name: </p><input class = "form-control" type="text" name = "firstname" value = "{{student.user.first_name}}"/>
+                                        </div>
+                                        <div class="col-3">
                                             <p>Middle Name: </p><input class = "form-control" type="text" name = "middlename" value = "{{student.middlename}}"/>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-3">
                                             <p>Last Name: </p><input class = "form-control" type="text" name = "lastname" value = "{{student.user.last_name}}"/>
                                         </div>
                                     </div>
                                 </div>
                                 <br>
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p>Birthday: </p><input class = "form-control" type="date" name = "birthdate" value = "{{student.birthdate | date:'Y-m-d'}}" type="date"/>
-                                        </div>
-                                        <div class="col-6">
-                                            <p>Status : </p><input class = "form-control" type="text" name = "employment_status" value = " {{student.employment_status}}"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            
                                 <br>
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-6">
+
+                                        <div class="col-3">
+                                            <p>Birthday: </p><input class = "form-control" type="date" name = "birthdate" value = "{{student.birthdate | date:'Y-m-d'}}" type="date"/>
+                                        </div>
+                                        <div class="col-2">
+                                            <p>Status : </p><input class = "form-control" type="text" name = "employment_status" value = " {{student.employment_status}}"/>
+                                        </div>
+                                        <div class="col-2">
                                             <p>Active | Inactive : </p><input class = "form-control" type="text" name = "active_deactive" value = "{{student.user.is_active}}"/>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-2">
                                             <p>Access Type : </p><input class = "form-control" type="text" name = "access_type" value = "{{student.access_type}}"/>
                                         </div>
                                     </div>
-                                </div>                           
-                            <br>
-                            <br>
-
+                                </div>                       
+                                <br>
+                                <br>
+                                <br>
                             <div class="container-fluid">
                                 <!-- Update Button -->
-                                    <button class="btn btn-danger btn-icon-split" type="submit">
+                                    <button class="btn btn-primary btn-icon-split" type="submit">
                                         <span class="icon text-white-50">
                                             <i class="fa fa-check"></i>
                                         </span>
-                                        <span class="text">Update</span>
+                                        <span class="text">Submit</span>
                                     </button>
                             </div>
                             <br>
                             <br>
                         </form>
-
-                            <!-- reset Password -->
-                            <div class="container-fluid">
-                                <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
-                                    {% csrf_token %}
-                                    <div class="form-group mb-2">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="row">
-                                                    <div class="col-8">
-                                                        <input class="form-control" type="hidden" name="email" value="{{ email }}"> 
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <input class="btn btn-dark" type="submit" value="Reset Password" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </form>
-                            </div>
                         
                     </div>
         </div>

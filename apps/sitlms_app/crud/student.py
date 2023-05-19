@@ -112,7 +112,6 @@ def edit_student(request, id):
 
 @user_passes_test(is_admin)
 def update_student(request, id):
-    # JQBM: Ano difference ng update at edit na views?
     student = Students_Auth.objects.get(id=id)
     email_for_reset = student.user.email
     template = loader.get_template('admin_module/edit_student.html')
@@ -127,7 +126,6 @@ def confirm_delete(request, id):
 @user_passes_test(is_admin)
 def delete_student(request, id):
     student = Students_Auth.objects.get(id=id)
-    # JQBM: Walang confirmation for delete?
     student.delete()
     messages.success(request, "Successfully Deleted")
     return redirect("/sit-admin/student/view")

@@ -1,12 +1,25 @@
-
-{% if user.is_authenticated %}
-<a class="nav-link" href="{% url 'logout' %}">Log out</a>
-<h1>Hi! Instructor</h1>
-<br>
-<button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">View Courses</a></button>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
-<h1>You don't have access to this module, sign in as instructor</h1>
-{% endif %}
+{% extends './index.html' %}
+{% load static %}
 
 
+{% block header %}
+    <!-- Header -->
+    <header class="header" id="home">
+        <div class="container">
+            <div class="infos">
+                <h6 class="subtitle">Hello,</h6>
+                <h6 class="title">{{ user.first_name }} {{ user.last_name }}</h6>
+                <p>Instructor</p>
+
+                <div class="buttons pt-3">
+                    <button class="btn btn-primary rounded">View Calendar</button>
+                </div>      
+            </div>   
+
+            <div class="img-holder">
+                <img class="profile-img" src="{% static 'assets/mcdo.png' %}" alt="..."  />
+            </div>  
+        </div>
+    </header>
+    <!-- End of Header -->
+{% endblock header %}

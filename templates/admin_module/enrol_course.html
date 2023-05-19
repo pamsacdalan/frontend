@@ -1,258 +1,433 @@
-<!DOCTYPE html>
-<html>
+{% extends './base.html' %}
 
-<h1>Enrol Course</h1>
-<form action="enrol_course_info/" method="post">
-    {% csrf_token %}
+<!-- This page is for course enrollment-->
 
-<body onload="loading()">
-    <label for="course_batch">Course Batch</label>
-    <input type="text"  id="course_batch" name="course_batch" required>
-    
-    <br><br>
-    
-    <label>Course Title</label>
-    
-    <select name="course_title" required>
-        <option value "" selected disabled hidden> Choose Course </option>
-        {% for value in option_course_id%}
-            <option value="{{value}}" >{{value}}</option>
-        {% endfor %}
+{% block Topbar %}
+            <!-- Topbar -->
+            <div class="container-fluid">
 
-    </select>
-
-    <br><br>
-    <label for="session_details">Session Details</label>
-    <input type="text" id="session_details" name="session_details" required>
-    <br><br>
-
-    <label for="start_date">Start Date</label>
-    <input type="date" id="start_date" name="start_date" onchange="updateDropdown()" required>
-
-    <br><br>
-    <label for="end_date">End Date</label>
-    <input type="date" id="end_date" name="end_date" onchange="updateDropdown()" required>
-
-    <br><br>
-
-    <label for="start_time">Start Time</label>
-    <input type="time" id="start_time" name="start_time" onchange="updateDropdown()" required>
-
-    <br><br>
-    <label for="end_time">End Time</label>
-    <input type="time" id="end_time" name="end_time" onchange="updateDropdown()" required>
-
-
-    <br><br>
-
-    <label for="frequency">Frequency:</label>
-		<select id="frequency" name="frequency" onchange="updateDropdown()" required>
-            <option value "" selected disabled hidden> Choose Frequency </option>
-			<option value=0>Once</option>
-			<option value=1>Daily</option>
-            <option value=7>Weekly</option>
-
-		</select>
-    <br><br>
-
-
-    <label>Course Mode: </label>
-    <select id="course_mode" name="course_mode">
-        <option value"" selected disabled hidden> Choose Mode </option>
-        {% for value in course_mode%}
-            <option value="{{value}}" >{{value}}</option>
-        {% endfor %}
-
-    </select>
-    
-    <br><br>
-
-    <label>Instructor</label>
-    <select id="myDropdown" name="full_name" required>
-    </select>
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-6">
+                    <h3 class="h3 mb-0 text-gray-800"> ADMINISTRATOR </h3>
+                    {% include "admin_module/form_template.html"%}
+                </div>               
+            </div>
+{% endblock Topbar %}
 
 
 
-    <script>
-        function loading(){                         
-            var professor = {{ full_name | safe}};
-            updateDropdown(professor);
-        }
+{% block sidebar %}
+            <!-- Sidebar Menu -->
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+              <a class="nav-link" href="/sit-admin/dashboard/">
+                  <i class="fas fa-fw fa-tachometer-alt"></i>
+                  <span>DASHBOARD</span>
+              </a>
+          </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                MODULES
+            </div>
+
+            <!-- Nav Item - Courses Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/course/" data-toggle="collapse" data-target="#collapseCourses"
+                aria-expanded="true" aria-controls="collapseCourses">
+                    <i class="fa fa-book"></i>
+                    <span> COURSES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseCourses" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course/view_course">View Courses</a>
+                        <a class="collapse-item" href="/sit-admin/course/add_course">Add Courses</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Enrollment Collapse Menu-->
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="../sit-admin/course_enrollment/" data-toggle="collapse" data-target="#collapseEnroll"
+                aria-expanded="true" aria-controls="collapseEnroll">
+                    <i class="fas fa-id-card-alt" aria-hidden="true"></i>
+                    <span> ENROLLMENT </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseEnroll" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Instructors Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/instructor/" data-toggle="collapse" data-target="#collapseInst"
+                aria-expanded="true" aria-controls="collapseInst">
+                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+                    <span>INSTRUCTORS</span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseInst" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/instructor/view/">View Instructors</a>
+                        <a class="collapse-item" href="/sit-admin/instructor/add/">Add Instructors</a>
+                    </div>
+                </div>
+
+            </li>
+
+            <!-- Nav Item - Students Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/student/view/" data-toggle="collapse" data-target="#collapseStudents"
+                aria-expanded="true" aria-controls="collapseStudents">
+                    <i class="fa fa-address-book" aria-hidden="true"></i>
+                    <span> TRAINEES </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseStudents" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Options:</h6>
+                        <a class="collapse-item" href="/sit-admin/student/view">View Trainees</a>
+                        <a class="collapse-item" href="/sit-admin/student/">Add Trainees</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Program Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProgram"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                <i class="fa fa-users"></i>
+                    <span> CDP PROGRAM </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseProgram" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/program/view/">View Programs</a>
+                        <a class="collapse-item" href="/sit-admin/program/add/">Add Program</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Admmins Collapse Menu-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="../sit-admin/" data-toggle="collapse" data-target="#collapseAdmin"
+                aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fa fa-landmark" aria-hidden="true"></i>
+                    <span> ADMINS </span>
+                </a>
+                <!-- Menu -->
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Choose:</h6>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/list">View Admins</a>
+                        <a class="collapse-item" href="/sit-admin/sit-admin/create">Add Admins</a>
+                    </div>
+                </div>
+            </li>
+
+{% endblock sidebar %}
 
 
+{% block content %}
 
-        var dropdown = document.getElementById("myDropdown");
-        
-        function updateDropdown() {
-            var myList = {{ schedules|safe}};
-            var professor = {{ full_name | safe}};
-            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
-            var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
-            var startTime = document.getElementById("start_time").value;                //clock start time
-            startTime = startTime.split(":").join("");  
-            let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
+            <!-- Main Table -->
+            <div class="container-fluid">
+                <div class="card shadow mb-5">
+                    <!-- Header -->
+                    <div class="card-header py-3">
+                        <h6 class="m-1 font-weight-bold text-secondary">Course Enrollment</h6>
+                    </div>
+                    <!-- end Header -->
 
-        var endTime = document.getElementById("end_time").value;
-        endTime = endTime.split(":").join("");
-        let eformNumberTime = parseInt(endTime);       //eformNumberTime==clock in int
-
-
-        for (var i = 0; i < myList.length; i++) {
-            var person = myList[i];
-            var fullname = person.fullname;
-            var sd = person.session_date;
-            var st = person.start_time.slice(0,5);
-            st = st.split(":").join("");
-            let schedule_s_Time = parseInt(st);          //schedule_s_Time  === start time from schedule context
-            var et = person.end_time.slice(0, 5);         //schedule_e_Time === end time from schedule context
-            et = et.split(":").join("");
-            let schedule_e_Time = parseInt(et);
-            const ssdd = new Date(sd);    //start date in schedule context (nth iteration))
-            let elementToRemove = fullname;
-            let index = professor.indexOf(elementToRemove);
-
-            var freq = document.getElementById("frequency").value;
-
-            if (freq !== "7" ){
-            //do this if frequency is daily or once
-            if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime())  //sessiondate is within the calendar range
-            ) {
-
-                if (schedule_s_Time >= sformNumberTime) {
-                            
-                    if (schedule_s_Time < eformNumberTime){
-                        if (index > -1) {
-                            professor.splice(index, 1);
-                        }
-                    }
-                }
-                        
-                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
-                    if (index > -1) {
-                            professor.splice(index, 1);
-                    }       
-                }
-                     
-                if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
-                    if (index > -1) {
-                            professor.splice(index, 1);
-                    }       
-                }
-
-            }
-        //closing nung if
-        }
-
-        else if (freq == "7") {//frequency is weekly
-            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
-            var endDate = new Date(document.getElementById("end_date").value);
-            while (startDate <= endDate) {
-                if (startDate.getTime() === ssdd.getTime()){
-                    if(startTime>=schedule_s_Time && startTime < schedule_e_Time && schedule_e_Time < endTime || // if context is 10am-2pm bawal sa time si 11am to 3pm
-                    startTime>=schedule_s_Time && startTime < schedule_e_Time && endTime < schedule_e_Time && endTime > schedule_s_Time || // if context is 10am-2pm bawal sa time si 11am to 2pm
-                    startTime <= schedule_s_Time && endTime > schedule_s_Time && endTime < schedule_e_Time && startTime < schedule_s_Time//// if context is 10am-2pm bawal sa time si 8am to 11am or si 10am to 11am
-                    ){
-
-                        if (index > -1) {
-                                professor.splice(index, 1)
-                        }
-
-                    }
-
-                }
-                startDate.setDate(startDate.getDate() + 7);
-            }
-        // //closing ni else
-        }    
-        }
-
-        call(professor);
-    }
-
-    function call(professor){
-    dropdown.innerHTML = "";
-            var defaultOption = document.createElement("option");
-            defaultOption.value = "";  // Value for the default option
-            defaultOption.text = "Choose Instructor";
-            defaultOption.selected = true;
-            defaultOption.disabled = true;
-            defaultOption.hidden = true;
+                    <!-- Body -->
+                    <div class="card-body">
+                        <form action="enrol_course_info/" method="post">
+                            {% csrf_token %}
+                            <body onload="loading()">
+                                <div class="container-fluid">
+                                    <div class ="row">
+                                        <div class = "col-2">
+                                            <label for="course_batch">Course Batch</label>
+                                            <input type="text"  class="form-control" id="course_batch" name="course_batch" required>
+                                        </div>
             
-            dropdown.appendChild(defaultOption);
-
-            for (var i = 0; i < professor.length; i++) {
-            // Create an option element and set its text and value
-            var option = document.createElement("option");
-            option.text = professor[i];
-            option.value = professor[i];
-            dropdown.add(option);
-        }
-    }
-
-
-
-    </script>
-</body>
-<div id="form-container">
-    <input type="submit" value="Submit" onclick="return validateDates() ">
-    <div id="error-message" style="color: red;"></div>
-  </div>
-
-</form>
-
-<script>
-
-
-    function validateDates() {
-
-    var errorMessage = document.getElementById('error-message');
-    var startDate = new Date(document.getElementById("start_date").value);
-    var endDate = new Date(document.getElementById("end_date").value);
-    var startTime = document.getElementById("start_time").value;
-    var endTime = document.getElementById("end_time").value;
-    var frequency = document.getElementById("frequency").value;
-
-    
-    
-    if (startDate > endDate) {
-        errorMessage.textContent = 'End date must be after start date.';
-        return false;
-
-        }
-
-    else if (startDate < endDate) {
-        if (frequency == "0") {
-        errorMessage.textContent = 'Startdate should be equal to endDate.';
-        return false;
-        }
-
-        else{    
-        errorMessage.textContent = ''; // Clear the error message
-        return true;
-        }
-
+                                        <div class = "col-2">
+                                            <label>Course Title</label>
+                                            <select class="form-control" name="course_title" required>
+                                                <option value "" selected disabled hidden> Choose Course </option>
+                                                {% for value in option_course_id %}
+                                                    <option value="{{value}}" >{{value}}</option>
+                                                {% endfor %}
+                
+                                            </select>
+                                        </div>
+            
+                                        <div class = "col-4">
+                                            <label for="session_details">Session Details</label>
+                                            <input class="form-control" type="text" id="session_details" name="session_details" required>
+                                        </div>
+                                    
+                                    </div>
+                                    <br><br>
+            
+                                    <div class ="row justify-content-evenly">
+                                        <div class = "col-2">
+                                            <label for="start_date">Start Date</label>
+                                            <input class="form-control" type="date" id="start_date" name="start_date" onchange="updateDropdown()" required>
+                                        </div>
+            
+                                        <div class = "col-2">
+                                            <label for="end_date">End Date</label>
+                                            <input class="form-control" type="date" id="end_date" name="end_date" onchange="updateDropdown()" required>
+                                        </div>
+            
+                                        <div class = "col-2">
+                                            <label for="start_time">Start Time</label>
+                                            <input class="form-control" type="time" id="start_time" name="start_time" onchange="updateDropdown()" required>
+                                        </div>
+            
+                                        <div class = "col-2">
+                                            <label for="end_time">End Time</label>
+                                            <input class="form-control" type="time" id="end_time" name="end_time" onchange="updateDropdown()" required>
+                                        </div>
+                                    </div>
+                                    <br><br>
+            
+                                    <div class ="row">
+                                        <div class = "col-2">
+                                            <label for="frequency">Frequency:</label>
+                                            <select class="form-control" id="frequency" name="frequency" onchange="updateDropdown()" required>
+                                                <option value "" selected disabled hidden> Choose Frequency </option>
+                                                <option value=0>Once</option>
+                                                <option value=1>Daily</option>
+                                                <option value=7>Weekly</option>
+            
+                                            </select>
+                                        </div>
+            
+                                        <div class = "col-2">
+                                            <label>Course Mode: </label>
+                                            <select class="form-control" id="course_mode" name="course_mode">
+                                                <option value"" selected disabled hidden> Choose Mode </option>
+                                                {% for value in course_mode%}
+                                                    <option value="{{value}}" >{{value}}</option>
+                                                {% endfor %}
+                
+                                            </select>
+                                        </div>
+            
+                                        <div class = "col-4">
+                                            <label>Instructor</label>
+                                            <select class="form-control" id="myDropdown" name="full_name" required></select>
+                                        </div>
+                                    </div>
+            
+                                    <script>
+                                        function loading(){                         
+                                            var professor = {{ full_name | safe}};
+                                            updateDropdown(professor);
+                                        }
+            
+            
+            
+                                        var dropdown = document.getElementById("myDropdown");
+                                            
+                                        function updateDropdown() {
+                                            var myList = {{ schedules|safe}};
+                                            var professor = {{ full_name | safe}};
+                                            var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+                                            var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
+                                            var startTime = document.getElementById("start_time").value;                //clock start time
+                                            startTime = startTime.split(":").join("");  
+                                            let sformNumberTime = parseInt(startTime);       //sformNumberTime==clock in int
+            
+                                            var endTime = document.getElementById("end_time").value;
+                                            endTime = endTime.split(":").join("");
+                                            let eformNumberTime = parseInt(endTime);       //eformNumberTime==clock in int
+            
+            
+                                            for (var i = 0; i < myList.length; i++) {
+                                                var person = myList[i];
+                                                var fullname = person.fullname;
+                                                var sd = person.session_date;
+                                                var st = person.start_time.slice(0,5);
+                                                st = st.split(":").join("");
+                                                let schedule_s_Time = parseInt(st);          //schedule_s_Time  === start time from schedule context
+                                                var et = person.end_time.slice(0, 5);         //schedule_e_Time === end time from schedule context
+                                                et = et.split(":").join("");
+                                                let schedule_e_Time = parseInt(et);
+                                                const ssdd = new Date(sd);    //start date in schedule context (nth iteration))
+                                                let elementToRemove = fullname;
+                                                let index = professor.indexOf(elementToRemove);
+            
+                                                var freq = document.getElementById("frequency").value;
+            
+                                                if (freq !== "7" ){
+                                                //do this if frequency is daily or once
+                                                if ((ssdd.getTime() >= startDate.getTime() && ssdd.getTime() <= endDate.getTime())  //sessiondate is within the calendar range
+                                                ) {
+            
+                                                    if (schedule_s_Time >= sformNumberTime) {
+                                                                
+                                                        if (schedule_s_Time < eformNumberTime){
+                                                            if (index > -1) {
+                                                                professor.splice(index, 1);
+                                                            }
+                                                        }
+                                                    }
+                                                            
+                                                    if (schedule_s_Time < sformNumberTime &&  schedule_e_Time > eformNumberTime ) {
+                                                        if (index > -1) {
+                                                                professor.splice(index, 1);
+                                                        }       
+                                                    }
+                                                        
+                                                    if (schedule_s_Time < sformNumberTime &&  schedule_e_Time <= eformNumberTime && sformNumberTime < schedule_e_Time  ) {
+                                                        if (index > -1) {
+                                                                professor.splice(index, 1);
+                                                        }       
+                                                    }
+            
+                                                }
+                                            //closing nung if
+                                            }
+            
+                                            else if (freq == "7") {//frequency is weekly
+                                                var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
+                                                var endDate = new Date(document.getElementById("end_date").value);
+                                                while (startDate <= endDate) {
+                                                    if (startDate.getTime() === ssdd.getTime()){
+                                                        if(startTime>=schedule_s_Time && startTime < schedule_e_Time && schedule_e_Time < endTime || // if context is 10am-2pm bawal sa time si 11am to 3pm
+                                                        startTime>=schedule_s_Time && startTime < schedule_e_Time && endTime < schedule_e_Time && endTime > schedule_s_Time || // if context is 10am-2pm bawal sa time si 11am to 2pm
+                                                        startTime <= schedule_s_Time && endTime > schedule_s_Time && endTime < schedule_e_Time && startTime < schedule_s_Time//// if context is 10am-2pm bawal sa time si 8am to 11am or si 10am to 11am
+                                                        ){
+            
+                                                            if (index > -1) {
+                                                                    professor.splice(index, 1)
+                                                            }
+            
+                                                        }
+            
+                                                    }
+                                                    startDate.setDate(startDate.getDate() + 7);
+                                                }
+                                            // //closing ni else
+                                            }    
+                                            }
+            
+                                            call(professor);
+                                        }
+            
+                                        function call(professor){
+                                                dropdown.innerHTML = "";
+                                                var defaultOption = document.createElement("option");
+                                                defaultOption.value = "";  // Value for the default option
+                                                defaultOption.text = "Choose Instructor";
+                                                defaultOption.selected = true;
+                                                defaultOption.disabled = true;
+                                                defaultOption.hidden = true;
+                                                
+                                                dropdown.appendChild(defaultOption);
+            
+                                                for (var i = 0; i < professor.length; i++) {
+                                                // Create an option element and set its text and value
+                                                var option = document.createElement("option");
+                                                option.text = professor[i];
+                                                option.value = professor[i];
+                                                dropdown.add(option);
+                                            }
+                                        }
+            
+                                    </script>
+                                </div>
+                            </body>
+                                
+                            <br><br>
+                            <div id="form-container">
+                                <button class="btn btn-primary btn-icon-split" type="submit" value="Submit" onclick="return validateDates() ">
+                                    <span class="icon text-white-50">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    <span class="text">Submit</span>
+                                </button>
+                                <div id="error-message" style="color: red;">
+                                </div>
+                            </div>
+                        </form>
         
-        }
-    else { //equal ang dates
+                                <script>
         
-        if (startTime > endTime) {
-            errorMessage.textContent = 'End time must be after start time.';
-            return false;
-        }    
-        if (frequency !== "0" ) {
-            errorMessage.textContent = 'Frequency should be Once since start date = end date';
-            return false;
-        }
-        errorMessage.textContent = ''; // Clear the error message
-        return true;
+                                    function validateDates() {
+        
+                                    var errorMessage = document.getElementById('error-message');
+                                    var startDate = new Date(document.getElementById("start_date").value);
+                                    var endDate = new Date(document.getElementById("end_date").value);
+                                    var startTime = document.getElementById("start_time").value;
+                                    var endTime = document.getElementById("end_time").value;
+                                    var frequency = document.getElementById("frequency").value;
+                                    
+                                    if (startDate > endDate) {
+                                        errorMessage.textContent = 'End date must be after start date.';
+                                        return false;
+        
+                                        }
+        
+                                    else if (startDate < endDate) {
+                                        if (frequency == "0") {
+                                        errorMessage.textContent = 'Startdate should be equal to endDate.';
+                                        return false;
+                                        }
+        
+                                        else{    
+                                        errorMessage.textContent = ''; // Clear the error message
+                                        return true;
+                                        }
+        
+                                        
+                                        }
+                                    else { //equal ang dates
+                                        
+                                        if (startTime > endTime) {
+                                            errorMessage.textContent = 'End time must be after start time.';
+                                            return false;
+                                        }    
+                                        if (frequency !== "0" ) {
+                                            errorMessage.textContent = 'Frequency should be Once since start date = end date';
+                                            return false;
+                                        }
+                                        errorMessage.textContent = ''; // Clear the error message
+                                        return true;
+        
+                                    }
+                                    }    
+                                </script>   
+                            </div>
+                    <!-- End Body -->
+                </div>
+            </div>
 
-    }
-    }    
-</script>
 
-
-
-
-
-
-</html>
+{% endblock content %}

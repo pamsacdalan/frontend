@@ -153,69 +153,51 @@
  <div class="container-fluid">
     <div class="card shadow mb-5">
         <div class="card-header py-3">
-            <h6 class="m-1 font-weight-bold text-primary">Trainee Details</h6>
+            <h6 class="m-1 font-weight-bold text-secondary">Trainee Details</h6>
         </div>
         <div class="card-body">
             <form method="POST" action = ''>
                 {% csrf_token %}
                 <div class="container-fluid">
                     <div class ="row">
-                        <div class = "col-6">
+                        <div class = "col-2">
                             <p>Program ID: </p>{{form.program_id}}
                         </div>
 
-                        <div class = "col-6">
+                        <div class = "col-2">
                             <p>Student No.: </p>{{form.student_no}}
                         </div>
-                    </div>
-                </div>
-                <br><br>
 
-                <div class="container-fluid">
-                    <div class ="row">
                         <div class = "col-6">
                             <p>Email: </p>{{form.email}}
                         </div>
-
-                        <div class = "col-6">
-                            <p>First Name: </p>{{form.first_name}}
-                        </div>
-
                     </div>
                 </div>
                 <br><br>
 
                 <div class="container-fluid">
                     <div class ="row">
-                        <div class = "col-6">
+                        <div class = "col-4">
+                            <p>First Name: </p>{{form.first_name}}
+                        </div>
+                        <div class = "col-3">
                             <p>Middle Name: </p>{{form.middlename}}
                         </div>
-
-                        <div class = "col-6">
+                        
+                        <div class = "col-3">
                             <p>Last Name: </p>{{form.last_name}}
                         </div>
-
                     </div>
                 </div>
                 <br><br>
 
-
                 <div class="container-fluid">
                     <div class = "row">
-                        <div class = "col-6">
+                        <div class = "col-4">
                             <p>Birthday: </p><input class="form-control" type="date" name = "birthdate" value = "{{form.birthdate | date:'Y-m-d'}}" type="date"/>
                         </div>
 
-                            <div class = "col-6">
-                                <!-- 
-                                <div class = "form-group">
-                                        <label for='status'>Status:</label>
-                                        <select class="form-control form-control-sm" id='status'>
-                                            <option value = {{form.employment_status}} </option>
-                                        </select>
-                                     <p>Status : </p> {{form.employment_status}}
-                                </div>
-                                 -->
+                            <div class = "col-3">
                                 <p>Status : </p>{{form.employment_status}}
                             </div>
 
@@ -226,20 +208,20 @@
 
                 <div class="container-fluid">
                     <!-- Submit Button -->
-                    <button class="btn btn-danger btn-icon-split btn-sm" type="submit">
+                    <button class="btn btn-primary btn-icon-split" type="submit">
                         <span class="icon text-white-50">
                             <i class="fa fa-check"></i>
                         </span>
                         <span class="text">Submit</span>
                     </button>
 
-                    <!-- View list Button -->
+                    {% comment %} <!-- View list Button -->
                     <a href="/sit-admin/student/view" class="btn btn-dark btn-icon-split btn-sm">
                         <span class="icon text-gray-600">
                             <i class="fa fa-list" aria-hidden="true"></i>
                         </span>
                         <span class="text">View List</span>
-                    </a>
+                    </a> {% endcomment %}
                 </div>
 
             </form>

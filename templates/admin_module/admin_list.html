@@ -151,9 +151,18 @@
             <div class="container-fluid">
               <div class="card shadow mb-5">
                   <div class="card-header py-3">
-                      <h6 class="m-1 font-weight-bold text-primary">Admin List</h6>
+                      <h6 class="m-1 font-weight-bold text-secondary">Admin List</h6>
                   </div>
                   <div class="card-body">
+                    <div align="right"> <!-- buttons here-->
+                          <!-- Add new admin Button -->
+                          <a href="{% url 'admincreate' %}" class="btn btn-info">
+                            <span>
+                                <i class="fa fa-plus"></i>
+                            </span>
+                          </a>
+                    </div>
+                    <br>
                       <div class="table-responsive">
                           <table id="admins" class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                             <thead class="table-dark" align="center">
@@ -163,8 +172,8 @@
                                 <th>Middle</th>
                                 <th>Last</th>
                                 <th>Birthdate</th>
-                                <th>Active/Deactive</th>
-                                <th>Access Type</th>
+                                <th>Active</th>
+                                {% comment %} <th>Access Type</th> {% endcomment %}
                                 <th>Actions</th>
                               </tr>
                             </thead>
@@ -177,7 +186,7 @@
                                   <td>{{ admin.user.last_name }}</td>
                                   <td>{{ admin.birthdate }}</td>
                                   <td>{{ admin.user.is_active }}</td>
-                                  <td>{{ admin.access_type }}</td>
+                                  {% comment %} <td>{{ admin.access_type }}</td> {% endcomment %}
                                   <td align="center"> <a href="{% url 'adminupdate' admin.id %}" 
                                           class="btn btn-secondary btn-circle btn-sm"
                                           data-toggle="tooltip"
@@ -205,14 +214,21 @@
                                         <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <p>Remove this admin from the list?</p>
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title">Delete this admin?</h6>
+                                                        <!--Close-->
+                                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" align="left">
+                                                        Remove this admin from the list?
                                                     </div>
                                                     <div class="modal-footer">
                                                         <form method="post" id="item-delete-form">
                                                             <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
                                                                 {% csrf_token %}
-                                                            <button type="submit" class="btn btn-danger" id="confirm-delete-item-button">Delete</button>
+                                                            <button type="submit" class="btn btn-primary" id="confirm-delete-item-button">Delete</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -231,23 +247,7 @@
                               </tr>
                               {% endfor %}
                           </table>
-                          <br>
 
-                          <!-- Add new admin Button -->
-                          <a href="{% url 'admincreate' %}" class="btn btn-dark btn-icon-split btn-sm">
-                            <span class="icon text-white-50">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                            <span class="text">Add admin</span>
-                          </a>
-
-                          {% comment %} <!-- Dashboard Button -->
-                          <a href="/sit-admin/dashboard/" class="btn btn-dark btn-icon-split btn-sm">
-                            <span class="icon text-gray-600">
-                                <i class="fas fa-fw fa-tachometer-alt"></i>
-                            </span>
-                            <span class="text">Back to Dashboard</span>
-                        </a> {% endcomment %}
                       </div>
 
                   </div>

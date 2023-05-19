@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Course Management</title>
+    <title>Seven Seven SIT</title>
     
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
@@ -23,10 +23,9 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="{% static '/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
 
-    <!-- Custom table styles -->
-    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -40,7 +39,6 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/sit-admin/"> 
                 <div class="sidebar-brand-icon">
-                    <!--<i class="fas fa-laugh-wink"></i> -->
                     <img class="img-responsive" src="{% static '/img/logo.png' %}" style="width:70%">
                 </div>
                 <div class="sidebar-brand-text mx-3"></div>
@@ -148,9 +146,8 @@
                 <!-- Main Content Here -->
                 <div id="content">
 
-                                
+                        <!-- for toast notifications -->
                     <section class="content" id="msg">
-
                         <div class="row">
                             <div class="col-md-12">
                             <div class="form-group">
@@ -184,6 +181,7 @@
                             
                     
                             </div></div></div></section>
+                                <!-- end toast notifications -->
 
                                 {% block content %} 
 
@@ -200,7 +198,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2023</span>
+                        <span>Copyright &copy; Seven Seven Institute of Technology 2023</span>
                     </div>
                 </div>
             </footer>
@@ -213,12 +211,12 @@
     <!-- End of Page Wrapper -->
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">End current session?</h5>
+                    <h5 class="modal-title" id="LogoutModalLabel">End current session?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -226,7 +224,7 @@
                 <div class="modal-body">Click "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger"  href="{% url 'logout' %}">Logout</a>
+                    <a class="btn btn-primary"  href="{% url 'logout' %}">Logout</a>
                 </div>
             </div>
         </div>

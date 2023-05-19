@@ -89,3 +89,6 @@ local_settings.py
 db.sqlite3
 static/admin
 db_credentials
+
+## VS
+.vscode
