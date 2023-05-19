@@ -406,7 +406,7 @@ def create_announcement(request,id):
 
 @user_passes_test(is_instructor)
 def remove_announcement(request, course_batch, schedule_id):
-    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch):
         return redirect("instructor-no-access")
     announcement = Course_Announcement.objects.get(id=schedule_id)
 
@@ -418,7 +418,7 @@ def remove_announcement(request, course_batch, schedule_id):
 
 @user_passes_test(is_instructor)
 def edit_announcement(request, course_batch, schedule_id):
-    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch):
         return redirect("instructor-no-access")
     announcement = Course_Announcement.objects.get(id=schedule_id)
     context =  {'course_batch': course_batch, 'announcement': announcement}
