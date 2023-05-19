@@ -358,7 +358,7 @@ def instructor_course(request, id):
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
     
-    announcement_details = Course_Announcement.objects.filter(course_batch=id).values()
+    announcement_details = Course_Announcement.objects.filter(course_batch=id).order_by('-date_posted').values()
 
     user = request.user
     user_id = user.id
