@@ -33,10 +33,8 @@ def is_instructor(user):
 def is_correct_instructor_cbatch_id(instructor, cbatch_id):
     try:
         if Course_Enrollment.objects.filter(course_batch=cbatch_id).first().instructor_id==instructor:
-            print('a')
             pass
         else:
-            print('b')
             return True
     except Exception as e:
         return True
