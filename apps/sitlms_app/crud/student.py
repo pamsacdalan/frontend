@@ -89,7 +89,7 @@ def view_students(request):
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)
         
-    items_per_page = 5
+    items_per_page = 10
     paginator = Paginator(students, items_per_page)
     try:
             students_page = paginator.page(page)

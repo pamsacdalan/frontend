@@ -129,7 +129,7 @@ def view_enrolled_course(request):
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)
     
-    items_per_page = 5
+    items_per_page = 10
     paginator = Paginator(course_enrolled_list, items_per_page)
     
     try:

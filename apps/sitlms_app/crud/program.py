@@ -16,7 +16,7 @@ def view(request):
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)
         
-    items_per_page = 5
+    items_per_page = 10
     paginator = Paginator(programs, items_per_page)
     try:
             programs_page = paginator.page(page)

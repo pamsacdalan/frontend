@@ -75,6 +75,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -187,14 +188,14 @@
                                         <td>{{program.program_title}}</td>
 
                                         <!-- Edit Button-->
-                                        <td align="center"><a class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/program/edit/{{ program.program_id }}" data-toggle="tooltip" title="Edit">
+                                        <td align="center"><a class="btn btn-dark btn-circle btn-sm" href="/sit-admin/program/edit/{{ program.program_id }}" data-toggle="tooltip" title="Edit">
                                                 <i class="fas fa-edit" aria-hidden="true"></i>
                                             </a> | 
 
 
                                             <!-- Delete Button-->
                                             <a href="/sit-admin/program/delete/{{ program.program_id }}"
-                                               class="btn btn-danger btn-circle btn-sm"
+                                               class="btn btn-primary btn-circle btn-sm"
                                                data-toggle="modal"
                                                data-target="#delete-program-modal"
                                                onclick="delete_program(this)"
@@ -204,7 +205,7 @@
                                         </td>
 
                                         <!-- Delete Modal Start-->
-                                        <div class="modal fade" id="delete-program-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
+                                        <div class="modal fade" id="delete-program-modal" tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
