@@ -10,11 +10,20 @@
     <br>
     <div align="right"> <!-- buttons here-->
         <!-- Add Button -->
-        <a href="/sit-instructor/instructor/view_courses/view_pending_requests/" class="btn btn-primary rounded ml-2" data-toggle="tooltip" title="View pending requests">
+        <a href="/sit-instructor/instructor/view_courses/view_pending_requests/" class="btn btn-primary ml-2" data-toggle="tooltip" title="View pending requests">
              <span>
                 <i class="ti-folder"></i>
             </span>
         </a>
+        {% comment %} <!-- Back Button-->
+        <a class="btn btn-primary btn-sm" href="/sit-instructor/instructor">
+            <span class="icon text-white-50">
+                <i class='ti-back-left'></i>
+            </span>
+            <span class="text">
+                Back
+            </span>
+        </a> {% endcomment %}
     </div>
     <br>
             <div class="table-responsive">
@@ -67,14 +76,7 @@
                 </table>
                 <br>
                 <br>
-                <a class="btn btn-primary btn-sm" href="/sit-instructor/instructor">
-                    <span class="icon text-white-50">
-                        <i class='ti-back-left'></i>
-                    </span>
-                    <span class="text">
-                        Back
-                    </span>
-                </a>
+
                 {% comment %} {% if user.is_authenticated %}
                 <br><br>
                 <a class="nav-link" href="{% url 'logout' %}">Log out</a>

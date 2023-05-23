@@ -11,9 +11,30 @@
 
         <br>
         <div align="right"> <!-- buttons here-->
-            <button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
-            <button><a href="{% url 'view_assignments' id %}">Assignments</a></button>
-            <button><a style="color: #000;" href="/sit-instructor/instructor/view_courses/{{id}}/">Download Student List</a></button>
+            <!-- Back Button -->
+            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses" data-toggle="tooltip" title="Back">
+                <span>
+                    <i class="ti-control-backward"></i>
+                </span>
+            </a>
+            <!-- Announcement Button-->
+            <a class="btn btn-primary ml-2" href="{% url 'view_instructor_course' id %}" data-toggle="tooltip" title="Announcements">
+                <span>
+                    <i class="ti-announcement"></i>
+                </span>
+            </a>
+            <!-- Assignments Button-->
+            <a class="btn btn-primary ml-2" href="{% url 'view_assignments' id %}" data-toggle="tooltip" title="Assignments">
+                <span>
+                    <i class="ti-files"></i>
+                </span>
+            </a>
+            <!-- Download Button-->
+            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/" data-toggle="tooltip" title="Download Student List">
+                <span>
+                    <i class="ti-download"></i>
+                </span>
+            </a>
             <br><br>
         </div>
 
@@ -41,7 +62,7 @@
                 {% endfor %}
             </table>
             <br>
-            <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">Back</a></button>
+            
         </div>
     </div>
 

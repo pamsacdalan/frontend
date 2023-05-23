@@ -179,6 +179,7 @@
                                     <tr>
                                         <th>Request Date</th>
                                         <th>Course Batch</th>
+                                        <th>Instructor ID</th>
                                         <th>Old Start Date</th>
                                         <th>Old End Date</th>
                                         <th>Old Start Time</th>
@@ -195,45 +196,11 @@
                                       </tr>
                                 </thead>
 
-<tr>{% for schedule in change_schedule_list%}
-
-    <td name= 'request_date'>{{schedule.request_date}}</td>
-    <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
-    <td name= 'instructor_id'>{{schedule.instructor_id}}</td>
-    <td name= 'old_start_date'>{{schedule.old_start_date}}</td>
-    <td name= 'old_end_date'>{{schedule.old_end_date}}</td>
-    <td name= 'old_start_time'>{{schedule.old_start_time}} </td>
-    <td name= 'old_end_time'>{{schedule.old_end_time}}</td>
-    <td name= 'old_frequency'>
-        {% if schedule.old_frequency == 0%} Once
-        {% elif schedule.old_frequency == 1%} Daily
-        {% else %} Weekly
-        {% endif %}
-    </td>
-    <td name= 'new_start_date'>{{schedule.new_start_date}}</td>
-    <td name= 'new_end_date'>{{schedule.new_end_date}}</td>
-    <td name= 'new_start_time'>{{schedule.new_start_time}} </td>
-    <td name= 'new_end_time'>{{schedule.new_end_time}}</td>
-    <td name= 'new_frequency'>
-        {% if schedule.new_frequency == 0%} Once
-        {% elif schedule.new_frequency == 1%} Daily
-        {% else %} Weekly
-        {% endif %}
-    </td>
-    <td name= 'status'>{{schedule.status}}</td>
-    <td><a href="approve/{{schedule.id}}">Approve</a></td>
-    <td><a href="reject/{{schedule.id}}">Reject</a></td>
-    
-</tr>
-    {% endfor %}
-</table>
-<br>
-<br>
-<button><a style="color:#000; " href="/sit-admin/dashboard/">Back</a></button>
                                 <tr>{% for schedule in change_schedule_list%}
-                                
+
                                     <td name= 'request_date'>{{schedule.request_date}}</td>
                                     <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
+                                    <td name= 'instructor_id'>{{schedule.instructor_id}}</td>
                                     <td name= 'old_start_date'>{{schedule.old_start_date}}</td>
                                     <td name= 'old_end_date'>{{schedule.old_end_date}}</td>
                                     <td name= 'old_start_time'>{{schedule.old_start_time}} </td>
@@ -266,16 +233,17 @@
                                             <i class="fas fa-times" aria-hidden="true"></i>
                                         </a>
                                     </td>
+                                    {% comment %} <td><a href="approve/{{schedule.id}}">Approve</a></td>
+                                    <td><a href="reject/{{schedule.id}}">Reject</a></td> {% endcomment %}
                                     
                                 </tr>
-                                    {% endfor %}
+                                {% endfor %}
                             </table>
-                                <br>
-                                <br>
+                            <br>
+                            <br>
                         </div>
                     </div>
                 </div>
             </div>
-
 
 {% endblock content %}

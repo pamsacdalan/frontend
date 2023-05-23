@@ -13,38 +13,35 @@ from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 def create_student_photo_folder():
+    
     """ This function will create the folder for student profile pic storage"""
+    
     folder_path = os.path.join(settings.MEDIA_ROOT, 'student_photo')
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
+        
 
 def student_profile(request):    
+    
     """ This function renders the student page """
+    
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
 
-    
-    
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
-    
     
     ongoing_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing').count()
     completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
     total_count = ongoing_count + completed_count
 
 
-    
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
     for enrollment in ongoing_enrollments:
         print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
         
-
-
-
-    """ This function renders the student edit profile"""
 
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
