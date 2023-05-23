@@ -46,6 +46,12 @@ def validate(username):
 @user_passes_test(is_admin)
 def student(request): 
 
+    program = Program.objects.all().values('program_code')
+    program_list = []
+    for i in range(len(program)):
+         program_list.append(program[i]['program_code'])
+    program_list.sort()
+
     if request.method == "POST":
         form = StudentForm(request.POST)  
         if form.is_valid():
@@ -63,7 +69,8 @@ def student(request):
                     user.save()
                     middlename=request.POST['middlename']
                     birthdate=request.POST['birthdate']
-                    program_id=Program.objects.get(program_id=request.POST['program_id'])
+                    program = Program.objects.values('program_id').get(program_code=request.POST['program_code'])
+                    program_id = Program.objects.get(program_id=program['program_id'])
                     student_no=request.POST['student_no']
                     employment_status=request.POST['employment_status']
                     student = Students_Auth(user=user, middlename=middlename, birthdate=birthdate, program_id=program_id, student_no=student_no, employment_status=employment_status)
@@ -77,8 +84,9 @@ def student(request):
             print(form.errors)
     else:
         form = StudentForm()            #loads the student form with autofill on some fields
-    
-    return render(request, 'admin_module/add_student.html', {'form':form, })
+
+
+    return render(request, 'admin_module/add_student.html', {'form':form, 'program_list' : program_list})
 
 
 @user_passes_test(is_admin)
@@ -106,9 +114,21 @@ def view_students(request):
 
 @user_passes_test(is_admin)
 def edit_student(request, id):
-    student = Students_Auth.objects.get(id=id)     
-    email_for_reset = student.user.email          #get the id of the student
-    return render(request, 'admin_module/edit_student.html', {'student':student, 'email':email_for_reset})    #passes the student as context to the edit.html
+    student = Students_Auth.objects.get(id=id)   
+    print(id)
+    print(student.user_id)
+    old_program = student.program_id.pk
+    old_program = Program.objects.values('program_code').get(program_id=old_program)
+    old_program = old_program['program_code']
+    email_for_reset = student.user.email         #get the id of the student
+    program = Program.objects.all().values('program_code')
+    program_list = []
+    for i in range(len(program)):
+         program_list.append(program[i]['program_code'])
+    program_list.sort()
+    
+    return render(request, 'admin_module/edit_student.html', {'student':student, 'email':email_for_reset, 'program_list':program_list,
+                                                                'old_program':old_program})    #passes the student as context to the edit.html
 
 @user_passes_test(is_admin)
 def update_student(request, id):
@@ -133,7 +153,9 @@ def delete_student(request, id):
 
 @user_passes_test(is_admin)  
 def update_record(request, id):
-    program_id = request.POST['program_id']
+    # program_id = request.POST['program_id']
+    program = Program.objects.values('program_id').get(program_code=request.POST['program_code'])
+    program_id = Program.objects.get(program_id=program['program_id'])
     student_no = request.POST['student_no']
     email = request.POST['email']
     username = request.POST['email']
@@ -147,13 +169,14 @@ def update_record(request, id):
     access_type = request.POST['access_type']
 
     student = Students_Auth.objects.get(id=id)
+    # student_user = Students.objects.get(id=id)
     student.program_id = program_id
     student.student_no = student_no
     student.user.email = email
     student.user.username = username
-    student.user.firstname = firstname
+    student.user.first_name = firstname
     student.middlename = middlename
-    student.user.lastname = lastname
+    student.user.last_name = lastname
     student.birthdate = convert_birthdate
     student.employment_status = employment_status
     student.active_deactive = active_deactive

@@ -161,7 +161,14 @@
                 <div class="container-fluid">
                     <div class ="row">
                         <div class = "col-2">
-                            <p>Program ID: </p>{{form.program_id}}
+                            <label>Program: </label>
+                                            <select class="form-control" name="program_code" required>
+                                                <option value "" selected disabled hidden> Choose Program </option>
+                                                {% for value in program_list %}
+                                                    <option value="{{value}}" >{{value}}</option>
+                                                {% endfor %}
+                
+                                            </select>
                         </div>
 
                         <div class = "col-2">
