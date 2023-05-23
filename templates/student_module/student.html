@@ -29,7 +29,7 @@
                         <a class="nav-link" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#schedules">Schedules</a>
+                        <a class="nav-link" href="#calendar">Calendar</a>
                     </li>                 
                     <li class="nav-item">
                         <a class="nav-link" href="#courses">Courses</a>
@@ -62,9 +62,9 @@
                 <h6 class="title">Arnoselle Gabales</h6>
                 <p>Data Engineer</p>
 
-                <div class="buttons pt-3">
+                <!-- <div class="buttons pt-3">
                     <button class="btn btn-primary rounded">Calendar</button>
-                </div>      
+                </div>       -->
             </div>              
             <div class="img-holder">
                 <img src="{% static 'student/assets/imgs/man.svg' %}" alt="">
@@ -92,50 +92,17 @@
   
 
 
-       <!-- ======= Schedules Section ======= -->
-       <section id="schedules" class="section">
+       <!-- ======= Calendar Section ======= -->
+       <section id="calendar" class="section">
         <div class="container mt-5"></div>
         <div class="container text-center">
-           <h6 class="subtitle">Schedules</h6>
-          <div class="section-title">
-            
-          </div>
-  
-          <div class="row">
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">1st Course</a></h4>
-              <p class="description">Details Details</p>
-            </div>
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">2nd Course</a></h4>
-              <p class="description">Deeets Deets</p>
-            </div>
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">3rd course</a></h4>
-              <p class="description">Deeets Deets</p>
-            </div>
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="300">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">4th Course</a></h4>
-              <p class="description">Deets Deets</p>
-            </div>
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="400">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">5th Course</a></h4>
-              <p class="description">Deets Deets</p>
-            </div>
-            <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="500">
-              <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-              <h4 class="title"><a href="">6th Course</a></h4>
-              <p class="description">Deets Deets</p>
-            </div>
-          </div>
-  
+           <h6 class="subtitle">Calendar</h6>
+           <div class="section-title">
+        {% include 'student_module/calendar.html' %}
+
         </div>
-      </section><!-- End Schedules Section -->
+        </div>
+      </section><!-- End Calendar Section -->
 
 
     <!-- Courses section -->

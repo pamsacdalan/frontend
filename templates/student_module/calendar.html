@@ -1,0 +1,218 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: black;
+            border-radius: 10px;
+        }
+    
+        th, td {
+            text-align: center;
+            padding: 8px;
+            font-size: 20px;
+        }
+
+        th {
+            background-color: #a70000;
+            color: white;
+            font-size: 23px;
+            border: 2px solid black; /* border style */
+            /* border-radius: 10px; border radius */
+            border-style: dashed;
+            border-color: #100f0f;
+        }
+
+        td {
+            border: 1px solid black; 
+            border-radius: 5px;
+            border-style: dashed;
+            border-color: #100f0f;
+        }
+    
+        .prev-month-btn,
+        .next-month-btn {
+            margin: 10px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+    
+        h1 {
+            color: ;
+            text-align: center;
+        }
+
+        .event {
+            background-color: #8dc0ff;
+            color: white;
+            padding: 4px;
+            margin-bottom: 4px;
+			font-size: 15px;
+            border-radius: 10px;
+        }
+        #current-month-btn {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background-color: #a70000;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            line-height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
+</head>
+<body>
+    <h1><span class="month">{{ month_name }}</span> <span class="year">{{ year }}</span></h1>
+    <div>
+        <span class="prev-month-btn" onclick="navigateToPreviousMonth()"><i class="ti-angle-left"></i>Previous</span>
+        <i id="current-month-btn" class="ti-calendar" onclick="goToCurrentMonth()"></i>
+        <span class="next-month-btn" onclick="navigateToNextMonth()">Next<i class="ti-angle-right"></i></span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in calendar %}
+                <tr>
+                    {% for day, events in week %}
+                        <td>
+                            <span class="day">{{ day }}</span>
+                            {% for event in events %}
+                                <div class="event">{{ event }}</div>
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const monthElement = document.querySelector(".month");
+        const yearElement = document.querySelector(".year");
+        const daysContainer = document.querySelector("tbody");
+    
+        const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+    
+        const date = new Date();
+        let currentMonth = date.getMonth();
+        let currentYear = date.getFullYear();
+    
+        const updateMonthYear = () => {
+            monthElement.textContent = months[currentMonth];
+            yearElement.textContent = currentYear.toString();
+        };
+    
+        const goToCurrentMonth = () => {
+            const currentDate = new Date();
+            currentMonth = currentDate.getMonth();
+            currentYear = currentDate.getFullYear();
+            fetch(`?date=${currentYear}-${currentMonth + 1}-1`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newCalendar = newDocument.querySelector("tbody").innerHTML;
+                    daysContainer.innerHTML = newCalendar;
+                    updateMonthYear();
+                    highlightCurrentDate();
+                });
+        };
+
+        const navigateToNextMonth = () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            fetch(`?date=${currentYear}-${currentMonth + 1}-1`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newCalendar = newDocument.querySelector("tbody").innerHTML;
+                    daysContainer.innerHTML = newCalendar;
+                    updateMonthYear();
+                    highlightCurrentDate();
+                });
+        };
+
+        const navigateToPreviousMonth = () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            fetch(`?date=${currentYear}-${currentMonth + 1}-1`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDocument = parser.parseFromString(html, 'text/html');
+                    const newCalendar = newDocument.querySelector("tbody").innerHTML;
+                    daysContainer.innerHTML = newCalendar;
+                    updateMonthYear();
+                    highlightCurrentDate();
+                });
+        };
+    
+        const highlightCurrentDate = () => {
+            const currentDate = new Date();
+            const currentMonthIndex = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+
+            if (currentMonthIndex === currentMonth && currentYear === currentYear) {
+                const currentDay = currentDate.getDate();
+
+                const days = daysContainer.querySelectorAll(".day");
+                days.forEach(day => {
+                    if (parseInt(day.textContent) === currentDay) {
+                        day.style.fontWeight = "bold";
+                    } else {
+                        day.style.fontWeight = "normal";
+                    }
+                });
+            }
+            else {
+                const days = daysContainer.querySelectorAll(".day");
+                days.forEach(day => {
+                    day.style.fontWeight = "normal";
+                });
+            }
+        };
+    
+        updateMonthYear();
+        highlightCurrentDate();
+    </script>
+</body>
+</html>
