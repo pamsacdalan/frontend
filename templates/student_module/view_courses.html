@@ -1,1 +1,19 @@
-<h1>Welcome to courses</h1>
+
+<h1>Welcome to Course : {{id}}</h1>
+<br>
+<br>
+<h1>Assignments</h1>
+<table>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Deadline</th>
+    <th>Score</th>
+    {%for items in details%}
+    <tr>
+        <td><a href="{% url 'student_view_assignment_details' id items.id %}">{{items.activity_title}}</a></td>
+        <td>{{items.activity_desc}}</td>
+        <td>{{items.deadline}}</td>
+        <td>{{items.max_score}}</td>
+    </tr>
+    {%endfor%}
+</table>

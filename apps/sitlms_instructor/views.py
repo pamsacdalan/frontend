@@ -262,7 +262,7 @@ def view_pending_requests(request):
 
 @user_passes_test(is_instructor)
 def view_assignments (request,id):
-    """ This function renders the student page """
+    """ This function renders the instructor assignment page """
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
         return redirect("instructor-no-access")
     acts = Course_Activity.objects.filter(course_batch=id)
