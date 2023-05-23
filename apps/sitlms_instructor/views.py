@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import user_passes_test
 from functools import partial
 from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
+from django.http import HttpResponseForbidden
 from django.db.models import Q
 
 
@@ -34,9 +35,14 @@ def is_correct_instructor_cbatch_id(instructor, cbatch_id):
         if Course_Enrollment.objects.filter(course_batch=cbatch_id).first().instructor_id==instructor:
             pass
         else:
-            raise PermissionDenied
+            return True
     except Exception as e:
-        raise PermissionDenied
+        return True
+    
+def custom_403_1(request):
+    # Pag pinasa ko with status=403, ayaw magload ng page :(
+    # Dapat ganito: render(request, 'custom_403_1.html', status=403)
+    return render(request, 'custom_403_1.html')
 
 # Create your views here.
 @user_passes_test(is_instructor)
@@ -107,7 +113,8 @@ def instructor_view_enrolled_course(request):
 
 @user_passes_test(is_instructor)
 def view_students(request, id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     template = loader.get_template('instructor_module/instructor_view_student.html')
 
     # course = Course_Enrollment.objects.get(course_batch=id)
@@ -151,7 +158,8 @@ def view_students(request, id):
 
 @user_passes_test(is_instructor)
 def change_schedule(request, id): #need notif na nasend na yung request.. helllppp
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     # template = loader.get_template('instructor_module/instructor_change_schedule.html')
     enrolled_course = Course_Enrollment.objects.get(course_batch=id) #ex: Python101
     course_batch = enrolled_course.course_batch
@@ -248,14 +256,18 @@ def view_pending_requests(request):
     # print(course_enrolled)
 
     pending_requests = Change_Schedule.objects.filter(status='Pending', course_batch__in=course_enrolled).values()
-    # print(pending_requests)
-    context = {'pending_requests':pending_requests}
+    approved_rejected_requests = Change_Schedule.objects.filter(Q(status='Approved')| Q(status='Rejected'), course_batch__in=course_enrolled).values()
+    
+    context = {'pending_requests':pending_requests,
+                'approved_rejected_requests': approved_rejected_requests}
+
     return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_instructor)
 def view_assignments (request,id):
     """ This function renders the student page """
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     acts = Course_Activity.objects.filter(course_batch=id)
     context={
         'acts':acts,
@@ -266,7 +278,8 @@ def view_assignments (request,id):
 
 @user_passes_test(is_instructor)
 def add_assignment(request, id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     if request.method == "POST":
         form = ActivityForms(request.POST, request.FILES)
         
@@ -294,7 +307,8 @@ def add_assignment(request, id):
 
 @user_passes_test(is_instructor)
 def update_assignment(request,id,pk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     context = {
@@ -324,7 +338,8 @@ def update_assignment(request,id,pk):
 
 @user_passes_test(is_instructor)
 def delete_assignment(request, id, pk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     context = {
@@ -339,13 +354,14 @@ def delete_assignment(request, id, pk):
 
 @user_passes_test(is_instructor)
 def instructor_course(request, id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     template = loader.get_template('instructor_module/instructor_course.html')
 
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
     
-    announcement_details = Course_Announcement.objects.filter(course_batch=id).values()
+    announcement_details = Course_Announcement.objects.filter(course_batch=id).order_by('-date_posted').values()
 
     user = request.user
     user_id = user.id
@@ -365,7 +381,8 @@ def instructor_course(request, id):
 
 @user_passes_test(is_instructor)
 def create_announcement(request,id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     template = loader.get_template('instructor_module/create_announcement.html')
     
     if request.method == "POST":
@@ -392,7 +409,8 @@ def create_announcement(request,id):
 
 @user_passes_test(is_instructor)
 def remove_announcement(request, course_batch, schedule_id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch):
+        return redirect("instructor-no-access")
     announcement = Course_Announcement.objects.get(id=schedule_id)
 
     if request.method == "POST":
@@ -403,7 +421,8 @@ def remove_announcement(request, course_batch, schedule_id):
 
 @user_passes_test(is_instructor)
 def edit_announcement(request, course_batch, schedule_id):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, course_batch):
+        return redirect("instructor-no-access")
     announcement = Course_Announcement.objects.get(id=schedule_id)
     context =  {'course_batch': course_batch, 'announcement': announcement}
 
@@ -420,7 +439,8 @@ def edit_announcement(request, course_batch, schedule_id):
 
 @user_passes_test(is_instructor)
 def activity_comments(request, id, pk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
@@ -445,7 +465,8 @@ def activity_comments(request, id, pk):
 
 @user_passes_test(is_instructor)
 def download_activity_attachment(request, id, pk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     # batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
@@ -488,7 +509,6 @@ def export_csv(request, id):
     response['Content-Disposition'] = f'attachment; filename={filename}'
     writer = csv.writer(response)
     writer.writerow(['Program', 'Last_Name', 'First_Name', 'Email'])
-
     
     
     for student in student_details:
@@ -503,7 +523,8 @@ def export_csv(request, id):
     
 @user_passes_test(is_instructor)
 def edit_comments(request,id,pk,fk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) 
     comment_id = Activity_Comments.objects.get(id=fk)
@@ -524,7 +545,8 @@ def edit_comments(request,id,pk,fk):
 
 @user_passes_test(is_instructor)
 def delete_comments(request,id,pk,fk):
-    is_correct_instructor_cbatch_id(request.user.instructor_auth, id)
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     act= Course_Activity.objects.get(id=pk)
     comment_id = Activity_Comments.objects.get(id=fk)

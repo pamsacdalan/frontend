@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from .forms import CsvModelForm
-from .models import Csv, Change_Schedule, Schedule, Course_Enrollment
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -157,7 +157,20 @@ def change_schedule_approval(request):
     
     template = loader.get_template('admin_module/instructor_change_schedule_approval.html')
     change_schedule_list = Change_Schedule.objects.filter(status='Pending').values()
-    # print(change_schedule_list)
+    
+
+    for value in range(len(change_schedule_list)):
+
+        course_batch = change_schedule_list[value]['course_batch_id']
+        instructor_id =  Course_Enrollment.objects.values('instructor_id').get(course_batch=course_batch)
+        instructor = Instructor_Auth.objects.get(id=instructor_id['instructor_id'])
+        # print(instructor)
+        # print(instructor_id['instructor_id'])
+
+        change_schedule_list[value]['instructor_id'] = instructor
+        # print(change_schedule_list[value])
+
+    
     context = {'change_schedule_list':change_schedule_list
                 }
     return HttpResponse(template.render(context,request))

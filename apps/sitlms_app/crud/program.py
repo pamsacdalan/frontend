@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 @user_passes_test(is_admin)
 def view(request):
     template = loader.get_template('admin_module/view_program.html')
-    programs = Program.objects.all()
+    programs = Program.objects.all().order_by('program_code')
 
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)

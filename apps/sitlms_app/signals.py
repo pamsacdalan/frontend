@@ -13,39 +13,6 @@ from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
-'''
-UserModel = get_user_model()
-
-@receiver(post_save, sender=UserModel)
-def send_password_reset(sender, instance, created, **kwargs):
-    # WILL REMOVE THIS SIGNAL AND CREATE NON-SIGNAL VERION IN ADMIN CRUD
-    if created:
-        # Get the current site
-        # current_site = Site.objects.get_current()
-        # Determine the protocol
-        # protocol = 'https' if current_site.domain.startswith('https://') else 'http'
-        # Determine the domain
-        # domain = current_site.domain
-        site_name = '127.0.0.1:8000'
-        protocol = 'http'
-        domain = '127.0.0.1:8000'
-        uid = urlsafe_base64_encode(force_bytes(instance.pk))
-        token = default_token_generator.make_token(instance)
-        reset_password_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-        # DI AKO SURE SAAN GALING DAPAT ANG PROTOCOL AND DOMAIN
-        html_message = render_to_string('registration/password_reset_email.html', {'site_name':site_name, 'protocol':protocol, 'domain':domain, 'uid': uid, 'token': token, })
-        plain_message = strip_tags(html_message)
-        # email_body = f"Hello {instance.first_name} {instance.last_name}, \n\nPlease use this link to reset your password: \n http://127.0.0.1:8000{reset_password_url} \n\nThank you!"
-        send_mail(
-            'Password reset request',
-            plain_message,
-            'noreply@yourdomain.com',
-            [instance.email],
-            fail_silently=False, 
-            html_message=html_message
-        )
-'''
-
 @receiver(post_delete, sender=Admin)
 def auto_delete_user_with_admin(sender, instance, **kwargs):
     # This behavior is not final. However, the Django recommendation is not to delete User models, which may create errors in the application if done.

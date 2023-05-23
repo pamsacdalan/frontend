@@ -209,7 +209,7 @@
                                     <p>Would you like to reset the password for this instructor?</p>
                                 </div>
                                 <div class="col-6">
-                                    <form method="post" action="/accounts/password_reset/">
+                                    <form method="post"  action="{% url 'password_reset_v2' %}"  target="_blank">
                                         {% csrf_token %}
                                         <input type="hidden" name="email" value="{{ instructor.user.email }}">
         

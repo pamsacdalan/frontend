@@ -53,7 +53,7 @@ def add_course_info(request):
 @user_passes_test(is_admin)
 def view_course(request):
         template = loader.get_template('admin_module/view_course.html')
-        course_list = Course_Catalog.objects.all()
+        course_list = Course_Catalog.objects.all().order_by('course_desc')
         
         
         # for pagination

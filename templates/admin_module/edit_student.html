@@ -168,7 +168,7 @@
                     </div>
                     <!-- reset Password -->
                     <div class="col-7">
-                        <form method="post" action="/accounts/password_reset/">
+                        <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
                             {% csrf_token %}
                             <div class="form-group mb-2">
                                 <div class="col-6">
@@ -195,7 +195,15 @@
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-2">
-                                            <p>Program ID: </p><input class = "form-control" type="text" name = "program_id" value = "{{student.program_id}}"/>
+                                            <!-- <p>Program ID: </p><input class = "form-control" type="text" name = "program_id" value = "{{student.program_id}}"/> -->
+                                            <label>Program: </label>
+                                            <select class="form-control" name="program_code" required>
+                                                <option selected hidden> {{old_program}} </option>
+                                                {% for value in program_list %}
+                                                    <option value="{{value}}" >{{value}}</option>
+                                                {% endfor %}
+                
+                                            </select>
                                         </div>
 
                                         <div class="col-2">

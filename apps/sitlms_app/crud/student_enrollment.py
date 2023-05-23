@@ -11,6 +11,7 @@ from apps.sitlms_app.crud.access_test import is_admin
 from datetime import date, datetime ,timedelta
 from django.db.models import Max
 from datetimerange import DateTimeRange
+from operator import itemgetter
 
 
 def get_redundant_schedule(course_batch):
@@ -71,6 +72,15 @@ def enroll_student(request, id):
 
     count = len(student_ids)
 
+    # pass list of program code as context for a dropdown on frontend
+    programs = []
+    program_code_list = program_code.values().order_by('program_code').values_list('program_code')
+
+    for j in program_code_list:
+        programs.append(j[0])
+
+    programs.insert(0,'All')
+
     # create a new list to pass as context
     new_list = []
 
@@ -79,15 +89,15 @@ def enroll_student(request, id):
         i.pop('id')
 
     # add the key-value pair of Student_Auth and User to the list
-    # for x in range(count):
-    #     new_list.append({**student_list[x],**student_details[x], **program_code[x]})
-
     for x in range(count):
         for program in program_code:
             if student_list[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_list[x], **student_details[x], **program})
 
-    context = {'student_list': new_list, 'id': id}
+    ## Sort list to be by program code
+    new_list = sorted(new_list, key=itemgetter('program_code'))
+
+    context = {'student_list': new_list, 'id': id, 'programs':programs}
 
     if request.method == "POST":
         id_list = request.POST.getlist('checks[]')
@@ -135,6 +145,9 @@ def view_enrolled_students(request, id):
         for program in program_code:
             if student_auth_details[x]['program_id_id'] == program['program_id']:
                 new_list.append({**student_auth_details[x], **student_details[x], **student_list[x], **program})
+
+    ## Sort list to be by program code
+    new_list = sorted(new_list, key=itemgetter('program_code'))
 
     context = {
         'course': course,

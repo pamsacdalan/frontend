@@ -167,7 +167,7 @@
                                     <p>Would you like to reset the password for this admin?</p>
                                 </div>
                                 <div class="col-7">
-                                    <form method="post" action="/accounts/password_reset/">
+                                    <form method="post" action="{% url 'password_reset_v2' %}" target="_blank">
                                         {% csrf_token %}
                                         <input type="hidden" name="email" value="{{ email }}">
                                         <button class="btn btn-dark btn-icon-split btn-sm" type="submit" value="Reset Password" />
