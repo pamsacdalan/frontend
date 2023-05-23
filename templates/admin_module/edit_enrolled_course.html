@@ -4,6 +4,7 @@
     
     <form method="post">
     {% csrf_token %}
+    <!--Calls the function in script upon loading-->
     <body onload="loading()">
         <div>
     <label for="course_batch">Course Batch</label>
@@ -75,16 +76,17 @@
 
     </select>
     <script>
+        //this function fills the dropdown with instructor names
         function loading(){
             var professor = {{ full_name | safe}};
-            updateDropdown(professor);
+            updateDropdown(professor);              //calls the updateDropdown function
         }
 
         var dropdown = document.getElementById("myDropdown");
         
         function updateDropdown() {
-            var myList = {{ schedules|safe}};
-            var professor = {{ full_name | safe}};
+            var myList = {{ schedules|safe}};       //accesses the "schedules" context
+            var professor = {{ full_name | safe}};  //accesses the "full_name" context
             var startDate = new Date(document.getElementById("start_date").value);        //calendar start date
             var endDate = new Date(document.getElementById("end_date").value);            //calendar end date
             var startTime = document.getElementById("start_time").value;                //clock start time
@@ -164,29 +166,29 @@
             } 
         
         }
-        call(professor);
+        call(professor); //passes the professor list as argument in the call function
     }
 
     function call(professor){
-    dropdown.innerHTML = "";
+        //This function populates the dropdown and preselected the instructor being edited if available.
+            dropdown.innerHTML = "";
             var defaultOption = document.createElement("option");
             defaultOption.value = "{{iid}}";  // Value for the default option
             defaultOption.text = "{{iid}}";
-            if (professor.includes(defaultOption)) {
-                defaultOption.selected = true;
-            }
-
-            defaultOption.hidden = true;
-            dropdown.appendChild(defaultOption);
-
 
             for (var i = 0; i < professor.length; i++) {
             var option = document.createElement("option");
             option.text = professor[i];
             option.value = professor[i];
             dropdown.add(option);
-
         }
+
+        if (professor.includes(defaultOption)) {
+                defaultOption.selected = true;
+            }
+
+            defaultOption.hidden = true;
+            dropdown.appendChild(defaultOption);
 
 
 

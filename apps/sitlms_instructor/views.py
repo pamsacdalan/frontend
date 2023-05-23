@@ -256,8 +256,11 @@ def view_pending_requests(request):
     # print(course_enrolled)
 
     pending_requests = Change_Schedule.objects.filter(status='Pending', course_batch__in=course_enrolled).values()
-    # print(pending_requests)
-    context = {'pending_requests':pending_requests}
+    approved_rejected_requests = Change_Schedule.objects.filter(Q(status='Approved')| Q(status='Rejected'), course_batch__in=course_enrolled).values()
+    
+    context = {'pending_requests':pending_requests,
+                'approved_rejected_requests': approved_rejected_requests}
+
     return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_instructor)

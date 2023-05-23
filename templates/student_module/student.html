@@ -1,5 +1,5 @@
 {% load static %}
-
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +39,7 @@
                     </li>
                     <div class="dropdown">
                         <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{user.first_name}}
+                          {{ student_details.first_name }}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                           <a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="ti-user"></i> Profile</a>
@@ -59,8 +59,8 @@
         <div class="container">
             <div class="infos">
                 <h6 class="subtitle">Hello,</h6>
-                <h6 class="title">{{user.first_name}}</h6>
-                <p>{{program}}</p>
+                <h6 class="title">{{student_details.first_name}} {{student_details.last_name}}</h6>
+                <p>{{student_details.program_title}}</p>
 
                 <div class="buttons pt-3">
                     <button class="btn btn-primary rounded">Calendar</button>
@@ -74,16 +74,16 @@
         <!-- Header-widget -->
         <div class="widget">
             <div class="widget-item">
-                <h2>{{course_count}}</h2>
+                <h2>{{student_details.total_count}}</h2>
                 <p>Enrolled Courses</p>
             </div>
             <div class="widget-item">
-                <h2>{{course_count}}</h2>
+                <h2>{{student_details.ongoing_count}}</h2>
                 <p>Ongoing Courses</p>
             </div>
             <div class="widget-item">
-                <h2>0</h2>
-                <p>Completed Courses</p>
+                <h2>{{student_details.completed_count}}</h2>
+                <p>Completed COurses</p>
             </div>
         </div>
     </header>

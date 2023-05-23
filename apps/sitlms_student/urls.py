@@ -1,6 +1,10 @@
 from django.urls import path
 from django.contrib import admin
 from apps.sitlms_student import views
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 
 urlpatterns = [
     path('student_profile', views.student_profile,name="student_profile"),
@@ -10,4 +14,4 @@ urlpatterns = [
     path('student_profile/view_courses/<str:id>/assignment/<int:pk>', views.student_view_assignment_details, name='student_view_assignment_details'),
     path('student_profile/view_courses/<str:id>/assignments/<int:pk>/download-attachment', views.download_activity_attachment, name='download_activity_attachment'),
     path('student-no-access',views.custom_403_2,name="student-no-access"),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

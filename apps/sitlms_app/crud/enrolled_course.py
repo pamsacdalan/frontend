@@ -143,8 +143,6 @@ def view_enrolled_course(request):
         
     return HttpResponse(template.render(context,request))
 
-    
-    return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_admin)
 def enrol_course_info(request):
