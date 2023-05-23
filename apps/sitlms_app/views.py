@@ -194,7 +194,7 @@ def approve_change_schedule(request, id):
     end_time = enrolled_course_all.end_time
     course_batch = enrolled_course_all.course_batch
 
-    print(type(start_date), type(end_date), str(start_time), str(end_time))
+    # print(type(start_date), type(end_date), str(start_time), str(end_time))
 
 
     for record in scheduled_course:
@@ -218,7 +218,7 @@ def view_history(request):
     #change_schedule_list = Change_Schedule.objects.filter(status='Pending').values()
     template = loader.get_template('admin_module/instructor_history_change_schedule_requests.html')
     history_list = Change_Schedule.objects.filter(Q(status='Approved')| Q(status='Rejected') ).values()
-    print(history_list)
+    # print(history_list)
     context = {'change_schedule_list':history_list}
 
     return HttpResponse(template.render(context,request))

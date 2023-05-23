@@ -189,15 +189,15 @@
                             <td name= 'lastname'>{{instructors.user.last_name}}</td>
                             <td name= 'birthdate'>{{instructors.birthdate}}</td>
                             {% comment %} <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
-                            <!-- JQBM: delete ko yung nakalagay sa access type, di ko gets point -->
-                            <td align="center"><a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/instructor/edit/{{ instructors.id }}">
+
+                            <td align="center"><a  class="btn btn-dark btn-circle btn-sm" href="/sit-admin/instructor/edit/{{ instructors.id }}">
                                     <i class="fas fa-edit" aria-hidden="true"></i>
                                 </a> |
 
                                 <!-- Delete Button-->
                                 <a
                                 href="/sit-admin/instructor/delete/{{ instructors.id }}"
-                                class="btn btn-danger btn-circle btn-sm" 
+                                class="btn btn-primary btn-circle btn-sm" 
                                 data-toggle="modal"
                                 data-target="#delete-item-modal"
                                 onclick="delete_instructor(this)"

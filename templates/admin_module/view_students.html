@@ -200,11 +200,11 @@
                                                     <br>
                                                     <div class="row">
                                                         <div class="col-12" align="center">
-                                                            <form method="POST" action = "" enctype="multipart/form-data">
+                                                            <form method="POST" action = "../view/import_csv" enctype="multipart/form-data">
                                                                 {%csrf_token%}
                                                                 <div class="col-12">
                                                                     <div class="input-group">
-                                                                        <form method="POST" action = "" enctype="multipart/form-data">
+                                                                        <form method="POST" action = "../view/import_csv" enctype="multipart/form-data">
                                                                             {%csrf_token%}
                                                                             <input type="file" class="form-control" name="file_name">
                                                                             {% comment %} {{form.as_p}} {% endcomment %}
@@ -230,7 +230,10 @@
                                     const openModal = () => {
                                         $('modal.fade').modal('show');
                                     }
+
                                 </script>
+
+
                                 <!-- Import Modal End-->
 
 
@@ -358,7 +361,7 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <p>Select 'Delete' to remove this student from the list.</p>
+                                                                <p>Select 'Delete' to remove this trainee from the list.</p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <form method="post" id="item-delete-form">
