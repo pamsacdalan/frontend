@@ -9,4 +9,5 @@ urlpatterns = [
     path('student_profile/view_courses/<str:id>', views.student_view_course, name='view_courses'),
     path('student_profile/view_courses/<str:id>/assignment/<int:pk>', views.student_view_assignment_details, name='student_view_assignment_details'),
     path('student_profile/view_courses/<str:id>/assignments/<int:pk>/download-attachment', views.download_activity_attachment, name='download_activity_attachment'),
+    path('student-no-access',views.custom_403_2,name="student-no-access"),
 ]
