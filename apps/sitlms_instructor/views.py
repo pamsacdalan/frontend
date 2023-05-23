@@ -47,7 +47,7 @@ def custom_403_1(request):
 # Create your views here.
 @user_passes_test(is_instructor)
 def instructor(request):
-    """ This function renders the student page """
+    """ This function renders the instructor page """
     form = ActivityForms(request.POST)
     acts = Course_Activity.objects.all()
     context={

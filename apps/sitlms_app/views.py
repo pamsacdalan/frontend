@@ -45,7 +45,7 @@ def home(request):
         return redirect('sit_admin_dashboard')
     elif hasattr(request.user,'instructor_auth'):
         return redirect('instructor')
-    elif hasattr(request.user,'student_auth'):
+    elif hasattr(request.user,'students_auth'):
         return redirect('student_profile')
     # print('Something went wrong')
     return render(request, 'landing.html')
