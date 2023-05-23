@@ -83,7 +83,9 @@ def student_profile(request):
     user_id = queryset.first().id
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
 
-    
+    courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
+    enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
+   
     
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
@@ -102,7 +104,7 @@ def student_profile(request):
 
 
 
-    """ This function renders the student edit profile"""
+    """ This function renders the student profile"""
 
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
@@ -110,11 +112,16 @@ def student_profile(request):
                         'program_title':program.program_title,
                         'ongoing_count':ongoing_count,
                         'completed_count':completed_count,
-                        'total_count':total_count
+                        'total_count':total_count,
+                        
                     }
     
-    context  ={'student_details': student_details}
-    
+    context  ={
+        'student_details': student_details,
+        'course_enrolled_list':courses,
+        'stud_id':user_id,
+        'course_count':enrolled_courses,
+               }
     
     return render(request, 'student_module/student.html', context)
 
