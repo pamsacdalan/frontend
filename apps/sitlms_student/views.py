@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Catalog, Course_Enrollment, Program, Student_Enrollment, Students, Students_Auth
-from django.template import loader
-=======
-from django.shortcuts import render, redirect
-from apps.sitlms_app.models import Students_Auth, Student_Enrollment, User, Student_Profile, Program
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program
 from django.conf import settings
 import os
-from django.contrib.auth import get_user_model
->>>>>>> origin/updated-frontend-v8
 
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
 from django.core.exceptions import PermissionDenied
