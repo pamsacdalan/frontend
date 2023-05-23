@@ -25,7 +25,7 @@ def student_profile(request):
 
 def student_view_course(request,id):
     enrolled_class = Student_Enrollment.objects.filter(course_batch=id)
-    print(enrolled_class)
+    # print(enrolled_class)
     context={
         'class':enrolled_class,
     }
