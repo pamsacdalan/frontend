@@ -48,9 +48,18 @@ def student_view_course(request,id):
     enrolled_class = Student_Enrollment.objects.filter(course_batch=id)
     # print(enrolled_class)
     class_details = Course_Activity.objects.filter(course_batch=id)
+    details_expanded = []
+    for act in class_details:
+        if Activity_Submission.objects.filter(course_activity=act,student_id=request.user.students_auth).exists():
+            grade = Activity_Submission.objects.get(course_activity=act,student_id=request.user.students_auth).grade
+            if grade is None:
+                grade = 'Not graded yet'
+        else:
+            grade = 'Not handed in'
+        details_expanded.append({'act':act,'grade':grade})
     context={
         'class':enrolled_class,
-        'details':class_details,
+        'details':details_expanded,
         'id':id,
     }
     return render(request,'student_module/view_courses.html',context)
@@ -136,6 +145,7 @@ def student_view_assignment_details(request, id, pk):
     file_relative_url = activity.activity_attachment.url 
 
     file_url = request.build_absolute_uri(file_relative_url)
+    submission_grade = False
     if Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).values('activity_file').exists():
         current_submission = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().activity_file
         initial_data = {'activity_file': current_submission}
@@ -143,6 +153,7 @@ def student_view_assignment_details(request, id, pk):
         # submission_upload_form = ActivitySubmissionUploadForm(initial=initial_data)
         #activity_file=current_submission
         submission_upload_form = ActivitySubmissionUploadForm()
+        submission_grade = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().grade
     else:
         current_submission_filename = False
         submission_upload_form = ActivitySubmissionUploadForm()
@@ -154,6 +165,7 @@ def student_view_assignment_details(request, id, pk):
         'user':user,
         'submission_upload_form':submission_upload_form,
         'current_submission_filename':current_submission_filename,
+        'submission_grade':submission_grade,
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
