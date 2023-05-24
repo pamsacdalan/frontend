@@ -346,9 +346,9 @@ def upload_activity_submission(request, id, pk):
             return redirect('student_view_assignment_details',id=id,pk=pk)
     return redirect('student_view_assignment_details',id=id,pk=pk)
 
-def download_activity_attachment(request, id):
+def download_activity_attachment(request, id, pk):
     # batch = Course_Enrollment.objects.get(pk=id)
-    activity = Course_Activity.objects.get(id=id) # Retrieve the object with the uploaded file
+    activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
     # Perform any necessary checks or validations here
 
