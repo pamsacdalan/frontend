@@ -85,20 +85,22 @@
 <br>
 
     <div class="container">
-        <div class="row justify-content-md-center">
+        <div class="row">
             {% for course in course_enrolled_list%}
                 <div class="col-sm-4">
+                    <br>
                     <div class="card" style="width: 22rem;">
                         <img class="card-img-top" src="{% static 'assets/course.png'%}" alt=""> 
                         <div class="card-body">
                             <h5 class="card-title">{{course.course_id_id}}</h5>
-                            <h1 class="card-text" style="font-size: 15px"> {{course.start_date}} - {{course.end_date}} </h1>
-                            <h1 class="card-text" style="font-size: 15px"> {{course.start_time}} - {{course.end_time}} [
+                            <h1 class="card-text" style="font-size: 15px"></h1> {{course.start_date}} - {{course.end_date}} 
+                            <h1 class="card-text" style="font-size: 15px"></h1> {{course.start_time}} - {{course.end_time}} [
                             {% if course.frequency == 0 %} Once
                             {% elif course.frequency == 1 %} Daily
                             {% else %} Weekly
                             {% endif %} ]
-                            </h1>
+                            
+                            <br>
                             <br>
                             <a href="/sit-instructor/instructor/view_students/{{course.course_batch}}" class="btn btn-primary btn-sm">View Students</a>
                             <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}" class="btn btn-primary btn-sm">Change Schedule</a>
@@ -107,14 +109,14 @@
                     </div>
                     <div class="collapse" id="{{course.course_id_id}}" style="width: 22rem;">
                         <div class="card card-body">
-                            <h1 style="font-size: 15px">Course Batch: <a href="/sit-instructor/instructor/course/{{course.course_batch}}">{{course.course_batch}}</a></h1>
+                            <h1 style="font-size: 15px">Course Batch: <a href="/sit-instructor/instructor/course/{{course.course_batch}}" data-toggle="tooltip" title="Go to Announcements">{{course.course_batch}}</a></h1>
                             <h1 style="font-size: 15px">Course Mode: 
                                 {% if course.course_mode == 0 %} Webinar
                                 {% elif course.course_mode == 1 %} Onsite
                                 {% else %} Self-Paced
                                 {% endif %}
                             </h1>
-                            <p style="font-size: 15px">Session Details: {{course.session_details | urlize | safe}}</p>
+                            <h1 style="font-size: 15px">Session Details: {{course.session_details | urlize | safe}}</h1>
                             
                         </div>
                     </div>

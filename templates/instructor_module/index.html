@@ -17,99 +17,111 @@
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
-
-        <!-- Page navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top" data-spy="affix" data-offset-top="0">
-            <div class="container">
-                <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/logo-red.png' %}" width = 150, height=65, alt="77SIT Logo" height="35"></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/sit-instructor/instructor">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#schedules">Calendar</a>
-                        </li>                 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/sit-instructor/instructor/view_courses">Courses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/sit-instructor/instructor/view_courses">Notifications</a>
-                        </li>
-                        <div class="dropdown">
-                            <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ user.first_name }}
+        <div id ='page-container'>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Page navigation -->
+                <nav class="navbar navbar-expand-lg navbar-light fixed-top" data-spy="affix" data-offset-top="0">
+                    <div class="container">
+                        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/logo-red.png' %}" width = 150, height=65, alt="77SIT Logo" height="35"></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+        
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto align-items-center">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/sit-instructor/instructor">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#schedules">Calendar</a>
+                                </li>                 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/sit-instructor/instructor/view_courses">Courses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/sit-instructor/instructor/view_courses">Notifications</a>
+                                </li>
+                                <div class="dropdown">
+                                    <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ user.first_name }}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#"><i class="ti-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="#"><i class="ti-list"></i> Activity Log</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="ti-power-off"></i> Logout</a>
+                                    </div>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>          
+                </nav>
+                <!-- End of page navibation -->
+            
+                <!-- Page Header -->
+                <div class="container">
+                    {% block header %}{% endblock header %}    
+                </div>  
+        
+                <!-- Page Content -->
+                <section class="section">
+                    <div class = "container-fluid">
+                        <div class="container mt-5">
+                            {% block content %}{% endblock content %}
+                        </div>
+                    </div>
+                </section>
+        
+        
+                <!-- Logout Modal-->
+                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">End current session?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#"><i class="ti-user"></i> Profile</a>
-                            <a class="dropdown-item" href="#"><i class="ti-list"></i> Activity Log</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="ti-power-off"></i> Logout</a>
+                        </div>
+                        <div class="modal-body">Click "Logout" below if you are ready to end your current session.</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-danger"  href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Page Footer -->
+            <footer class="sticky-footer">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <p>Copyright <script>document.write(new Date().getFullYear())</script> &copy; <a href="http://www.devcrud.com" target="_blank">Frontend Team</a></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="socials">
+                                <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-facebook"></i></a>
+                                <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-github"></i></a>
+                                <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-twitter"></i></a>
                             </div>
                         </div>
-                    </ul>
+                    </div>
                 </div>
-            </div>          
-        </nav>
-        <!-- End of page navibation -->
+            </footer> 
+            <!-- End of page footer -->
+
+            </div>
+            <!-- End of Page Wrapper-->
+            
+        </div>
+        <!-- End of Page Container-->
+
+
     
-        <!-- Page Header -->
-        <div class="container">
-            {% block header %}{% endblock header %}    
-        </div>  
 
-        <!-- Page Content -->
-        <section class="section">
-            <div class = "container-fluid">
-                <div class="container mt-5">
-                    {% block content %}{% endblock content %}
-                </div>
-            </div>
-        </section>
-
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">End current session?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Click "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger"  href="{% url 'logout' %}">Logout</a>
-                </div>
-            </div>
-        </div>
-        </div>
-
-
-        <!-- Page Footer -->
-        <footer class="page-footer">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <p>Copyright <script>document.write(new Date().getFullYear())</script> &copy; <a href="http://www.devcrud.com" target="_blank">Frontend Team</a></p>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="socials">
-                            <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-facebook"></i></a>
-                            <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-github"></i></a>
-                            <a class="social-item" href="https://www.facebook.com/seven.seven.global.services.inc"><i class="ti-twitter"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer> 
-        <!-- End of page footer -->
+        
         
         <!-- core  -->
         <script src="{% static 'student/assets/vendors/jquery/jquery-3.4.1.js'%}"></script>
