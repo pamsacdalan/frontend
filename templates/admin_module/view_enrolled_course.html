@@ -1,5 +1,4 @@
 {% extends './base.html' %}
-
 <!-- This page is for student enrollment-->
 
 {% block Topbar %}
@@ -13,7 +12,6 @@
                 </div>               
             </div>
 {% endblock Topbar %}
-
 
 
 {% block sidebar %}
@@ -182,12 +180,11 @@
                                         <th>Course Mode</th>
                                         <th>Session Details</th>
                                         <th>Actions</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for course in enrolled_courses_page %}
-                                        <tr data-toggle="collapse" data-target="#table-enrolled-course" class="accordion-toggle">
+                                        <tr data-toggle="collapse" data-target="#target{{course.course_batch}}" class="accordion-toggle">
                                             <td align="center"><button class="btn btn-secondary btn-circle btn-sm"><span class="fas fa-eye"></span></button></td> 
                                             <td name= 'course_batch'>{{course.course_batch}}</td>
                                             <td name= 'course_id'>{{course.course_id}}</td>
@@ -255,14 +252,11 @@
 
                                             </td>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                                    {% for course in enrolled_courses_page %}
+                             
                                         <tr>
                                             <td colspan="10" class="hiddenRow">
-                                                <div class="accordian-body collapse" id="table-enrolled-course">
-                                                    <table class="table table-hover table-responsive table-bordered table-condensed table-striped table-sm">
+                                                <div class="accordian-body collapse" id="target{{course.course_batch}}">
+                                                    <table class="table table-striped">
                                                         <thead class="table-dark" align="center">
                                                             <tr class="info">
                                                                 <th>Start Date</th>
@@ -270,12 +264,13 @@
                                                                 <th>Start Time</th>
                                                                 <th>End Time</th>
                                                                 <th>Frequency</th>
-                                                                
+                                                             
                                                             </tr>
                                                         </thead>
-
-                                                        <tbody>
-                                                            <tr data-toggle="collapse"  class="accordion-toggle">
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                                            <tr >
                                                                 <td name= 'start_date'>{{course.start_date}}</td>
                                                                 <td name= 'end_date'>{{course.end_date}}</td>
                                                                 <td name= 'start_time'>{{course.start_time}}</td>
@@ -286,14 +281,13 @@
                                                                         {% else %} Weekly
                                                                         {% endif %}
                                                                 </td>
+
                                                             </tr>
                                                         </tbody>
-                                                     </table>
-                                                </div>
-                                            </td>
-                                        </tr>
+  
+                                            </table>
                                     {% endfor %}
-                        
+                                </div>
                             
                             <!-- For pagination-->
                             <a>Showing {{enrolled_courses_page.start_index}} - {{enrolled_courses_page.end_index}} of {{enrolled_courses_page.paginator.count}} entries</a>
@@ -321,10 +315,12 @@
                                 </ul>
                             {% endif %} 
                             
-                        </div>
+                   
                     </div>
                 </div>
             </div>
+
+
 
 {% endblock content %}
 
