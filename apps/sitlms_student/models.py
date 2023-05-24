@@ -6,6 +6,7 @@ from datetime import datetime
 def activity_attachment_path(instance, filename):
     return 'activity_submission/{}/{}/{}/{}'.format(instance.course_activity.course_batch, instance.course_activity, instance.student_id, filename)
 
+
 # Create your models here.
 class Activity_Submission(models.Model):
     course_activity = models.ForeignKey(Course_Activity, on_delete=models.CASCADE)

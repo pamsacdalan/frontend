@@ -562,7 +562,10 @@ def delete_comments(request,id,pk,fk):
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/delete_comments.html',context)
 
+@user_passes_test(is_instructor)
 def download_student_activity_submission(request, id, pk, student):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     student = Students_Auth.objects.get(pk=student)
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
@@ -594,15 +597,20 @@ def student_work(request, id, pk):
         list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade']])
     # items_no = int(activity.max_score)
     # percent = activity.grading_percentage
+    students_submitted = Activity_Submission.objects.filter(course_activity=activity).values('student_id')
+    students_not_submitted = Student_Enrollment.objects.filter(course_batch=batch).exclude(student_id__in=students_submitted).values('student_id')
+    students_nonsubmit_context = []
+    # print(students_not_submitted)
+    for x in students_not_submitted:
+        student = Students_Auth.objects.get(pk=x['student_id'])
+        students_nonsubmit_context.append([student.user.last_name, student.user.first_name])
     context = {
         'list_of_submissions': list_of_submissions_2,
         'batch':batch,
         'act':activity,
-        # 'item_count':items_no,
-        # 'percent':percent,
+        'list_of_students_nonsubmit':students_nonsubmit_context,
     }
-    
-    #print(list_of_submissions)
+    print(list_of_submissions)
     return render(request, 'instructor_module/student_submissions.html',context)
 
 def save_activity_grades(request,id,pk,fk):

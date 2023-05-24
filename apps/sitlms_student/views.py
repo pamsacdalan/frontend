@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
 from django.conf import settings
 import os
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
@@ -9,6 +9,11 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_student.forms import ActivitySubmissionUploadForm
 from apps.sitlms_student.models import Activity_Submission
+from django.utils import timezone
+from datetime import datetime, date, timedelta
+from django.contrib.auth.models import User
+from apps.sitlms_instructor.models import Course_Announcement
+from operator import itemgetter
 # Create your views here.
 
 def is_student(user):
@@ -43,12 +48,61 @@ def custom_403_2(request):
 def student_view_course(request,id):
     if is_correct_student_cbatch_id(request.user.students_auth, id):
         return redirect("student-no-access")
+
+    """This function displays the announcements, students, and additional information per course enrolled of the user"""
+
+    course_batch = id
+    user = request.user
+    query = get_user_model().objects.filter(id=user.id)
+    user_id = query.first().id
+
+    """Details for Announcement Section"""
+    announcement_details = Course_Announcement.objects.filter(course_batch = id).order_by("-date_posted").values()
+
+    """Details for Course Info Section"""
+    course_details = Course_Enrollment.objects.filter(course_batch=id).values()
+    instructor_id = course_details[0]['instructor_id_id']
+    instructor_details = Instructor_Auth.objects.get(id=instructor_id)
+    instructor_name = f"{instructor_details.user.first_name} {instructor_details.user.last_name}"
+    
+
+  
+    """Details for Classmates Section"""
+    student_ids_enrolled = Student_Enrollment.objects.values_list('student_id').filter(course_batch=id)
+    student_details = Students_Auth.objects.filter(id__in=student_ids_enrolled).exclude(user_id=user_id).values().order_by('id')
+    program_ids = student_details.values_list('program_id_id')
+    program_code = Program.objects.filter(program_id__in=program_ids).values()
+
+    count = len(student_details)
+    complete_student_details = list()
+    for x in range(count):
+        for program in program_code:
+            if student_details[x]['program_id_id'] == program['program_id']:
+                name = Students_Auth.objects.get(id=student_details[x]['id'])
+                student_full_name = {'full_name':f"{name.user.first_name} {name.user.last_name}", 'last_name':name.user.last_name}
+                complete_student_details.append({**student_details[x], **program, **student_full_name})
+
+    complete_student_details = sorted(complete_student_details, key=itemgetter('last_name'))
     enrolled_class = Student_Enrollment.objects.filter(course_batch=id)
     # print(enrolled_class)
     class_details = Course_Activity.objects.filter(course_batch=id)
+    details_expanded = []
+    for act in class_details:
+        if Activity_Submission.objects.filter(course_activity=act,student_id=request.user.students_auth).exists():
+            grade = Activity_Submission.objects.get(course_activity=act,student_id=request.user.students_auth).grade
+            if grade is None:
+                grade = 'Not graded yet'
+        else:
+            grade = 'Not handed in'
+        details_expanded.append({'act':act,'grade':grade})
     context={
+        'course_batch': course_batch,
+        'announcement_details':announcement_details,
+        'course_details':course_details,
+        'classmate_details':complete_student_details,
+        'instructor_name':instructor_name,
         'class':enrolled_class,
-        'details':class_details,
+        'details':details_expanded,
         'id':id,
     }
     return render(request,'student_module/view_courses.html',context)
@@ -60,16 +114,19 @@ def student_edit_profile(request):
     query = get_user_model().objects.filter(id=user.id)
     user_id = query.first().id
     student_id = Students_Auth.objects.get(user=user_id)
-    courses = Student_Enrollment.objects.filter(student_id=student_id).values()
+    student_courses = Student_Enrollment.objects.filter(student_id=student_id).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_id).count
-    print(courses)
+    # print(student_courses)
+      
+
     context = {
-        'course_enrolled_list':courses,
         'stud_id':student_id,
         'course_count':enrolled_courses,
+        'course_enrolled_list':student_courses,
 
                 }
     return render(request, 'student_module/edit_profile.html',context)
+
 
 def create_student_photo_folder():
     """ This function will create the folder for student profile pic storage"""
@@ -86,26 +143,61 @@ def student_profile(request):
 
     courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
-   
     
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
     
-    
     ongoing_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing').count()
     completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
     total_count = ongoing_count + completed_count
-
-
     
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
     for enrollment in ongoing_enrollments:
         print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
         
+    ## Schedule
+    student_id = Students_Auth.objects.get(user=user_id)
+    student_courses = Student_Enrollment.objects.filter(student_id=student_id).values()
+    enrolled_courses = Student_Enrollment.objects.filter(student_id=student_id).count
+    # print(student_courses)
+    course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
+    # get course details using course_batch
+    course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
+    course_details = [x for x in course_details] # convert query set to list
+    for x in course_details:
+        id = x['course_id_id']
+        x['title'] = Course_Catalog.objects.get(course_id = id).course_desc # add course desc to dictionary
+        
+        start_date = x['start_date']
+        end_date = x['end_date']
 
+        delta = end_date - start_date  # returns timedelta
+        days = []
 
+        if x['frequency'] == 0:
+            days.append(start_date)
+        elif x['frequency'] == 1:
+            for i in range(delta.days + 1):
+                day = start_date  + timedelta(days=i)
+                days.append(day)
+        else:
+            weeks = (end_date - start_date).days//7
+            for i in range(0,weeks+1):
+                days.append(start_date + timedelta(days=7*i))
 
-    """ This function renders the student profile"""
+        x['days'] = days
+
+    date_today = date.today()
+    dates = [date_today]
+    scheduled_course = []
+
+    for i in range(1,7): # next 7 days
+        dates.append(date_today + timedelta(days=i))
+
+    for course in course_details:
+        intersect = list(set(course['days']) & set(dates))
+        if len(intersect) > 0:
+            scheduled_course.append(course)
 
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
@@ -113,15 +205,16 @@ def student_profile(request):
                         'program_title':program.program_title,
                         'ongoing_count':ongoing_count,
                         'completed_count':completed_count,
-                        'total_count':total_count,
-                        
+                        'total_count':total_count,                        
                     }
     
-    context  ={
+    context  = {
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
+        'scheduled_course':scheduled_course,
+        'dates': dates,
                }
     
     return render(request, 'student_module/student.html', context)
@@ -134,6 +227,7 @@ def student_view_assignment_details(request, id, pk):
     file_relative_url = activity.activity_attachment.url 
 
     file_url = request.build_absolute_uri(file_relative_url)
+    submission_grade = False
     if Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).values('activity_file').exists():
         current_submission = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().activity_file
         initial_data = {'activity_file': current_submission}
@@ -141,6 +235,7 @@ def student_view_assignment_details(request, id, pk):
         # submission_upload_form = ActivitySubmissionUploadForm(initial=initial_data)
         #activity_file=current_submission
         submission_upload_form = ActivitySubmissionUploadForm()
+        submission_grade = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().grade
     else:
         current_submission_filename = False
         submission_upload_form = ActivitySubmissionUploadForm()
@@ -152,6 +247,7 @@ def student_view_assignment_details(request, id, pk):
         'user':user,
         'submission_upload_form':submission_upload_form,
         'current_submission_filename':current_submission_filename,
+        'submission_grade':submission_grade,
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
@@ -178,7 +274,7 @@ def upload_activity_submission(request, id, pk):
                         os.remove(file_path)
                 prev_instances.delete()
             attachment=request.FILES['activity_file']
-            instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment)
+            instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment, date_submitted=timezone.now())
             instance.save()
             return redirect('student_view_assignment_details',id=id,pk=pk)
     return redirect('student_view_assignment_details',id=id,pk=pk)

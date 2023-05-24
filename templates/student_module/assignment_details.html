@@ -53,4 +53,10 @@
     <button type="submit">Submit</button>
   </form>
 
+{% if submission_grade %}
+<p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
+{% else %}
+<p>Submission Score: Not graded yet/{{act.max_score}}</p>
+{% endif %}
+
   <button><a href="{% url 'view_courses' batch.course_batch %}">View Students</a></button>
