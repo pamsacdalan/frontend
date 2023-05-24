@@ -151,12 +151,11 @@
 {% endblock sidebar %}
 
 {% block content %}
-
             <!-- Main Table -->
             <div class="container-fluid">
                 <div class="card shadow mb-5">
                     <div class="card-header py-3">
-                        <h6 class="m-1 font-weight-bold text-secondary">Change Schedule Requests</h6>
+                        <h6 class="m-1 font-weight-bold text-secondary">Change Schedule Request</h6>
                     </div>
 
                     <div class="card-body">
@@ -169,56 +168,28 @@
                             <br>
                             <br>
                         </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                        <br>
+                        <div class="panel-body table-responsive">
+                            <table class="table table-hover table-bordered table-condensed table-sm" id="dataTable" width="100%" cellspacing="0">
                                 <thead class="table-dark" align="center">
                                     <tr>
+                                        <th></th>
                                         <th>Request Date</th>
                                         <th>Course Batch</th>
                                         <th>Instructor ID</th>
-                                        <th>Old Start Date</th>
-                                        <th>Old End Date</th>
-                                        <th>Old Start Time</th>
-                                        <th>Old End Time</th>
-                                        <th>Old Frequency</th>
-                                        <th>New Start Date</th>
-                                        <th>New End Date</th>
-                                        <th>New Start Time</th>
-                                        <th>New End Time</th>
-                                        <th>New Frequency</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
-                                        
-                                      </tr>
+                                        <th>Actions</th> 
+                                    </tr>
                                 </thead>
-
-                                <tr>{% for schedule in change_schedule_list%}
-
-                                    <td name= 'request_date'>{{schedule.request_date}}</td>
-                                    <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
-                                    <td name= 'instructor_id'>{{schedule.instructor_id}}</td>
-                                    <td name= 'old_start_date'>{{schedule.old_start_date}}</td>
-                                    <td name= 'old_end_date'>{{schedule.old_end_date}}</td>
-                                    <td name= 'old_start_time'>{{schedule.old_start_time}} </td>
-                                    <td name= 'old_end_time'>{{schedule.old_end_time}}</td>
-                                    <td name= 'old_frequency'>
-                                        {% if schedule.old_frequency == 0%} Once
-                                        {% elif schedule.old_frequency == 1%} Daily
-                                        {% else %} Weekly
-                                        {% endif %}
-                                    </td>
-                                    <td name= 'new_start_date'>{{schedule.new_start_date}}</td>
-                                    <td name= 'new_end_date'>{{schedule.new_end_date}}</td>
-                                    <td name= 'new_start_time'>{{schedule.new_start_time}} </td>
-                                    <td name= 'new_end_time'>{{schedule.new_end_time}}</td>
-                                    <td name= 'new_frequency'>
-                                        {% if schedule.new_frequency == 0%} Once
-                                        {% elif schedule.new_frequency == 1%} Daily
-                                        {% else %} Weekly
-                                        {% endif %}
-                                    </td>
-                                    <td name= 'status'>{{schedule.status}}</td>
+                                <tbody>
+                                    {% for schedule in change_schedule_list%}
+                                        <tr data-toggle="collapse" data-target="#target{{schedule.course_batch_id}}" class="accordion-toggle">
+                                            <td align="center"><button class="btn btn-secondary btn-circle btn-sm"><span class="fas fa-eye"></span></button></td> 
+                                            <td name= 'request_date'>{{schedule.request_date}}</td>
+                                            <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
+                                            <td name= 'instructor_id'>{{schedule.instructor_id}}</td>
+                                           
+                                            <td name= 'status'>{{schedule.status}}</td>
                                     <td>
                                         <!-- Approve Button-->
                                         <a href="approve/{{schedule.id}}" class="btn btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Approve">
@@ -232,15 +203,59 @@
                                     </td>
                                     {% comment %} <td><a href="approve/{{schedule.id}}">Approve</a></td>
                                     <td><a href="reject/{{schedule.id}}">Reject</a></td> {% endcomment %}
-                                    
-                                </tr>
-                                {% endfor %}
-                            </table>
-                            <br>
-                            <br>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                
+                                        </tr>
+                             
+                                        <tr>
+                                            <td colspan="10" class="hiddenRow">
+                                                <div class="accordian-body collapse" id="target{{schedule.course_batch_id}}">
+                                                    <table class="table table-striped">
+                                                        <thead class="table-dark" align="center">
+                                                            <tr class="info">
+                                                                <th>Old Training Period</th>
+                                                                {% comment %} <th>Old End Date</th> {% endcomment %}
+                                                                <th>Old Duration</th>
+                                                                {% comment %} <th>Old End Time</th> {% endcomment %}
+                                                                <th>Old Frequency</th>
+                                                                <th>New Training Period</th>
+                                                                {% comment %} <th>New End Date</th> {% endcomment %}
+                                                                <th>New Duration</th>
+                                                                {% comment %} <th>New End Time</th> {% endcomment %}
+                                                                <th>New Frequency</th> 
+                                                            </tr>
+                                                        </thead>
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                                            <tr >
+                                                                <td name= 'old_training_period'>{{schedule.old_start_date}} - {{schedule.old_end_date}}</td>
+                                                                {% comment %} <td name= 'old_end_date'>{{schedule.old_end_date}}</td> {% endcomment %}
+                                                                <td name= 'old_duration'>{{schedule.old_start_time}} - {{schedule.old_end_time}} </td>
+                                                                {% comment %} <td name= 'old_end_time'>{{schedule.old_end_time}}</td> {% endcomment %}
+                                                                <td name= 'old_frequency'>
+                                                                    {% if schedule.old_frequency == 0%} Once
+                                                                    {% elif schedule.old_frequency == 1%} Daily
+                                                                    {% else %} Weekly
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td name= 'new_training_period'>{{schedule.new_start_date}} - {{schedule.new_end_date}}</td>
+                                                                {% comment %} <td name= 'new_end_date'>{{schedule.new_end_date}}</td> {% endcomment %}
+                                                                <td name= 'new_duration'>{{schedule.new_start_time}} - {{schedule.new_end_time}}</td>
+                                                                {% comment %} <td name= 'new_end_time'>{{schedule.new_end_time}}</td> {% endcomment %}
+                                                                <td name= 'new_frequency'>
+                                                                    {% if schedule.new_frequency == 0%} Once
+                                                                    {% elif schedule.new_frequency == 1%} Daily
+                                                                    {% else %} Weekly
+                                                                    {% endif %}
+                                                                </td>
+
+                                                             
+
+                                                            </tr>
+                                                        </tbody>
+  
+                                            </table>
+                                    {% endfor %}
+                                </div>
 
 {% endblock content %}

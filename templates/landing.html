@@ -19,6 +19,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/stylelanding.css' %}" rel="stylesheet" >
         
+        
     </head>
     <body class="d-flex flex-column h-100">
         <main class="flex-shrink-0">
@@ -33,13 +34,13 @@
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
                             {% block content %} {% endblock content %}
                             {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+                            <li class="nav-item"><a  class="- btn btn-primary rounded" href="{% url 'logout' %}">Log out</a></li>
                             {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+                            <li class="nav-item"><a class="- btn btn-primary rounded" href="{% url 'login' %}">Log in</a></li>
                             {% endif %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'sit_admin_dashboard' %}">Admin</a></li>
+                            {% comment %} <li class="nav-item"><a class="nav-link" href="{% url 'sit_admin_dashboard' %}">Admin</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'student_profile' %}">Student</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'instructor' %}">Instructor</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'instructor' %}">Instructor</a></li> {% endcomment %}
                         </ul>
                     </div>
                 </div>

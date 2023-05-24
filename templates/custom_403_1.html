@@ -1,3 +1,32 @@
-<h1>You are not the instructor of this class.</h1>
+{% extends 'header.html' %}
+{% load i18n static %}
+
+{% comment %} <h1>You are not the instructor of this class.</h1>
 <p>You are not authorized to view the contents of this class.</p>
-<button><a href="{% url 'view_courses' %}">Back to View Courses</a></button>
+<button><a href="{% url 'view_courses' %}">Back to View Courses</a></button> {% endcomment %}
+
+{% block content %}
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+      <div class="col-md-8 col-lg-7 col-xl-6">
+        <img src="{% static 'img/denied.avif'%}"width="900" height="800" class="img-fluid" alt="Denied photo">
+      </div>
+      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+        <h2>{% translate 'Access Denied' %}</h2>
+        <h3>{% translate 'You are not a member of this Course' %}</h3>
+      {% if messages %}
+      {% for message in messages %}
+        <p class="django-errors">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+     
+          <form action = "{% url 'view_courses'%}" >
+              {% csrf_token %}
+              <input type="submit" value = "Back to Courses" style = "background-color:#a70000" class="btn btn-primary btn-lg btn-block">
+          </form>
+      </div>           
+    </div>
+  </div>
+</section>
+{% endblock %}
