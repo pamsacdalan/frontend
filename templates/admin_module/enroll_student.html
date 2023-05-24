@@ -161,6 +161,7 @@
                 <form method="POST">
                   {% csrf_token %}
                       <div class="card-body">
+                        <br>
                           <div class="row">
                             <div class="col-2" align="left">
                               <select class="form-control form-control-sm" id="batch" style="display:none"></select>
@@ -179,19 +180,18 @@
                               <a class="btn btn-info btn-icon-split btn-sm" href="/sit-admin/course_enrollment/view_enrolled_course/">
                                 <span class="icon text-white-50">
                                   <i class="fa fa-backward"></i>
-                              </span>
+                                </span>
                               <span class="text">Back to courses</span>
                               </a>
                             </div>
                           </div>
-                        <br>
                         <div class="table-responsive">
-                                                  {% comment %} <form method="POST">
+                          {% comment %} <form method="POST">
                           {% csrf_token %} {% endcomment %}
                           <table id="studentTable" class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
                             <thead class="table-dark" align="center">
                                 <tr>
-                                    <th><input type="button" onclick='selectAll()' value="Select All"/> |  <input type="button" onclick='deSelect()' value="Deselect All"/></th>
+                                    <th><input type="button" onclick='selectAll()' value="Select All"/> <input type="button" onclick='deSelect()' value="Deselect All"/></th>
                                     <th>Program Batch</th>
                                     <th>Employee Id</th>
                                     <th>Username</th>
