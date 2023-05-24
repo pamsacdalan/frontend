@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-
+{% load static %}
 
 {% block Topbar %}
             <!-- Topbar -->
@@ -75,6 +75,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -168,19 +169,137 @@
                                 </a>
 
                                 <!-- Import csv button -->
-                                <a href="/sit-admin/student/view/import_csv" class="btn btn-info" data-toggle="tooltip" title="Import CSV (Batch Upload)">
+                                <a href="/sit-admin/student/view/import_csv" class="btn btn-info" data-toggle="modal" data-target="#importmodal" onclick="openModal()">
                                     <span>
                                         <i class="fa fa-upload" aria-hidden="true"></i>
                                     </span>
                                 </a>
 
+                                 <!-- Import Modal Start-->
+                                <div class="modal fade" id="importmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h6 class="modal-title">Import CSV [Batch Upload]</h6>
+                                                <!--Close-->
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="text-center">
+                                                    <img src="{% static 'assets/upload.png' %}" width="100"; height="100">
+                                                </div>
+                                                <br>
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-12" align="center">
+                                                            Choose a file and upload here:
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-12" align="center">
+                                                            <form method="POST" action = "../view/import_csv" enctype="multipart/form-data">
+                                                                {%csrf_token%}
+                                                                <div class="col-12">
+                                                                    <div class="input-group">
+                                                                        <form method="POST" action = "../view/import_csv" enctype="multipart/form-data">
+                                                                            {%csrf_token%}
+                                                                            <input type="file" class="form-control" name="file_name">
+                                                                            {% comment %} {{form.as_p}} {% endcomment %}
+                                                                            <button class="btn btn-primary" type="submit">Submit</button>
+                                                                        </form> 
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-dark mr-1" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                        
+                                <script>
+                                    const openModal = () => {
+                                        $('modal.fade').modal('show');
+                                    }
+
+                                </script>
+
+
+                                <!-- Import Modal End-->
+
 
                                 <!-- Download csv Template-->
-                                <a href="/sit-admin/student/view/csv_instruction" class="btn btn-success" data-toggle="tooltip" title="Download CSV Template">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#downloadmodal" onclick="openModal()">
                                     <span>
                                         <i class="fas fa-download" aria-hidden="true"></i>
                                     </span>
-                                </a>
+                                </button>
+
+                                <!-- Download Modal Start-->
+                                <div class="modal fade" id="downloadmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h6 class="modal-title">Template Instructions</h6>
+                                                <!--Close-->
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="text-center">
+                                                    <img src="{% static 'assets/alert.png' %}" class="rounded" width="70"; height="70">
+                                                </div>
+                                                <br>
+                                                <div align="left">
+                                                    {% csrf_token %}
+                                                    <ul>
+                                                        <li>Must follow the format of the given csv file</li>
+                                                        <li>Check whether the downloaded csv file birthday is formatted to YYYY-MM-DD format</li>
+                                                        <br>
+                                                    </ul>
+                                                </div>
+
+                                                <div align="left">
+                                                    <ul>
+                                                        <h3>If not, please do the following:</h3>
+                                                        <li>From the excel press CTRL + 1</li>
+                                                        <li>Format cells will pop-up</li>
+                                                        <li>Click custom tab</li>
+                                                        <li>Under custom tab, type in the format bar: YYYY-MM-DD and press OK.</li>
+                                                        <li>After saving, apply the given format to the column</li>
+                                                    </ul>
+                                                </div>
+                                                <br>
+                                                <div align="left">
+                                                    <ul>
+                                                        <a class="btn btn-primary btn-sm" href="/sit-admin/student/view/csv_instruction/downloadfile">Download CSV</a>&emsp;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-dark mr-1" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                        
+                                <script>
+                                    const openModal = () => {
+                                        $('modal.fade').modal('show');
+                                    }
+                                </script>
+                                <!-- Download Modal End-->
+
                             </div>
                             <br>
                             <div class="table-responsive">
@@ -215,14 +334,14 @@
                                             {% comment %} <td>{{student.access_type  }}</td> {% endcomment %}
                                             <td>
                                                 <!-- Edit Button-->
-                                                <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-secondary btn-circle btn-sm" data-toggle="tooltip" title="Edit">
+                                                <a href="/sit-admin/student/edit/{{student.id}}" class="btn btn-dark btn-circle btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit" aria-hidden="true"></i>
-                                                 </a> |
+                                                </a> |
 
                                                  <!-- Delete Button-->
                                                  <a
                                                     href="/sit-admin/student/delete/{{student.id}}"
-                                                    class="btn btn-danger btn-circle btn-sm" 
+                                                    class="btn btn-primary btn-circle btn-sm" 
                                                     data-toggle="modal"
                                                     data-target="#delete-item-modal"
                                                     onclick="delete_student(this)"
@@ -231,7 +350,7 @@
                                                 </a>
 
                                                 <!-- Delete Modal Start-->
-                                                <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
+                                                <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -242,7 +361,7 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <p>Select 'Delete' to remove this student from the list.</p>
+                                                                <p>Select 'Delete' to remove this trainee from the list.</p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <form method="post" id="item-delete-form">
@@ -293,6 +412,7 @@
                                     {% endif %}
                                 </ul>
                             {% endif %}
+
                         </div>
                     </div>
                 </div>

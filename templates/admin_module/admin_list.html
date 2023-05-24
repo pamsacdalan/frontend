@@ -71,6 +71,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -188,7 +189,7 @@
                                   <td>{{ admin.user.is_active }}</td>
                                   {% comment %} <td>{{ admin.access_type }}</td> {% endcomment %}
                                   <td align="center"> <a href="{% url 'adminupdate' admin.id %}" 
-                                          class="btn btn-secondary btn-circle btn-sm"
+                                          class="btn btn-dark btn-circle btn-sm"
                                           data-toggle="tooltip"
                                           title="Edit"
                                         >
@@ -202,7 +203,7 @@
                                        <!-- Delete Button-->
                                        <a
                                             href="{% url 'admindelete' admin.id %}"
-                                            class="btn btn-danger btn-circle btn-sm" 
+                                            class="btn btn-primary btn-circle btn-sm" 
                                             data-toggle="modal"
                                             data-target="#delete-item-modal"
                                             onclick="delete_admin(this)"

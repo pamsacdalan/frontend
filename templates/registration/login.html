@@ -62,6 +62,11 @@
               <form class="login" action = "{% url 'login'%}" method="post">
                 {% csrf_token %}
                 <!-- Email input -->
+                {% comment %} {{form.errors}} {% endcomment %}
+                {% if form.errors %}
+    <p class="errornote">
+            {{form.non_field_errors}}
+{% endif %}
                 <div class="form-outline mb-4">
                   <input type="text" id="form1Example13" class="form-control form-control-lg" {{ form.username }}
                   <label class="form-label" for="form1Example13">Email address</label>
@@ -87,7 +92,6 @@
                       <a href="{% url 'password_reset' %}">Forgot Password?</a>
                     {% comment %} <label class="form-check-label" for="form1Example3"> Remember me </label> {% endcomment %}
                   </div>
-                  
                 </div>
     
                 <!-- Submit button -->

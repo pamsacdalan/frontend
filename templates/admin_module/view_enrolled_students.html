@@ -1,6 +1,5 @@
 {% extends './base.html' %}
-
-<!-- This page is for course enrollment-->
+{% load static %}
 
 {% block Topbar %}
             <!-- Topbar -->
@@ -75,6 +74,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -160,29 +160,41 @@
                     </div>
                     <div class="card-body">
                         <div align="right"> <!-- buttons here-->
-                            <button><a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a></button>
-                            <button><a href="/sit-admin/course_enrollment/view_enrolled_course/">back to courses</a></button>
+                            <!-- Back to Courses Button -->
+                            <a href="/sit-admin/course_enrollment/view_enrolled_course/" class="btn btn-info" data-toggle="tooltip" title="Back to Courses">
+                                <span>
+                                    <i class="fa fa-backward"></i>
+                                </span>
+                            </a>
+                            <!-- Add New Button -->
+                            <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}" class="btn btn-info" data-toggle="tooltip" title="Add Student">
+                                <span>
+                                    <i class="fa fa-plus"></i>
+                                </span>
+                            </a>
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                                 <thead class="table-dark" align="center">
-                                        <tr>
-                                            <th>Program Batch</th>
-                                            <th>Employee Id</th>
-                                            <th>Username</th>
-                                            <th>First Name</th>
-                                            <th>Middle Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Employment Status</th>
-                                            <th>Active/Inactive</th>
-                                            <th>Status</th>
-                                            <th>Grade</th>
-                                            <th>Date Enrolled</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
+                                    <tr>
+                                        <th>Program Batch</th>
+                                        <th>Employee Id</th>
+                                        <th>Username</th>
+                                        <th>First Name</th>
+                                        <th>Middle Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Employment Status</th>
+                                        <th>Active/Inactive</th>
+                                        <th>Status</th>
+                                        <th>Grade</th>
+                                        <th>Date Enrolled</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
 
+                                <tbody>
                                     <tr>{% for student in students %}
                                         <td>{{student.program_code }}</td>
                                         <td>{{student.student_no }}</td>
@@ -196,10 +208,102 @@
                                         <td>{{student.status }}</td>
                                         <td>{{student.grades }}</td>
                                         <td>{{student.date_enrolled }}</td>
-                                        <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/edit_enrollment/{{ student.enrollment_id }}">edit</a> | <a href="/sit-admin/course_enrollment/{{ course.course_batch }}/delete_enrollment/{{ student.enrollment_id }}">delete</a></td>
+                                        <td>
+                                            <!-- Edit button -->
+                                            <a href="/sit-admin/course_enrollment/{{ course.course_batch }}/edit_enrollment/{{ student.enrollment_id }}" class="btn btn-dark btn-circle btn-sm" data-toggle="tooltip" data-target="#editmodal" onclick="openModal()">
+                                                <span>
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                </span>
+                                            </a>
+
+                                            <!-- Edit Modal Start-->
+                                            <div class="modal fade" id="editmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h6 class="modal-title">Edit details for {{student.student_no}} </h6>
+                                                            <!--Close-->
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <form method="post">
+                                                                            {% csrf_token %}
+                                                                            <div class="col-6">
+                                                                                Batch: {{enrollment.course_batch_id}}
+                                                                            </div>
+
+                                                                            <div class="col-6">
+                                                                                Student: {{student.user.first_name}} {{student.middlename}} {{student.user.last_name}}
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-dark mr-1" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                    
+                                            <script>
+                                                const openModal = () => {
+                                                    $('modal.fade').modal('show');
+                                                }
+                                            </script>
+                                            <!-- Edit Modal End-->
+
+                                            <!-- Delete Button -->
+                                            <a  class="btn btn-primary btn-circle btn-sm" href="/sit-admin/course_enrollment/{{ course.course_batch }}/delete_enrollment/{{ student.enrollment_id }}" 
+                                                data-toggle="modal" 
+                                                data-target="#delete-item-modal"
+                                                onclick="delete_enrolled_student(this)">
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </a>
+
+                                            <!-- Delete Modal Start-->
+                                            <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h6 class="modal-title">Delete Student?</h6>
+                                                            <!--Close-->
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body justify-content-between" align="left">
+                                                            <p>Select 'Delete' to unenroll this student from this course.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form method="post" id="item-delete-form">
+                                                                <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
+                                                                    {% csrf_token %}
+                                                                <button type="submit" class="btn btn-primary" id="confirm-delete-item-button">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                    
+                                            <script>
+                                                function delete_enrolled_student(selected_enrolled_student){
+                                                    document.getElementById("item-delete-form").action = selected_enrolled_student.href
+                                                }
+                                            </script>
+                                            <!-- Delete Modal End-->
+                                        </td>
                                     </tr>
                                         {% endfor %}
-                                    <br>
+                                </tbody>
+                                <br>
 
                                 </table>
                     </div>
