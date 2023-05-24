@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
 from django.conf import settings
 import os
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
@@ -11,6 +11,9 @@ from apps.sitlms_student.forms import ActivitySubmissionUploadForm
 from apps.sitlms_student.models import Activity_Submission
 from django.utils import timezone
 from datetime import datetime, date, timedelta
+from django.contrib.auth.models import User
+from apps.sitlms_instructor.models import Course_Announcement
+from operator import itemgetter
 # Create your views here.
 
 def is_student(user):
@@ -45,6 +48,41 @@ def custom_403_2(request):
 def student_view_course(request,id):
     if is_correct_student_cbatch_id(request.user.students_auth, id):
         return redirect("student-no-access")
+
+    """This function displays the announcements, students, and additional information per course enrolled of the user"""
+
+    course_batch = id
+    user = request.user
+    query = get_user_model().objects.filter(id=user.id)
+    user_id = query.first().id
+
+    """Details for Announcement Section"""
+    announcement_details = Course_Announcement.objects.filter(course_batch = id).order_by("-date_posted").values()
+
+    """Details for Course Info Section"""
+    course_details = Course_Enrollment.objects.filter(course_batch=id).values()
+    instructor_id = course_details[0]['instructor_id_id']
+    instructor_details = Instructor_Auth.objects.get(id=instructor_id)
+    instructor_name = f"{instructor_details.user.first_name} {instructor_details.user.last_name}"
+    
+
+  
+    """Details for Classmates Section"""
+    student_ids_enrolled = Student_Enrollment.objects.values_list('student_id').filter(course_batch=id)
+    student_details = Students_Auth.objects.filter(id__in=student_ids_enrolled).exclude(user_id=user_id).values().order_by('id')
+    program_ids = student_details.values_list('program_id_id')
+    program_code = Program.objects.filter(program_id__in=program_ids).values()
+
+    count = len(student_details)
+    complete_student_details = list()
+    for x in range(count):
+        for program in program_code:
+            if student_details[x]['program_id_id'] == program['program_id']:
+                name = Students_Auth.objects.get(id=student_details[x]['id'])
+                student_full_name = {'full_name':f"{name.user.first_name} {name.user.last_name}", 'last_name':name.user.last_name}
+                complete_student_details.append({**student_details[x], **program, **student_full_name})
+
+    complete_student_details = sorted(complete_student_details, key=itemgetter('last_name'))
     enrolled_class = Student_Enrollment.objects.filter(course_batch=id)
     # print(enrolled_class)
     class_details = Course_Activity.objects.filter(course_batch=id)
@@ -58,6 +96,11 @@ def student_view_course(request,id):
             grade = 'Not handed in'
         details_expanded.append({'act':act,'grade':grade})
     context={
+        'course_batch': course_batch,
+        'announcement_details':announcement_details,
+        'course_details':course_details,
+        'classmate_details':complete_student_details,
+        'instructor_name':instructor_name,
         'class':enrolled_class,
         'details':details_expanded,
         'id':id,

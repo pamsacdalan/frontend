@@ -19,3 +19,81 @@
     </tr>
     {%endfor%}
 </table>
+
+<h1>{{course_batch}}</h1>
+<h2>Announcement Section</h2>
+
+<table border="1">
+    <tr>
+        <th>Announcement</th>
+        <th>Author</th>
+        <th>Date Posted</th>
+    </tr>
+
+<tr>{% for announcement in announcement_details %}
+    <td name="announcement_text">{{announcement.announcement_text|linebreaks}}</td>
+    <td name="author">{{instructor_name}}</td>
+    <td name="date_posted">{{announcement.date_posted}}</td>
+</tr>
+{% endfor %}
+</table>   
+
+<h2>Course Info</h2>
+
+<table border="1">
+    <tr>
+        <th>Session Details</th>
+        <th>Course Mode</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Frequency</th>
+        <th>Instructor</th>
+    </tr>
+
+    <tr>{% for course in course_details %}
+        <td name= 'session_details'>{{course.session_details | urlize | safe}} </td>
+        <td name= 'course_mode'>
+            {% if course.course_mode == 0 %} Webinar
+            {% elif course.course_mode == 1 %} Onsite
+            {% else %} Self-Paced
+            {% endif %}
+        </td>
+        <td name= 'start_date'>{{course.start_date}}</td>
+        <td name= 'end_date'>{{course.end_date}}</td>
+        <td name= 'start_time'>{{course.start_time}}</td>
+        <td name= 'end_time'>{{course.end_time}}</td>
+        <td name= 'frequency'>
+                {% if course.frequency == 0%} Once
+                {% elif course.frequency == 1%} Daily
+                {% else %} Weekly
+                {% endif %}
+        </td>
+        <td name="instructor">{{instructor_name}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>List of Classmates</h2>
+
+<table border=1>
+    <tr>
+        <th>Name</th>
+        <th>Program</th>
+        <th>Emplyment Status</th>
+    </tr>
+
+    <tr>{% for student in classmate_details %}
+        <td name="fullname">{{student.full_name}}</td>
+        <td name="program">{{student.program_code}}</td>
+        <td name="status">{{student.employment_status}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+
+
+    </tr>
