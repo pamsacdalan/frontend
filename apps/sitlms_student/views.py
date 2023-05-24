@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
@@ -9,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_student.forms import ActivitySubmissionUploadForm
 from apps.sitlms_student.models import Activity_Submission
+from django.utils import timezone
 # Create your views here.
 
 def is_student(user):
@@ -178,7 +180,7 @@ def upload_activity_submission(request, id, pk):
                         os.remove(file_path)
                 prev_instances.delete()
             attachment=request.FILES['activity_file']
-            instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment)
+            instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment, date_submitted=timezone.now())
             instance.save()
             return redirect('student_view_assignment_details',id=id,pk=pk)
     return redirect('student_view_assignment_details',id=id,pk=pk)
