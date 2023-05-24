@@ -64,9 +64,11 @@
                 <!-- Email input -->
                 {% comment %} {{form.errors}} {% endcomment %}
                 {% if form.errors %}
-    <p class="errornote">
-            {{form.non_field_errors}}
-{% endif %}
+                  <p class="errornote">
+                  {{form.non_field_errors}}
+                {% endif %}   
+                <h2>Please log in your account</h2>
+                <br> <br>
                 <div class="form-outline mb-4">
                   <input type="text" id="form1Example13" class="form-control form-control-lg" {{ form.username }}
                   <label class="form-label" for="form1Example13">Email address</label>

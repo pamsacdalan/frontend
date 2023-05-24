@@ -2843,7 +2843,7 @@ textarea.form-control-lg {
   opacity: var(--bs-btn-disabled-opacity);
 }
 
-.btn-primary {
+ /* .btn-primary {
   --bs-btn-color: #fff;
   --bs-btn-bg: #a70000;
   --bs-btn-border-color: #323235;
@@ -2858,7 +2858,19 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #1e30f3;
   --bs-btn-disabled-border-color: #1e30f3;
-  border-radius:10px ;
+  
+}   */
+.btn-primary{
+  padding:0.6em 3em;
+  border-radius: 8px;
+  color:#fff;
+  background-color:#A70000;
+  font-size:1.1em;
+  border:0;
+  cursor:pointer;
+  margin:1em;
+  --bs-btn-hover-bg: #1d1e1f;
+  --bs-btn-hover-color: rgb(255, 255, 255);
 }
 
 .btn-secondary {
