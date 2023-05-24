@@ -2,15 +2,16 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid">
+<!-- Table list -->
+{% comment %} <div class="container-fluid">
     <br>
     <div class="card-header py-3">
         Courses Details
     </div>
     <br>
     <div align="right"> <!-- buttons here-->
-        <!-- Add Button -->
-        <a href="/sit-instructor/instructor/view_courses/view_pending_requests/" class="btn btn-primary rounded ml-2" data-toggle="tooltip" title="View pending requests">
+        <!-- View Pending Requests  Button -->
+        <a href="/sit-instructor/instructor/view_courses/view_pending_requests/" class="btn btn-primary ml-2" data-toggle="tooltip" title="View pending requests">
              <span>
                 <i class="ti-folder"></i>
             </span>
@@ -67,19 +68,65 @@
                 </table>
                 <br>
                 <br>
-                <a class="btn btn-primary btn-sm" href="/sit-instructor/instructor">
-                    <span class="icon text-white-50">
-                        <i class='ti-back-left'></i>
-                    </span>
-                    <span class="text">
-                        Back
-                    </span>
-                </a>
-                {% comment %} {% if user.is_authenticated %}
-                <br><br>
-                <a class="nav-link" href="{% url 'logout' %}">Log out</a>
-                {% endif %} {% endcomment %}
+
             </div>
+</div> {% endcomment %}
+
+
+
+<!-- Courses section -->
+<div class="container text-center">
+    <h6 class="title">Enrolled Courses</h6>
 </div>
+<div class="container">
+    <h3 class="subtitle">Buttons and filter</h3>
+</div>
+<br>
+<br>
+
+    <div class="container">
+        <div class="row">
+            {% for course in course_enrolled_list%}
+                <div class="col-sm-4">
+                    <br>
+                    <div class="card" style="width: 22rem;">
+                        <img class="card-img-top" src="{% static 'assets/course.png'%}" alt=""> 
+                        <div class="card-body">
+                            <h5 class="card-title">{{course.course_id_id}}</h5>
+                            <h1 class="card-text" style="font-size: 15px"></h1> {{course.start_date}} - {{course.end_date}} 
+                            <h1 class="card-text" style="font-size: 15px"></h1> {{course.start_time}} - {{course.end_time}} [
+                            {% if course.frequency == 0 %} Once
+                            {% elif course.frequency == 1 %} Daily
+                            {% else %} Weekly
+                            {% endif %} ]
+                            
+                            <br>
+                            <br>
+                            <a href="/sit-instructor/instructor/view_students/{{course.course_batch}}" class="btn btn-primary btn-sm">View Students</a>
+                            <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}" class="btn btn-primary btn-sm">Change Schedule</a>
+                            <a href="#{{course.course_id_id}}" class="btn btn-dark btn-sm" data-toggle="collapse" role="button" aria-expanded="false"><i class="ti-info-alt"></i></a>
+                        </div>
+                    </div>
+                    <div class="collapse" id="{{course.course_id_id}}" style="width: 22rem;">
+                        <div class="card card-body">
+                            <h1 style="font-size: 15px">Course Batch: <a href="/sit-instructor/instructor/course/{{course.course_batch}}" data-toggle="tooltip" title="Go to Announcements">{{course.course_batch}}</a></h1>
+                            <h1 style="font-size: 15px">Course Mode: 
+                                {% if course.course_mode == 0 %} Webinar
+                                {% elif course.course_mode == 1 %} Onsite
+                                {% else %} Self-Paced
+                                {% endif %}
+                            </h1>
+                            <h1 style="font-size: 15px">Session Details: {{course.session_details | urlize | safe}}</h1>
+                            
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}     
+        </div>
+    </div>
+
+
+<!-- End of courses section -->
+
 
 {% endblock content %}

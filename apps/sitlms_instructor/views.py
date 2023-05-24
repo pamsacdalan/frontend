@@ -588,13 +588,15 @@ def student_work(request, id, pk):
         return redirect("instructor-no-access")
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
-    list_of_submissions = Activity_Submission.objects.filter(course_activity=activity).values('student_id','date_submitted', 'activity_file', 'grade')
+    list_of_submissions = Activity_Submission.objects.filter(course_activity=activity).values('student_id','date_submitted', 'activity_file', 'grade','id')
     dict_of_submissions = {}
     list_of_submissions_2 = []
     for x in list_of_submissions:
         student = Students_Auth.objects.get(pk=x['student_id'])
         filename=str(x['activity_file']).split('/')[-1]
-        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk])
+        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade']])
+    # items_no = int(activity.max_score)
+    # percent = activity.grading_percentage
     students_submitted = Activity_Submission.objects.filter(course_activity=activity).values('student_id')
     students_not_submitted = Student_Enrollment.objects.filter(course_batch=batch).exclude(student_id__in=students_submitted).values('student_id')
     students_nonsubmit_context = []
@@ -608,5 +610,18 @@ def student_work(request, id, pk):
         'act':activity,
         'list_of_students_nonsubmit':students_nonsubmit_context,
     }
-    # print(list_of_submissions)
+    print(list_of_submissions)
     return render(request, 'instructor_module/student_submissions.html',context)
+
+def save_activity_grades(request,id,pk,fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    student = Activity_Submission.objects.get(pk=fk)
+
+    if request.method =="POST":
+        grade = request.POST['score']
+        student.grade = grade
+        student.save(update_fields=['grade'])
+       
+        return redirect('student_work', id=id,pk=pk)
+    return render(request, "instructor_module/edit_comments.html")

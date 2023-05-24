@@ -1,5 +1,4 @@
 {% extends './base.html' %}
-
 <!-- This page is for student enrollment-->
 
 {% block Topbar %}
@@ -13,7 +12,6 @@
                 </div>               
             </div>
 {% endblock Topbar %}
-
 
 
 {% block sidebar %}
@@ -75,6 +73,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -180,12 +179,12 @@
                                         <th>Instructor</th>
                                         <th>Course Mode</th>
                                         <th>Session Details</th>
-
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for course in enrolled_courses_page %}
-                                        <tr data-toggle="collapse" data-target="#table-enrolled-course" class="accordion-toggle">
+                                        <tr data-toggle="collapse" data-target="#target{{course.course_batch}}" class="accordion-toggle">
                                             <td align="center"><button class="btn btn-secondary btn-circle btn-sm"><span class="fas fa-eye"></span></button></td> 
                                             <td name= 'course_batch'>{{course.course_batch}}</td>
                                             <td name= 'course_id'>{{course.course_id}}</td>
@@ -198,15 +197,66 @@
                                             </td>
                                             <!-- <td name= 'session_details'> <a href="https://{{course.session_details}}">{{course.session_details}}</a></td> -->
                                             <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
+                                            <td align="center">
+                                                <!-- View enrolled Button -->
+                                                <a  class="btn btn-primary btn-circle btn-sm" href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students" data-toggle="tooltip" title="View Enrolled">
+                                                    <i class="fas fa-users" aria-hidden="true"></i>
+                                                </a> | 
+                                                <!-- Add student Button -->
+                                                <a  class="btn btn-primary btn-circle btn-sm" href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}" data-toggle="tooltip" title="Add student">
+                                                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                                </a> | 
+
+                                                <!-- Edit Button -->
+                                                <a  class="btn btn-dark btn-circle btn-sm" href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}" data-toggle="tooltip" title="Edit">
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                </a> | 
+
+                                                <!-- Delete Button -->
+                                                <a  class="btn btn-primary btn-circle btn-sm" href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}" data-toggle="modal" data-target="#delete-item-modal"
+                                                    onclick="delete_enrolled_course(this)">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                                </a>
+
+                                                <!-- Delete Modal Start-->
+                                                <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title">Delete Course?</h6>
+                                                                <!--Close-->
+                                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body justify-content-between" align="left">
+                                                                <p>Select 'Delete' to unenroll this course.</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form method="post" id="item-delete-form">
+                                                                    <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
+                                                                        {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-primary" id="confirm-delete-item-button">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                        
+                                                <script>
+                                                    function delete_enrolled_course(selected_enrolled_course){
+                                                        document.getElementById("item-delete-form").action = selected_enrolled_course.href
+                                                    }
+                                                </script>
+                                                <!-- Delete Modal End-->
+
+                                            </td>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                                    {% for course in enrolled_courses_page %}
+                             
                                         <tr>
                                             <td colspan="10" class="hiddenRow">
-                                                <div class="accordian-body collapse" id="table-enrolled-course">
-                                                    <table class="table table-hover table-responsive table-bordered table-condensed table-striped table-sm">
+                                                <div class="accordian-body collapse" id="target{{course.course_batch}}">
+                                                    <table class="table table-striped">
                                                         <thead class="table-dark" align="center">
                                                             <tr class="info">
                                                                 <th>Start Date</th>
@@ -214,12 +264,13 @@
                                                                 <th>Start Time</th>
                                                                 <th>End Time</th>
                                                                 <th>Frequency</th>
-                                                                <th>Actions</th>
+                                                             
                                                             </tr>
                                                         </thead>
-
-                                                        <tbody>
-                                                            <tr data-toggle="collapse"  class="accordion-toggle">
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                                            <tr >
                                                                 <td name= 'start_date'>{{course.start_date}}</td>
                                                                 <td name= 'end_date'>{{course.end_date}}</td>
                                                                 <td name= 'start_time'>{{course.start_time}}</td>
@@ -230,19 +281,13 @@
                                                                         {% else %} Weekly
                                                                         {% endif %}
                                                                 </td>
-                                                                <td><a href="/sit-admin/course_enrollment/{{ course.course_batch }}/view_students">view enrolled</a> | 
-                                                                    <a href="/sit-admin/course_enrollment/enroll_student/{{ course.course_batch }}">add student</a> | 
-                                                                    <a href="/sit-admin/course_enrollment/edit_enrolled_course/{{ course.course_batch }}">edit</a> | 
-                                                                    <a href="/sit-admin/course_enrollment/delete_enrolled_course/{{ course.course_batch }}">delete</a>
-                                                                </td>
+
                                                             </tr>
                                                         </tbody>
-                                                     </table>
-                                                </div>
-                                            </td>
-                                        </tr>
+  
+                                            </table>
                                     {% endfor %}
-                        
+                                </div>
                             
                             <!-- For pagination-->
                             <a>Showing {{enrolled_courses_page.start_index}} - {{enrolled_courses_page.end_index}} of {{enrolled_courses_page.paginator.count}} entries</a>
@@ -270,10 +315,12 @@
                                 </ul>
                             {% endif %} 
                             
-                        </div>
+                   
                     </div>
                 </div>
             </div>
+
+
 
 {% endblock content %}
 

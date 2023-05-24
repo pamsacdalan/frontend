@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-
+{% comment %} 
     <div class="container-fluid">
         <br>
         <div class="card-header py-3">
@@ -11,9 +11,30 @@
 
         <br>
         <div align="right"> <!-- buttons here-->
-            <button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
-            <button><a href="{% url 'view_assignments' id %}">Assignments</a></button>
-            <button><a style="color: #000;" href="/sit-instructor/instructor/view_courses/{{id}}/">Download Student List</a></button>
+            <!-- Back Button -->
+            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses" data-toggle="tooltip" title="Back to Courses">
+                <span>
+                    <i class="ti-control-backward"></i>
+                </span>
+            </a>
+            <!-- Announcement Button-->
+            <a class="btn btn-primary ml-2" href="{% url 'view_instructor_course' id %}" data-toggle="tooltip" title="Announcements">
+                <span>
+                    <i class="ti-announcement"></i>
+                </span>
+            </a>
+            <!-- Assignments Button-->
+            <a class="btn btn-primary ml-2" href="{% url 'view_assignments' id %}" data-toggle="tooltip" title="Assignments">
+                <span>
+                    <i class="ti-files"></i>
+                </span>
+            </a>
+            <!-- Download Button-->
+            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/" data-toggle="tooltip" title="Download Student List">
+                <span>
+                    <i class="ti-download"></i>
+                </span>
+            </a>
             <br><br>
         </div>
 
@@ -35,14 +56,67 @@
                     <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
                     <td name= 'email'>{{detail.username}}</td>
                     
-                    <!-- <td> <a href="/sit-instructor/instructor/view_courses/{{course.course_batch}}"> View Students</a> </td> -->
-                    
                 </tr>
                 {% endfor %}
             </table>
             <br>
-            <button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">Back</a></button>
+            
         </div>
+    </div> {% endcomment %}
+    <div class="container text-center">
+        <h6 class="title">{{id}}</h6>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Students</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'view_assignments' id %}">Assignments</a>
+        </li>
+    </ul>
+
+    <!-- Main Content -->
+    <br>
+    <div class='container-fluid' align="right">
+        <!-- Download Button-->
+        <a class="btn btn-primary btn-icon-split btn-sm ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/">
+            <span>
+                <i class="ti-download"></i>
+            </span>
+            <span class="text"> 
+                Download Student List
+            </span>
+        </a>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
+                <thead class="table-dark" align="center">
+
+                    <tr>
+                        <th>Program</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        
+                    </tr>
+                </thead>
+            
+                <tr>{% for detail in new_list%}
+                
+                    <td name= 'program_code'>{{detail.program_code}}</td>
+                    <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
+                    <td name= 'email'>{{detail.username}}</td>
+                    
+                </tr>
+                {% endfor %}
+            </table>
     </div>
 
 {% endblock content %}

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
 from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
@@ -10,10 +10,14 @@ from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_student.forms import ActivitySubmissionUploadForm
 from apps.sitlms_student.models import Activity_Submission
 from django.utils import timezone
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta, date as date2
 from django.contrib.auth.models import User
 from apps.sitlms_instructor.models import Course_Announcement
 from operator import itemgetter
+from calendar import monthcalendar
+import calendar
+from django.template.loader import render_to_string
+from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 def is_student(user):
@@ -129,13 +133,18 @@ def student_edit_profile(request):
 
 
 def create_student_photo_folder():
+    
     """ This function will create the folder for student profile pic storage"""
+    
     folder_path = os.path.join(settings.MEDIA_ROOT, 'student_photo')
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
+        
 
 def student_profile(request):    
+    
     """ This function renders the student page """
+    
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
@@ -144,12 +153,14 @@ def student_profile(request):
     courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
     
+
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
     
     ongoing_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing').count()
     completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
     total_count = ongoing_count + completed_count
+   
     
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
     for enrollment in ongoing_enrollments:
@@ -203,7 +214,115 @@ def student_profile(request):
         'scheduled_course':course_details,
                }
     
-    return render(request, 'student_module/student.html', context)
+    # return render(request, 'student_module/student.html', context)
+
+    # Get the current date from the URL parameters
+    date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
+    date = datetime.strptime(date_str, '%Y-%m-%d')
+
+    # Calculate the previous and next month values
+    prev_month = date - relativedelta(months=1)
+    next_month = date + relativedelta(months=1)
+
+    prev_date = prev_month.replace(day=1).strftime('%Y-%m-%d')
+    next_date = next_month.replace(day=1).strftime('%Y-%m-%d')
+
+    # Generate the calendar data for the specified month
+    cal = calendar.monthcalendar(date.year, date.month)
+
+    # Get the current month's name and year
+    month_name = date.strftime('%B')
+    year = date.year
+
+    # Prepare the calendar data with event information
+    events = {
+        5: ['Meeting 1', 'Meeting 2'],
+        12: ['Appointment'],
+        20: ['Conference'],
+        25: ['Workshop', 'Training'],
+    }
+
+    calendar_data = []
+    for week in cal:
+        week_data = []
+        for day in week:
+            if day == 0:
+                week_data.append((" ", []))
+            else:
+                events_for_day = events.get(day, [])
+                week_data.append((day, events_for_day))
+        calendar_data.append(week_data)
+
+    # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
+    '''return render(request, 'student_module/student.html', {
+        'calendar': calendar_data,
+        'prev_date': prev_date,
+        'next_date': next_date,
+        'month_name': month_name,
+        'year': year,
+        'events': events,
+        'student_details': student_details,
+        'course_enrolled_list':courses,
+        'stud_id':user_id,
+        'course_count':enrolled_courses,
+        'scheduled_course':course_details,
+        
+               }
+    )'''
+    #return render(request, 'student_module/student.html', context)
+
+    # Get the current date from the URL parameters
+    date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
+    date = datetime.strptime(date_str, '%Y-%m-%d')
+
+    # Calculate the previous and next month values
+    prev_month = date - relativedelta(months=1)
+    next_month = date + relativedelta(months=1)
+
+    prev_date = prev_month.replace(day=1).strftime('%Y-%m-%d')
+    next_date = next_month.replace(day=1).strftime('%Y-%m-%d')
+
+    # Generate the calendar data for the specified month
+    cal = calendar.monthcalendar(date.year, date.month)
+
+    # Get the current month's name and year
+    month_name = date.strftime('%B')
+    year = date.year
+
+    # Prepare the calendar data with event information
+    events = {
+        5: ['Meeting 1', 'Meeting 2'],
+        12: ['Appointment'],
+        20: ['Conference'],
+        25: ['Workshop', 'Training'],
+    }
+
+    calendar_data = []
+    for week in cal:
+        week_data = []
+        for day in week:
+            if day == 0:
+                week_data.append((" ", []))
+            else:
+                events_for_day = events.get(day, [])
+                week_data.append((day, events_for_day))
+        calendar_data.append(week_data)
+
+    # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
+    return render(request, 'student_module/student.html', {
+        'calendar': calendar_data,
+        'prev_date': prev_date,
+        'next_date': next_date,
+        'month_name': month_name,
+        'year': year,
+        'events': events,
+        'student_details': student_details,
+        'course_enrolled_list':courses,
+        'stud_id':user_id,
+        'course_count':enrolled_courses,
+        'scheduled_course':course_details,
+    })
+
 
 def student_view_assignment_details(request, id, pk):
     user = request.user
@@ -265,9 +384,9 @@ def upload_activity_submission(request, id, pk):
             return redirect('student_view_assignment_details',id=id,pk=pk)
     return redirect('student_view_assignment_details',id=id,pk=pk)
 
-def download_activity_attachment(request, id):
+def download_activity_attachment(request, id, pk):
     # batch = Course_Enrollment.objects.get(pk=id)
-    activity = Course_Activity.objects.get(id=id) # Retrieve the object with the uploaded file
+    activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
     # Perform any necessary checks or validations here
 

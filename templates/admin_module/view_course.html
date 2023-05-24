@@ -73,6 +73,7 @@
                         <h6 class="collapse-header">Options:</h6>
                         <a class="collapse-item" href="/sit-admin/course_enrollment">Course Enrollment</a>
                         <a class="collapse-item" href="/sit-admin/course_enrollment/view_enrolled_course/">Student Enrollment</a>
+                        <a class="collapse-item" href="/sit-admin/course_enrollment/change_schedule/">Change Schedule Approval</a>
                     </div>
                 </div>
             </li>
@@ -183,7 +184,7 @@
                                     <td name= 'course_title'>{{course.course_title}}</td>
                                     <td align="center">
                                         <!-- Edit Button -->
-                                        <a  class="btn btn-secondary btn-circle btn-sm" href="/sit-admin/course/edit_course/{{ course.course_id }}" data-toggle="tooltip" title="Edit">
+                                        <a  class="btn btn-dark btn-circle btn-sm" href="/sit-admin/course/edit_course/{{ course.course_id }}" data-toggle="tooltip" title="Edit">
                                             <i class="fas fa-edit" aria-hidden="true"></i>
                                         </a> |
 
@@ -199,7 +200,7 @@
                                         </a>
                                                 
                                         <!-- Delete Modal Start-->
-                                        <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true" style="position:absolute">
+                                        <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -209,7 +210,7 @@
                                                             <span aria-hidden="true">×</span>
                                                         </button>
                                                     </div>
-                                                    <div class="modal-body justify-content-between">
+                                                    <div class="modal-body justify-content-between" align="left">
                                                         <p>Select 'Delete' to remove this course from the catalog.</p>
                                                     </div>
                                                     <div class="modal-footer">
