@@ -268,6 +268,7 @@
                                                             </tr>
                                                         </thead>
                                                     </div>
+                                            
                                             </td>
                                         </tr>
                                                             <tr >
@@ -284,11 +285,17 @@
 
                                                             </tr>
                                                         </tbody>
-  
+                                                    </div>
                                             </table>
                                     {% endfor %}
                                 </div>
-                            
+                            </div>
+                        </div>
+                    </table>
+
+                </div>
+         
+       
                             <!-- For pagination-->
                             <a>Showing {{enrolled_courses_page.start_index}} - {{enrolled_courses_page.end_index}} of {{enrolled_courses_page.paginator.count}} entries</a>
                             {% if enrolled_courses_page.has_other_pages %}
@@ -314,13 +321,9 @@
                                     {% endif %}
                                 </ul>
                             {% endif %} 
-                            
+                        </div>  
                    
-                    </div>
-                </div>
-            </div>
-
-
+      
 
 {% endblock content %}
 
