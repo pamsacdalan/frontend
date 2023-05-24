@@ -17,4 +17,16 @@
         <td></td>
     </tr>
     {% endfor %}
+    {% for submission in list_of_students_nonsubmit %}
+    <tr>
+        <td>{{submission.0}}</td>
+        <td>{{submission.1}}</td>
+        <td>Not submitted yet</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
 </table>
+<br>
+<button><a href="{% url 'activity_comments' batch.course_batch act.id %}">Back</a></button>

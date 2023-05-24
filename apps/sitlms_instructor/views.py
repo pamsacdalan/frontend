@@ -592,10 +592,18 @@ def student_work(request, id, pk):
         student = Students_Auth.objects.get(pk=x['student_id'])
         filename=str(x['activity_file']).split('/')[-1]
         list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk])
+    students_submitted = Activity_Submission.objects.filter(course_activity=activity).values('student_id')
+    students_not_submitted = Student_Enrollment.objects.filter(course_batch=batch).exclude(student_id__in=students_submitted).values('student_id')
+    students_nonsubmit_context = []
+    print(students_not_submitted)
+    for x in students_not_submitted:
+        student = Students_Auth.objects.get(pk=x['student_id'])
+        students_nonsubmit_context.append([student.user.last_name, student.user.first_name])
     context = {
         'list_of_submissions': list_of_submissions_2,
         'batch':batch,
         'act':activity,
+        'list_of_students_nonsubmit':students_nonsubmit_context,
     }
     print(list_of_submissions)
     return render(request, 'instructor_module/student_submissions.html',context)
