@@ -1,0 +1,11 @@
+test accounts
+
+instructor
+cl@global.biz 
+s@amplePassword01
+
+admin
+qqq
+qqq
+
+

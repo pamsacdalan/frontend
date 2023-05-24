@@ -71,6 +71,8 @@ class Program(models.Model):
     
     def str(self):
         return self.program_code
+    def to_desc(self):
+        return self.program_title
 
 
 class Instructor_Auth(models.Model):

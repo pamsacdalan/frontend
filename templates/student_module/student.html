@@ -83,7 +83,7 @@
             </div>
             <div class="widget-item">
                 <h2>{{student_details.completed_count}}</h2>
-                <p>Completed COurses</p>
+                <p>Completed Courses</p>
             </div>
         </div>
     </header>
@@ -103,10 +103,39 @@
         </div>
         </div>
       </section><!-- End Calendar Section -->
+<!-- ======= Schedules Section ======= -->
+<section id="schedules" class="section">
+    <div class="container mt-5"></div>
+    <div class="container text-center">
+       <h6 class="subtitle">Schedules: </h6>
+      <div class="section-title">
+        
+      </div>
+      
+      {% for item in scheduled_course %}
+      <div class="row">
+        <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
+          <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+          <h4 class="title"><a href="/sit-student/student_profile/view_courses/{{item.course_batch}}">{{item.course_batch}}</a></h4>
+          <p class="description">{{item.session_details}}</p>
+          
+          {% if item.frequency == 0 %}
+            <p class="description">Once</p>
+          {% elif item.frequency == 1 %}
+            <p class="description">Daily</p>
+          {% elif item.frequency == 7 %}
+            <p class="description">Weekly</p>
+          {% endif %}
 
+              <p class="description">start date: {{item.start_date}}</p>
+              <p class="description">end date: {{item.end_date}}</p>
+            </div>
+            </div>
+            {%endfor%}
+      </section><!-- End Schedules Section -->
 
-    <!-- Courses section -->
-    <section id="courses" class="section">
+    <!-- Courses section  -->
+     <section id="courses" class="section"> 
         <div class="container text-center">
             <h6 class="subtitle">Courses</h6>
             <div class="row">
@@ -176,7 +205,8 @@
 
         </div>
     </section>
-    <!-- End of courses section -->
+
+     <!-- End of courses section -->
 
 
 

@@ -27,6 +27,9 @@ urlpatterns = [
     path('instructor/view_courses/view_pending_requests/cancel/<int:id>', views.cancel_request, name='cancel_request'),
     path('instructor/view_courses/<str:id>/', views.export_csv, name='export_csv'),
     path('instructor-no-access',views.custom_403_1,name="instructor-no-access"),
+    path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/student_work', views.student_work, name='student_work'),
+    path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/download_student_submission/<str:student>', views.download_student_activity_submission, name='instructor_download_activity_submission'),
+    path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/student_work/<str:fk>', views.save_activity_grades, name='save_activity_grades'),
 
       
     

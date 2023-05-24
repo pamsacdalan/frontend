@@ -1,0 +1,62 @@
+
+<h4>Student Name : {{user.first_name}} {{user.last_name}}</h4>
+<!-- <h4>Batch: {{batch.course_batch}}</h4>
+<h4>ID: {{act.id}}</h4> -->
+<form method="POST">
+    {%csrf_token%}
+    <!-- <h3 name="act_id">Assignment ID: {{act.id}}</h3> -->
+    <h3>Title: {{act.activity_title}}</h3>
+    <h3>Attachment: <a href="{% url 'student_download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
+    <h3>Description</h3>
+    <p>{{act.activity_desc}}</p><br>
+    <h3>Given Date: {{act.start_date}}</h3>
+    <h3>Due Date: {{act.deadline}}</h3>  
+    <h3>Items: {{act.max_score}}</h3>
+    <!-- <h3>Activity Grading: {{act.grading_percentage}}</h3> -->
+    <br>
+    <br>
+    <br>    
+    <h5>Comment here!</h5>
+    <textarea rows="5" name="msg_area"></textarea><br>  
+    <button type="submit">Send</button>
+</form>
+
+
+    
+    
+
+<table>
+    <th>Author</th>
+    <th>Message</th>
+    <th>Timestamp</th>
+    {% for items in cmt  %}
+    <tr>
+        <td>{{items.uid}}</td>
+        <td>{{items.content}}</td>
+        <td>{{items.timestamp}}</td>
+        
+        <!-- <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a></td>
+        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a></td> -->
+    </tr>
+    {% endfor %}
+</table>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'upload_activity_submission' batch.course_batch act.id %}">
+    {% csrf_token %}
+    <h3>Your Work: <a href="{% url 'download_activity_submission' batch.course_batch act.id %}" download>
+        {% if current_submission_filename %} 
+        {{current_submission_filename}} 
+        {% else %}
+        {% endif %}
+     </a></h3>
+    {{ submission_upload_form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+
+{% if submission_grade %}
+<p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
+{% else %}
+<p>Submission Score: Not graded yet/{{act.max_score}}</p>
+{% endif %}
+
+  <button><a href="{% url 'view_courses' batch.course_batch %}">View Students</a></button>
