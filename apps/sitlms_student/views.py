@@ -74,6 +74,49 @@ def student_edit_profile(request):
     student_courses = Student_Enrollment.objects.filter(student_id=student_id).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_id).count
     # print(student_courses)
+      
+
+    context = {
+        'stud_id':student_id,
+        'course_count':enrolled_courses,
+        'course_enrolled_list':student_courses,
+
+                }
+    return render(request, 'student_module/edit_profile.html',context)
+
+
+def create_student_photo_folder():
+    """ This function will create the folder for student profile pic storage"""
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'student_photo')
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+def student_profile(request):    
+    """ This function renders the student page """
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+    student_auth_details = Students_Auth.objects.get(user_id=user_id)
+
+    courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
+    enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
+    
+    program_id = student_auth_details.program_id_id
+    program = Program.objects.get(program_id=program_id)
+    
+    ongoing_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing').count()
+    completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
+    total_count = ongoing_count + completed_count
+    
+    ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
+    for enrollment in ongoing_enrollments:
+        print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
+        
+    ## Schedule
+    student_id = Students_Auth.objects.get(user=user_id)
+    student_courses = Student_Enrollment.objects.filter(student_id=student_id).values()
+    enrolled_courses = Student_Enrollment.objects.filter(student_id=student_id).count
+    # print(student_courses)
     course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
@@ -101,8 +144,6 @@ def student_edit_profile(request):
 
         x['days'] = days
 
-    
-
     date_today = date.today()
     dates = [date_today]
     scheduled_course = []
@@ -114,60 +155,6 @@ def student_edit_profile(request):
         intersect = list(set(course['days']) & set(dates))
         if len(intersect) > 0:
             scheduled_course.append(course)
-    
-
-    # course frequency
-    # 0 = once
-    # 1 = daily
-    # else = weekly # assumption same day as date start
-        
-    print(scheduled_course)
-
-    context = {
-        'course_enrolled_list':student_courses,
-        'stud_id':student_id,
-        'course_count':enrolled_courses,
-        'scheduled_course':scheduled_course,
-        'dates': dates,
-
-                }
-    return render(request, 'student_module/edit_profile.html',context)
-
-def create_student_photo_folder():
-    """ This function will create the folder for student profile pic storage"""
-    folder_path = os.path.join(settings.MEDIA_ROOT, 'student_photo')
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-def student_profile(request):    
-    """ This function renders the student page """
-    user = request.user
-    queryset = get_user_model().objects.filter(id=user.id)
-    user_id = queryset.first().id
-    student_auth_details = Students_Auth.objects.get(user_id=user_id)
-
-    courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
-    enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
-   
-    
-    program_id = student_auth_details.program_id_id
-    program = Program.objects.get(program_id=program_id)
-    
-    
-    ongoing_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing').count()
-    completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
-    total_count = ongoing_count + completed_count
-
-
-    
-    ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
-    for enrollment in ongoing_enrollments:
-        print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
-        
-
-
-
-    """ This function renders the student profile"""
 
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
@@ -175,15 +162,16 @@ def student_profile(request):
                         'program_title':program.program_title,
                         'ongoing_count':ongoing_count,
                         'completed_count':completed_count,
-                        'total_count':total_count,
-                        
+                        'total_count':total_count,                        
                     }
     
-    context  ={
+    context  = {
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
+        'scheduled_course':scheduled_course,
+        'dates': dates,
                }
     
     return render(request, 'student_module/student.html', context)
