@@ -21,6 +21,7 @@ import csv
 from django.http import HttpResponseForbidden
 from django.db.models import Q
 
+from apps.sitlms_student.models import Activity_Submission
 
 def is_instructor(user):
     try:
@@ -560,3 +561,41 @@ def delete_comments(request,id,pk,fk):
         comment_id.delete()
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/delete_comments.html',context)
+
+def download_student_activity_submission(request, id, pk, student):
+    student = Students_Auth.objects.get(pk=student)
+    course_batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
+    print(submission)
+    file_path = submission.activity_file.path
+    print(file_path)
+    file = open(file_path, 'rb')
+
+    # Set the appropriate response headers
+    filename=str(submission.activity_file.name).split('/')[-1]
+    response = HttpResponse(file, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response
+
+@user_passes_test(is_instructor)
+def student_work(request, id, pk):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    list_of_submissions = Activity_Submission.objects.filter(course_activity=activity).values('student_id','date_submitted', 'activity_file', 'grade')
+    dict_of_submissions = {}
+    list_of_submissions_2 = []
+    for x in list_of_submissions:
+        student = Students_Auth.objects.get(pk=x['student_id'])
+        filename=str(x['activity_file']).split('/')[-1]
+        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk])
+    context = {
+        'list_of_submissions': list_of_submissions_2,
+        'batch':batch,
+        'act':activity,
+    }
+    print(list_of_submissions)
+    return render(request, 'instructor_module/student_submissions.html',context)

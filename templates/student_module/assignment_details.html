@@ -8,19 +8,22 @@
     <h3>Title: {{act.activity_title}}</h3>
     <h3>Attachment: <a href="{% url 'download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
     <h3>Description</h3>
-    <textarea rows="5" readonly>{{act.activity_desc}}</textarea><br>
+    <p>{{act.activity_desc}}</p><br>
     <h3>Given Date: {{act.start_date}}</h3>
     <h3>Due Date: {{act.deadline}}</h3>  
     <h3>Items: {{act.max_score}}</h3>
     <!-- <h3>Activity Grading: {{act.grading_percentage}}</h3> -->
     <br>
     <br>
-    <br>
-    
+    <br>    
     <h5>Comment here!</h5>
     <textarea rows="5" name="msg_area"></textarea><br>  
     <button type="submit">Send</button>
 </form>
+
+
+    
+    
 
 <table>
     <th>Author</th>
@@ -37,3 +40,17 @@
     </tr>
     {% endfor %}
 </table>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'upload_activity_submission' batch.course_batch act.id %}">
+    {% csrf_token %}
+    <h3>Your Work: <a href="{% url 'download_activity_submission' batch.course_batch act.id %}" download>
+        {% if current_submission_filename %} 
+        {{current_submission_filename}} 
+        {% else %}
+        {% endif %}
+     </a></h3>
+    {{ submission_upload_form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+
+  <button><a href="{% url 'view_courses' batch.course_batch %}">View Students</a></button>

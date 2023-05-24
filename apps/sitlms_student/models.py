@@ -10,6 +10,6 @@ def activity_attachment_path(instance, filename):
 class Activity_Submission(models.Model):
     course_activity = models.ForeignKey(Course_Activity, on_delete=models.CASCADE)
     date_submitted = models.DateTimeField(default=datetime.now)
-    grade = models.IntegerField(blank=True)
+    grade = models.IntegerField(blank=True, null=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
     activity_file = models.FileField(upload_to=activity_attachment_path, blank=True)

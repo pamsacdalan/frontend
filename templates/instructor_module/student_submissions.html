@@ -1,0 +1,20 @@
+<table>
+    <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Submission</th>
+        <th>Date Submittted</th>
+        <th>Score</th>
+        <th>Mark Student</th>
+    </tr>
+    {% for submission in list_of_submissions %}
+    <tr>
+        <td>{{submission.0}}</td>
+        <td>{{submission.1}}</td>
+        <td><a href="{% url 'instructor_download_activity_submission' batch.course_batch act.id submission.4 %}" download>{{submission.2}}</a></td>
+        <td>{{submission.3}}</td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>

@@ -4,10 +4,11 @@ from django.contrib.auth import get_user_model
 from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program
 from django.conf import settings
 import os
-
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
+from apps.sitlms_student.forms import ActivitySubmissionUploadForm
+from apps.sitlms_student.models import Activity_Submission
 # Create your views here.
 
 def is_student(user):
@@ -133,12 +134,24 @@ def student_view_assignment_details(request, id, pk):
     file_relative_url = activity.activity_attachment.url 
 
     file_url = request.build_absolute_uri(file_relative_url)
+    if Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).values('activity_file').exists():
+        current_submission = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().activity_file
+        initial_data = {'activity_file': current_submission}
+        current_submission_filename = str(current_submission).split('/')[-1]
+        # submission_upload_form = ActivitySubmissionUploadForm(initial=initial_data)
+        #activity_file=current_submission
+        submission_upload_form = ActivitySubmissionUploadForm()
+    else:
+        current_submission_filename = False
+        submission_upload_form = ActivitySubmissionUploadForm()
     context = {
         'batch':batch,
         'act':activity,
         'cmt':comment_items,
         'file_url':file_url,
         'user':user,
+        'submission_upload_form':submission_upload_form,
+        'current_submission_filename':current_submission_filename,
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
@@ -148,6 +161,27 @@ def student_view_assignment_details(request, id, pk):
         return redirect('student_view_assignment_details',id=id,pk=pk)
     
     return render(request, 'student_module/assignment_details.html',context)
+
+def upload_activity_submission(request, id, pk):
+    # Will try one file upload muna    
+    student = request.user.students_auth
+    # course_batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    if request.method == 'POST':
+        form = ActivitySubmissionUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            prev_instances=Activity_Submission.objects.filter(course_activity=activity,student_id=student)
+            if prev_instances:
+                for prev_i in prev_instances:
+                    file_path = prev_i.activity_file.path
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                prev_instances.delete()
+            attachment=request.FILES['activity_file']
+            instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment)
+            instance.save()
+            return redirect('student_view_assignment_details',id=id,pk=pk)
+    return redirect('student_view_assignment_details',id=id,pk=pk)
 
 def download_activity_attachment(request, id):
     # batch = Course_Enrollment.objects.get(pk=id)
@@ -166,6 +200,24 @@ def download_activity_attachment(request, id):
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     return response
+
+def download_activity_submission(request, id, pk):
+    student = request.user.students_auth
+    course_batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
+    print(submission)
+    file_path = submission.activity_file.path
+    print(file_path)
+    file = open(file_path, 'rb')
+
+    # Set the appropriate response headers
+    filename=str(submission.activity_file.name).split('/')[-1]
+    response = HttpResponse(file, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response
+
 @user_passes_test(is_student)   
 def student_course_details(request):
     
