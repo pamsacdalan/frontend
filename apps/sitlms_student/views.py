@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_student.forms import ActivitySubmissionUploadForm
 from apps.sitlms_student.models import Activity_Submission
 from django.utils import timezone
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta, date as date2
 from django.contrib.auth.models import User
 from apps.sitlms_instructor.models import Course_Announcement
 from operator import itemgetter
@@ -200,7 +200,7 @@ def student_profile(request):
 
         x['days'] = days
 
-    date_today = date.today()
+    date_today = date2.today()
     dates = [date_today]
     scheduled_course = []
 
@@ -278,6 +278,11 @@ def student_profile(request):
         'year': year,
         'events': events,
         'student_details': student_details,
+        'course_enrolled_list':courses,
+        'stud_id':user_id,
+        'course_count':enrolled_courses,
+        'scheduled_course':scheduled_course,
+        'dates': dates,
     })
 
 
