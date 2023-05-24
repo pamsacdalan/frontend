@@ -21,6 +21,7 @@ import csv
 from django.http import HttpResponseForbidden
 from django.db.models import Q
 
+from apps.sitlms_student.models import Activity_Submission
 
 def is_instructor(user):
     try:
@@ -256,13 +257,16 @@ def view_pending_requests(request):
     # print(course_enrolled)
 
     pending_requests = Change_Schedule.objects.filter(status='Pending', course_batch__in=course_enrolled).values()
-    # print(pending_requests)
-    context = {'pending_requests':pending_requests}
+    approved_rejected_requests = Change_Schedule.objects.filter(Q(status='Approved')| Q(status='Rejected'), course_batch__in=course_enrolled).values()
+    
+    context = {'pending_requests':pending_requests,
+                'approved_rejected_requests': approved_rejected_requests}
+
     return HttpResponse(template.render(context,request))
 
 @user_passes_test(is_instructor)
 def view_assignments (request,id):
-    """ This function renders the student page """
+    """ This function renders the instructor assignment page """
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
         return redirect("instructor-no-access")
     acts = Course_Activity.objects.filter(course_batch=id)
@@ -557,3 +561,52 @@ def delete_comments(request,id,pk,fk):
         comment_id.delete()
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/delete_comments.html',context)
+
+@user_passes_test(is_instructor)
+def download_student_activity_submission(request, id, pk, student):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
+    student = Students_Auth.objects.get(pk=student)
+    course_batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
+    print(submission)
+    file_path = submission.activity_file.path
+    print(file_path)
+    file = open(file_path, 'rb')
+
+    # Set the appropriate response headers
+    filename=str(submission.activity_file.name).split('/')[-1]
+    response = HttpResponse(file, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response
+
+@user_passes_test(is_instructor)
+def student_work(request, id, pk):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk)
+    list_of_submissions = Activity_Submission.objects.filter(course_activity=activity).values('student_id','date_submitted', 'activity_file', 'grade')
+    dict_of_submissions = {}
+    list_of_submissions_2 = []
+    for x in list_of_submissions:
+        student = Students_Auth.objects.get(pk=x['student_id'])
+        filename=str(x['activity_file']).split('/')[-1]
+        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk])
+    students_submitted = Activity_Submission.objects.filter(course_activity=activity).values('student_id')
+    students_not_submitted = Student_Enrollment.objects.filter(course_batch=batch).exclude(student_id__in=students_submitted).values('student_id')
+    students_nonsubmit_context = []
+    # print(students_not_submitted)
+    for x in students_not_submitted:
+        student = Students_Auth.objects.get(pk=x['student_id'])
+        students_nonsubmit_context.append([student.user.last_name, student.user.first_name])
+    context = {
+        'list_of_submissions': list_of_submissions_2,
+        'batch':batch,
+        'act':activity,
+        'list_of_students_nonsubmit':students_nonsubmit_context,
+    }
+    # print(list_of_submissions)
+    return render(request, 'instructor_module/student_submissions.html',context)
