@@ -159,7 +159,7 @@ def student_profile(request):
     student_id = Students_Auth.objects.get(user=user_id)
     student_courses = Student_Enrollment.objects.filter(student_id=student_id).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_id).count
-    # print(student_courses)
+
     course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
@@ -187,19 +187,6 @@ def student_profile(request):
 
         x['days'] = days
 
-    date_today = date.today()
-    dates = [date_today]
-    scheduled_course = []
-
-    for i in range(1,7): # next 7 days
-        dates.append(date_today + timedelta(days=i))
-
-    for course in course_details:
-        intersect = list(set(course['days']) & set(dates))
-        if len(intersect) > 0:
-            scheduled_course.append(course)
-
-
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
                         'program_title':program.program_title,
@@ -207,14 +194,13 @@ def student_profile(request):
                         'completed_count':completed_count,
                         'total_count':total_count,                        
                     }
-    
+
     context  = {
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':scheduled_course,
-        'dates': dates,
+        'scheduled_course':course_details,
                }
     
     return render(request, 'student_module/student.html', context)
