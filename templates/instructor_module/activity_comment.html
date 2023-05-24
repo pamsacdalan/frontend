@@ -1,5 +1,6 @@
 
 <button><a href="{% url 'view_assignments' batch.course_batch %}">Back</a></button>
+<button><a href="{% url 'student_work' batch.course_batch act.id %}">Student Work</a></button>
 <form method="POST">
     {%csrf_token%}
     <h3 name="act_id">Activity ID: {{act.id}}</h3>

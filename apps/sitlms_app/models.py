@@ -71,6 +71,8 @@ class Program(models.Model):
     
     def str(self):
         return self.program_code
+    def to_desc(self):
+        return self.program_title
 
 
 class Instructor_Auth(models.Model):
@@ -189,3 +191,17 @@ class Change_Schedule(models.Model):
     request_date = models.DateTimeField(default=timezone.now)
     approval_date = models.DateTimeField(null=True)
     status = models.CharField(max_length=255, default="Pending")
+
+class Student_Profile(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.CharField(max_length=10000, null=True)
+    address = models.CharField(max_length=10000, null=True)
+    user_contact_no = models.CharField(max_length=255, null=True)
+    emergency_contact = models.CharField(max_length=255, null=True)
+    emergency_contact_no = models.CharField(max_length=20, null=True)
+    profile_pic = models.ImageField(upload_to='student_pic/', null=True)
+
+    def str(self):
+        return self.user.username
+

@@ -84,12 +84,12 @@ class UserUpdateForm(forms.ModelForm):
         fields = ('email','first_name', 'last_name','is_active')
 
 class StudentForm(forms.Form):
-    program_id = forms.IntegerField(
-        min_value=0,
-        max_value=5,
-        help_text='I think this should be a foreign key', 
-        widget=forms.TextInput(attrs={'class':'form-control'})
-    )
+    # program_id = forms.IntegerField(
+    #     min_value=0,
+    #     max_value=5,
+    #     help_text='I think this should be a foreign key', 
+    #     widget=forms.TextInput(attrs={'class':'form-control'})
+    # )
     student_no = forms.CharField(max_length = 7, label='Employee ID', widget=forms.TextInput(attrs={'class':'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'Email Address', 'autocomplete': 'off'}))
     first_name = forms.CharField(min_length=1, max_length = 150, label='first_name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
