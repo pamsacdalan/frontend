@@ -31,7 +31,7 @@
     <th>Timestamp</th>
     {% for items in cmt  %}
     <tr>
-        <td>{{items.uid}}</td>
+        <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
         <td>{{items.content}}</td>
         <td>{{items.timestamp}}</td>
         <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
