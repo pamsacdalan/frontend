@@ -20,6 +20,8 @@ from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.conf import settings
+import os
 
 from apps.sitlms_student.models import Activity_Submission
 
@@ -625,3 +627,127 @@ def save_activity_grades(request,id,pk,fk):
        
         return redirect('student_work', id=id,pk=pk)
     return render(request, "instructor_module/edit_comments.html")
+
+
+
+def edit_profile(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
+
+    if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+        instructor_profile = Student_Profile.objects.get(user_id=user_id)
+
+        instructor_details ={'first_name':instructor_auth_details.user.first_name, 
+                            'middlename':instructor_auth_details.middlename,
+                            'last_name':instructor_auth_details.user.last_name,
+                            'birthdate':instructor_auth_details.birthdate,
+                            'bio':instructor_profile.bio,
+                            'address':instructor_profile.address,
+                            'user_contact_no':instructor_profile.user_contact_no,
+                            'emergency_contact':instructor_profile.emergency_contact,
+                            'emergency_contact_no':instructor_profile.emergency_contact_no,
+                            'profile_pic':instructor_profile.profile_pic,
+                            'email': instructor_auth_details.user.username,
+                            'emp_no': instructor_auth_details.user_id
+                        }
+    else:
+        instructor_details ={ 'first_name':instructor_auth_details.user.first_name, 
+                        'middlename':instructor_auth_details.middlename,
+                        'last_name':instructor_auth_details.user.last_name,
+                        'birthdate':instructor_auth_details.birthdate,
+                        'bio':"",
+                        'address':"",
+                        'user_contact_no':"",
+                        'emergency_contact':"",
+                        'emergency_contact_no':"",
+                        'profile_pic':"",
+                        'email': instructor_auth_details.user.username,
+                        'emp_no': instructor_auth_details.user_id
+                    }   
+        
+    context = {'instructor_details': instructor_details      
+    }
+
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        middlename = request.POST['middlename']
+        last_name = request.POST['last_name']
+        birthdate = request.POST['birthdate']
+        bio = request.POST['bio']
+        address = request.POST['address']
+        user_contact_no = request.POST['user_contact_no']
+        emergency_contact = request.POST['emergency_contact']
+        emergency_contact_no = request.POST['emergency_contact_no']
+         
+
+        profile_pic = False
+         
+        #uploaded a profile pic
+        if 'profile_pic' in request.FILES:
+            profile_picture = request.FILES['profile_pic']
+            profile_pic = f"{first_name}_{last_name}_{user_id}{os.path.splitext(profile_picture.name)[1]}" 
+            # print(profile_pic, "1111")
+
+        #enters here a profile pic is uploaded
+        if profile_pic:
+            media_root = settings.MEDIA_ROOT
+            student_pic_folder = os.path.join(media_root, 'student_pic')
+            os.makedirs(student_pic_folder, exist_ok=True)
+            
+            file_path = os.path.join(student_pic_folder, profile_pic)
+            # file_path = os.path.join(student_pic_folder, profile_pic.name)
+            print("profile_pic.name: ",profile_pic)
+            with open(file_path, 'wb') as destination:
+                for chunks in profile_picture.chunks():
+                    destination.write(chunks) 
+    
+        instructor_auth_details.user.first_name = first_name
+        instructor_auth_details.middlename = middlename
+        instructor_auth_details.user.last_name = last_name
+        instructor_auth_details.birthdate = birthdate
+
+        if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+            #student_profile = Student_Profile.objects.get(user_id=user_id)
+            instructor_profile.bio = bio
+            instructor_profile.address = address
+            instructor_profile.user_contact_no = user_contact_no
+            instructor_profile.emergency_contact = emergency_contact
+            instructor_profile.emergency_contact_no = emergency_contact_no
+            if profile_pic:
+                instructor_profile.profile_pic = os.path.join('student_pic', profile_pic)
+            
+
+        else:
+            if profile_pic:
+                instructor_profile = Student_Profile(
+                bio = bio,
+                address = address,
+                user_contact_no = user_contact_no,
+                emergency_contact = emergency_contact,
+                emergency_contact_no = emergency_contact_no,
+                user_id=user_id,
+                profile_pic=os.path.join('student_pic', profile_pic))
+            else:
+                instructor_profile = Student_Profile(
+                bio = bio,
+                address = address,
+                user_contact_no = user_contact_no,
+                emergency_contact = emergency_contact,
+                emergency_contact_no = emergency_contact_no,
+                user_id=user_id,
+                profile_pic="student_pic/profile.png")
+
+        
+        
+        
+        instructor_profile.save()
+        instructor_auth_details.user.save()
+        instructor_auth_details.save()
+
+        return redirect('/sit-instructor/instructor')
+
+
+    return render(request, 'instructor_module/edit_profile.html', context)

@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Student Page</title>
+    <title>Instructor Page</title>
       <!-- Favicon -->
       <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
     <!-- font icons -->
@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'student_profile' %}">Home</a>
+                        <a class="nav-link" href="{% url 'instructor' %}">Home</a>
                     </li>
                 </ul>
             </div>
@@ -44,8 +44,8 @@
       <!-- left column -->
       <div class="col-md-3">
         <div class="text-center">
-          {% if student_details.profile_pic %}
-            <img src="{{ student_details.profile_pic.url }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+          {% if instructor_details.profile_pic %}
+            <img src="{{ instructor_details.profile_pic.url }}" alt="" class="img-thumbnail mb-4" id="image-preview">
           {% else %}
           <img src="{% static 'student/assets/imgs/profile.png'%}" alt="" class="img-thumbnail mb-4" id="image-preview">
           {% endif%}
@@ -72,7 +72,7 @@
               // Clear the file input and image preview
               input.value = '';
               //imagePreview.src = '{% static "student/assets/imgs/profile.png" %}'
-              imagePreview.src = "{{ student_details.profile_pic.url }}";
+              imagePreview.src = "{{ instructor_details.profile_pic.url }}";
               alert('Please select a valid image file.');
             }
           }
@@ -84,7 +84,7 @@
           <label class="col-lg-3 control-label">Bio:</label>
           <div class="col-lg-8">
 
-            <textarea name='bio' cols="21" rows="9" name="bio">{{student_details.bio}}</textarea>
+            <textarea name='bio' cols="21" rows="9" name="bio">{{instructor_details.bio}}</textarea>
           </div>
         {% comment %} </div> {% endcomment %}
 
@@ -99,25 +99,25 @@
           <div class="form-group">
             <label class="col-lg-3 control-label">First name:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name='first_name' value={{student_details.first_name}}>
+              <input class="form-control" type="text" name='first_name' value={{instructor_details.first_name}}>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Middle name:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name='middlename' value={{student_details.middlename}}>
+              <input class="form-control" type="text" name='middlename' value={{instructor_details.middlename}}>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Last name:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name='last_name' value={{student_details.last_name}}>
+              <input class="form-control" type="text" name='last_name' value={{instructor_details.last_name}}>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Birth date:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="date" name='birthdate' value={{student_details.birthdate | date:'Y-m-d'}}>
+              <input class="form-control" type="date" name='birthdate' value={{instructor_details.birthdate | date:'Y-m-d'}}>
             </div>
           </div>
           {% comment %} <div class="form-group">
@@ -126,40 +126,40 @@
               <input class="form-control" type="text" value="2012101524">
             </div>
           </div> {% endcomment %}
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label class="col-lg-3 control-label">Employee Number:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="emp_no" value={{student_details.emp_no}} readonly>
+              <input class="form-control" type="text" name="emp_no" value={{instructor_details.emp_no}} readonly>
             </div>
-          </div>
+          </div> -->
           <div class="form-group">
             <label class="col-lg-3 control-label">Email:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="email" value={{student_details.email}} readonly>
+              <input class="form-control" type="text" name="email" value={{instructor_details.email}} readonly>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Address:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="address" value="{{student_details.address}}"">
+              <input class="form-control" type="text" name="address" value="{{instructor_details.address}}"">
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Contact Number:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="user_contact_no" value={{student_details.user_contact_no}}>
+              <input class="form-control" type="text" name="user_contact_no" value={{instructor_details.user_contact_no}}>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">In Case of Emergency:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="emergency_contact" value="{{student_details.emergency_contact}}"">
+              <input class="form-control" type="text" name="emergency_contact" value="{{instructor_details.emergency_contact}}"">
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Emergency Contact Number:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="emergency_contact_no" value={{student_details.emergency_contact_no}}>
+              <input class="form-control" type="text" name="emergency_contact_no" value={{instructor_details.emergency_contact_no}}>
             </div>
           </div>
           {% comment %} <div class="form-group">
@@ -200,10 +200,10 @@
           <div class="form-group">
             <label class="col-md-3 control-label"></label>
             <div class="col-md-8">
-              <a href='/sit-student/student_profile'></a>
+              <a href='/sit-instructor/instructor'></a>
               <input type="submit" class="btn btn-primary" value="Save Changes">
               <span></span>
-              <a href='/sit-student/student_profile/edit_profile/'></a>
+              <a href='/sit-instructor/instructor/edit_profile/'></a>
               <input type="reset" class="btn btn-default" value="Cancel">
             </div>
           </div>

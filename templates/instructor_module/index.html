@@ -46,7 +46,7 @@
                                         {{ user.first_name }}
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#"><i class="ti-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="{% url 'instructor_edit_profile' %}"><i class="ti-user"></i> Profile</a>
                                     <a class="dropdown-item" href="#"><i class="ti-list"></i> Activity Log</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="ti-power-off"></i> Logout</a>
                                     </div>
