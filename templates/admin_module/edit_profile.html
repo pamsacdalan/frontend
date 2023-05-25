@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Student Page</title>
+    <title>Admin Page</title>
       <!-- Favicon -->
       <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
     <!-- font icons -->
@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'student_profile' %}">Home</a>
+                        <a class="nav-link" href="{% url 'sit_admin_dashboard' %}">Home</a>
                     </li>
                 </ul>
             </div>
@@ -102,36 +102,36 @@
               <input class="form-control" type="text" name='first_name' value={{student_details.first_name}}>
             </div>
           </div>
-          <div class="form-group">
+          {% comment %} <div class="form-group">
             <label class="col-lg-3 control-label">Middle name:</label>
             <div class="col-lg-8">
               <input class="form-control" type="text" name='middlename' value={{student_details.middlename}}>
             </div>
-          </div>
+          </div> {% endcomment %}
           <div class="form-group">
             <label class="col-lg-3 control-label">Last name:</label>
             <div class="col-lg-8">
               <input class="form-control" type="text" name='last_name' value={{student_details.last_name}}>
             </div>
           </div>
-          <div class="form-group">
+          {% comment %} <div class="form-group">
             <label class="col-lg-3 control-label">Birth date:</label>
             <div class="col-lg-8">
               <input class="form-control" type="date" name='birthdate' value={{student_details.birthdate | date:'Y-m-d'}}>
             </div>
-          </div>
+          </div> {% endcomment %}
           {% comment %} <div class="form-group">
             <label class="col-lg-3 control-label">Student Number:</label>
             <div class="col-lg-8">
               <input class="form-control" type="text" value="2012101524">
             </div>
           </div> {% endcomment %}
-          <div class="form-group">
+          {% comment %} <div class="form-group">
             <label class="col-lg-3 control-label">Employee Number:</label>
             <div class="col-lg-8">
               <input class="form-control" type="text" name="emp_no" value={{student_details.emp_no}} readonly>
             </div>
-          </div>
+          </div> {% endcomment %}
           <div class="form-group">
             <label class="col-lg-3 control-label">Email:</label>
             <div class="col-lg-8">
@@ -147,7 +147,7 @@
           <div class="form-group">
             <label class="col-lg-3 control-label">Contact Number:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="user_contact_no" value="{{student_details.user_contact_no}}">
+              <input class="form-control" type="text" name="user_contact_no" value={{student_details.user_contact_no}}>
             </div>
           </div>
           <br>
@@ -163,7 +163,7 @@
           <div class="form-group">
             <label class="col-lg-3 control-label">Contact Number:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" name="emergency_contact_no" value="{{student_details.emergency_contact_no}}">
+              <input class="form-control" type="text" name="emergency_contact_no" value={{student_details.emergency_contact_no}}>
             </div>
           </div>
           {% comment %} <div class="form-group">
@@ -204,10 +204,10 @@
           <div class="form-group">
             <label class="col-md-3 control-label"></label>
             <div class="col-md-8">
-              <a href='/sit-student/student_profile'></a>
+              <a href='/sit-admin/dashboard/'></a>
               <input type="submit" class="btn btn-primary" value="Save Changes">
               <span></span>
-              <a href='/sit-student/student_profile/edit_profile/'></a>
+              <a href='/sit-admin/sit-admin/admin_profile'></a>
               <input type="reset" class="btn btn-default" value="Cancel">
             </div>
           </div>

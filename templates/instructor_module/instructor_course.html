@@ -2,12 +2,23 @@
 {% extends './index.html' %}
 {% load static %}
 
+<!-- View announcements page-->
+
 {% block content %}
-        <div class="container text-center">
-            <h6 class="title">{{course.course_title}} - {{course.course_desc}}</h6>
+        <!-- Course Header-->
+        <div class="card text-center">
+            <div class="card-header" style="height: 11rem">
+                <br>
+                <br>
+                <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+                <h6 class="subtitle">{{course_batch}}</h6>
+            </div>
         </div>
+        <!-- End of Course Header-->
+
         <br>
         <div class="card">
+            <!-- Navbar -->
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item active">
@@ -19,49 +30,205 @@
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Assignments</a>
+                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
                     </li>
                 </ul>
             </div>
-
+        
             <!-- Main Content -->
             <br>
-            <div class='container-fluid' align="right">
-                <!-- Buttons here -->
+            <br>
+            <div class='container-fluid'>
+                <div class="row justify-content-md-center">
+                    <div class="col-3">
+                        <div class="card border-primary mb-3" style="max-width: 18rem; height: 11rem;">
+                            <div class="card-header">
+                                Upcoming Deadlines
+                            </div>
+                            <div class="card-body text-center text-dark">
+                                No upcoming deadlines
+                            </div>
+                            <div class="card-footer bg-transparent text-right">
+                                View all
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-8">
+                        <div class="card-header" style="height: 11rem;">
+                            <div class="col-md-12">
+                            <div class="panel">
+                                <br>
+                              <div class="panel-body">
+                                    <div class="row ">
+                                        <div class="col-1 text-right">
+                                            <span class="align-middle">
+                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
+                                            </span>
+                                        </div>
+
+                                        <div class="col-11">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <textarea id="announcement_text" class="form-control" rows ="2" placeholder="Post your announcement here.." name="announcement_text"></textarea>
+                                            
+                                                {% comment %} <input class="button" type="submit" onclick="return checkTextArea() " value="Submit"> {% endcomment %}
+                                                <!-- <input class="button" type="button" onclick="window.location.replace('/sit-instructor/instructor/course/{{ course_batch }}')" value="Cancel" /> -->
+                                                {% comment %} <a href='/sit-instructor/instructor/course/{{ course_batch }}'>Cancel </a> {% endcomment %}
+                                                
+                                                <p id="warning" style="display:none">You need to write something!!</p>
+                                            
+                                                <script>
+                                                
+                                                    function trim_and_remove_blank_lines(string)
+                                                    {
+                                                        return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+                                                    }
+                                                        
+                                                    function checkTextArea() {
+                                                    var text_area = document.getElementById("announcement_text");
+                                                    var text = document.getElementById("warning");
+                                                    
+                                                    if (trim_and_remove_blank_lines(text_area.value)){
+                                                        text.style.display = "none";
+                                                        return true;
+                                                    } else{
+                                                        text.style.display = "block";
+                                                        return false;
+                                                        }
+                                                    }
+                                                    
+                                                </script>
+                                            
+                                            </form>
+                                            <div class="mar-top clearfix text-right">
+                                                <br>
+                                                <button class="btn btn-sm btn-primary" onclick="return checkTextArea() " type="submit">
+                                                    Post
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <br>
+            <!-- Announcements -->
+            {% if not announcements %}
+            <!-- Show if database is empty-->
             <div class="container-fluid">
-                <!-- View Announcements Page -->
+                <div class="row justify-content-md-center">
+                    <div class="col-3">
+                        <!-- space -->
+                    </div>
+                    <div class="col-8 text-center">
+                        <br>
+                        <h5 style="color: gray">No Announcements Yet</h5>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            
+            {% else %}
+            <!-- Show if database is not empty-->
+            {% for announcement in announcements %}
+                <div class="container-fluid">
+                    <div class="row justify-content-md-center">
+                        <div class="col-3">
+                            <!-- space -->
+                        </div>
+                        
+                        <!-- announcement card -->
+                        <div class="col-8">
+                            <div class="card border-light mb-3">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-1 text-right">
+                                            <span class="align-middle">
+                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
+                                            </span>
+                                        </div>
+                                        <div class="col-10 text-left">
+                                            <span style="font-size: 17px" class="align-middle">{{author}}</span>
+                                            <br>
+                                            <span style="font-size: 12px" class="align-middle">{{announcement.date_posted}}</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <h6>Course Batch: {{course_batch}} </h6>
+                                <!-- Body -->
+                                <div class="card-body">
+                                    <div class="col-md-12">
+                                        <div class="panel">
+                                            <div class="panel-body">
+                                                <div class="row ">
+                                                    <!-- Announcement content-->
+                                                    <div class="col-11">
+                                                        <span class="align-middle">
+                                                            {{announcement.announcement_text|linebreaks}}
+                                                        </span>
+                                                    </div>
+                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <!-- Footer -->
+                                <div class="card-footer text-right">
+                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}" data-toggle="tooltip" title="Edit">
+                                        <i class="ti-pencil"></i>
+                                    </a> 
+                                        
+                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" data-toggle="tooltip" title="Remove"> 
+                                        <i class="ti-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
 
-                <table border="1">
-                    <tr>
-                        <th>Announcement</th>
-                        <th>Author</th>
-                        <th>Date Posted</th>
-                        <th>Actions</th>
+                    {% comment %} <table>
+                        <tr>
+                            <th>Announcement</th>
+                            <th>Author</th>
+                            <th>Date Posted</th>
+                            <th>Actions</th>
+                        </tr>
+                    <tr>{% for announcement in announcements %}
+                        <td name= 'announcement_text'>{{announcement.announcement_text|linebreaks}}</td>
+                        <td name= 'author_id'>{{author}}</td>
+                        <td name= 'date_posted'>{{announcement.date_posted}}</td>
+                        <td><a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}">Edit</a> | <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}">Remove</a></td>
                     </tr>
-                <tr>{% for announcement in announcements %}
-                    <td name= 'announcement_text'>{{announcement.announcement_text|linebreaks}}</td>
-                    <td name= 'author_id'>{{author}}</td>
-                    <td name= 'date_posted'>{{announcement.date_posted}}</td>
-                    <td><a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}">Edit</a> | <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}">Remove</a></td>
-                </tr>
-                    {% endfor %}
-                </table>
+                        {% endfor %}
+                    </table>
 
-                <br><br>
-                <button><a href="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">Create Announcement</a></button>
-                <button><a href="/sit-instructor/instructor/view_students/{{course_batch}}">View Students</a></button>
-                <button><a href="{% url 'view_assignments' course_batch %}">Assignments</a></button>
-                {% if user.is_authenticated %}
-                <br><br>
-                <button><a href="{% url 'view_courses' %}">Back to View Courses</a></button>
-                <br>
-                <br>
-                {% endif %}
+                    <br><br>
+                    <button><a href="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">Create Announcement</a></button>
+                    <button><a href="/sit-instructor/instructor/view_students/{{course_batch}}">View Students</a></button>
+                    <button><a href="{% url 'view_assignments' course_batch %}">Assignments</a></button>
+                    {% if user.is_authenticated %}
+                    <br><br>
+                    <button><a href="{% url 'view_courses' %}">Back to View Courses</a></button>
+                    <br>
+                    <br>
+                    {% endif %} {% endcomment %}
+                </div>
+            {% endfor %}
+            {% endif %}
+            <br>
+            <br>
         </div>
+
+            
 {% endblock %}
 

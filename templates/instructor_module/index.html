@@ -8,11 +8,11 @@
     <title>Seven Seven Global | SIT - Instructor</title>
 
     <!-- Favicon -->
-      <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
+    <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
     <!-- font icons -->
-    <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
+    <link rel="stylesheet" href="{% static 'instructor/vendors/themify-icons/css/themify-icons.css'%}">
     <!-- Bootstrap + Steller main styles -->
-	<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
+	<link rel="stylesheet" href="{% static 'instructor/css/index.css'%}">
 
 </head>
 
@@ -46,7 +46,7 @@
                                         {{ user.first_name }}
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#"><i class="ti-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="{% url 'instructor_edit_profile' %}"><i class="ti-user"></i> Profile</a>
                                     <a class="dropdown-item" href="#"><i class="ti-list"></i> Activity Log</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="ti-power-off"></i> Logout</a>
                                     </div>
@@ -124,13 +124,13 @@
         
         
         <!-- core  -->
-        <script src="{% static 'student/assets/vendors/jquery/jquery-3.4.1.js'%}"></script>
-        <script src="{% static 'student/assets/vendors/bootstrap/bootstrap.bundle.js'%}"></script>
+        <script src="{% static 'instructor/vendors/jquery/jquery-3.4.1.js'%}"></script>
+        <script src="{% static 'instructor/vendors/bootstrap/bootstrap.bundle.js'%}"></script>
         <!-- bootstrap 3 affix -->
-        <script src="{% static 'student/assets/vendors/bootstrap/bootstrap.affix.js'%}"></script>
+        <script src="{% static 'instructor/vendors/bootstrap/bootstrap.affix.js'%}"></script>
 
         <!-- steller js -->
-        <script src="{% static 'student/assets/js/steller.js'%}"></script>
+        <script src="{% static 'instructor/js/steller.js'%}"></script>
 
 </body>
 </html>
