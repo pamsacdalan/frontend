@@ -20,6 +20,7 @@ from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.utils import timezone
 
 from apps.sitlms_student.models import Activity_Submission
 
@@ -459,7 +460,7 @@ def activity_comments(request, id, pk):
     if request.method == "POST":
         msg = request.POST['msg_area']
         user = request.user
-        comment = Activity_Comments(course_activity = activity, uid = user,content = msg)
+        comment = Activity_Comments(course_activity = activity, uid = user,content = msg, timestamp=timezone.now())
         comment.save()
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/activity_comment.html',context)
