@@ -49,14 +49,23 @@
         {% else %}
         {% endif %}
      </a></h3>
+     {% if not submission_grade %}
     {{ submission_upload_form.as_p }}
     <button type="submit">Submit</button>
+    {% endif %}
   </form>
 
 {% if submission_grade %}
 <p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
 {% else %}
 <p>Submission Score: Not graded yet/{{act.max_score}}</p>
+{% endif %}
+
+{% if not current_submission_filename %}
+{% elif submission_on_time %}
+<p>On time</p>
+{% else %}
+<p>Late</p>
 {% endif %}
 
   <button><a href="{% url 'view_courses' batch.course_batch %}">View Students</a></button>
