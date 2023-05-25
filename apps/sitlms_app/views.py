@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from .forms import CsvModelForm
-from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -21,6 +21,9 @@ from django.core.exceptions import PermissionDenied
 from apps.sitlms_app.crud.enrolled_course import string_to_date 
 from datetime import datetime, date
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+
 
 
 # Custom test function that checks if the user is an admin
@@ -235,4 +238,129 @@ def view_history(request):
     context = {'change_schedule_list':history_list}
 
     return HttpResponse(template.render(context,request))
- 
+
+
+
+
+
+def student_edit_profile(request):
+    
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    """ This function renders the student edit profile"""
+    admin_auth_details = User.objects.get(id=user_id)
+    
+    if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+        student_profile = Student_Profile.objects.get(user_id=user_id)
+        
+
+        
+        admin_details ={ 'first_name':admin_auth_details.first_name, 
+                        'last_name':admin_auth_details.last_name,
+                        'bio':student_profile.bio,
+                        'address':student_profile.address,
+                        'user_contact_no':student_profile.user_contact_no,
+                        'emergency_contact':student_profile.emergency_contact,
+                        'emergency_contact_no':student_profile.emergency_contact_no,
+                        'profile_pic':student_profile.profile_pic,
+                        'email': admin_auth_details.email
+                    }   
+    
+    else:
+        admin_details ={ 'first_name':admin_auth_details.first_name, 
+                        'last_name':admin_auth_details.last_name,
+                        'bio':"",
+                        'address':"",
+                        'user_contact_no':"",
+                        'emergency_contact':"",
+                        'emergency_contact_no':"",
+                        'profile_pic':"",
+                        'email': admin_auth_details.email
+                    }   
+    
+    
+    
+    context = {'student_details': admin_details      
+    }
+
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        bio = request.POST['bio']
+        address = request.POST['address']
+        user_contact_no = request.POST['user_contact_no']
+        emergency_contact = request.POST['emergency_contact']
+        emergency_contact_no = request.POST['emergency_contact_no']
+         
+         
+        #default_profile_pic = os.path.join(settings.STATIC_URL, 'student/assets/imgs/profile.png')
+        profile_pic = False 
+        
+        if 'profile_pic' in request.FILES:
+            profile_picture = request.FILES['profile_pic']
+            profile_pic = f"{first_name}_{last_name}_{user_id}{os.path.splitext(profile_picture.name)[1]}"
+
+
+        if profile_pic:
+            media_root = settings.MEDIA_ROOT
+            student_pic_folder = os.path.join(media_root, 'student_pic')
+            os.makedirs(student_pic_folder, exist_ok=True)
+            
+            file_path = os.path.join(student_pic_folder, profile_pic)
+            with open(file_path, 'wb') as destination:
+                for chunks in profile_picture.chunks():
+                    destination.write(chunks) 
+          
+
+        admin_auth_details.first_name = first_name
+        admin_auth_details.last_name = last_name
+
+        if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+            student_profile.bio = bio
+            student_profile.address = address
+            student_profile.user_contact_no = user_contact_no
+            student_profile.emergency_contact = emergency_contact
+            student_profile.emergency_contact_no = emergency_contact_no
+
+            #enters here if may record sa student_profile, used only for updating profile pic
+            if profile_pic:
+                student_profile.profile_pic = os.path.join('student_pic', profile_pic)
+
+            
+
+        else:
+            #enters here, no record yet on student profile, 
+
+            if profile_pic:
+                student_profile = Student_Profile(
+                bio = bio,
+                address = address,
+                user_contact_no = user_contact_no,
+                emergency_contact = emergency_contact,
+                emergency_contact_no = emergency_contact_no,
+                user_id=user_id,
+                profile_pic=os.path.join('student_pic', profile_pic))
+            else:
+                student_profile = Student_Profile(
+                bio = bio,
+                address = address,
+                user_contact_no = user_contact_no,
+                emergency_contact = emergency_contact,
+                emergency_contact_no = emergency_contact_no,
+                user_id=user_id,
+                profile_pic="student_pic/profile.png")
+
+
+        
+        
+        
+        student_profile.save()
+        admin_auth_details.save()
+        
+
+        
+        return redirect('/sit-admin/dashboard/')
+    
+    return render(request, 'admin_module/edit_profile.html', context)
