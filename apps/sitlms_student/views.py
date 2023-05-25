@@ -373,7 +373,7 @@ def student_view_assignment_details(request, id, pk):
     if request.method == "POST":
         msg = request.POST['msg_area']
         user = request.user
-        comment = Activity_Comments(course_activity = activity, uid = user,content = msg)
+        comment = Activity_Comments(course_activity = activity, uid = user,content = msg, timestamp=timezone.now())
         comment.save()
         return redirect('student_view_assignment_details',id=id,pk=pk)
     
@@ -590,7 +590,8 @@ def edit_student_comment(request, id , pk, fk):
          msg = request.POST['txtmsg']
          comment_id.uid = user
          comment_id.content = msg
-         comment_id.save(update_fields=['uid','content'])
+         comment_id.timestamp = timezone.now()
+         comment_id.save(update_fields=['uid','content','timestamp'])
          return redirect('student_view_assignment_details', id=id,pk=pk)
     return render(request, "student_module/edit_comments.html", context)
 
