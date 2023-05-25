@@ -16,4 +16,6 @@ urlpatterns = [
     path('student-no-access',views.custom_403_2,name="student-no-access"),
     path('student_profile/view_courses/<str:id>/assignment/<int:pk>/upload_activity_submission',views.upload_activity_submission,name="upload_activity_submission"),
     path('student_profile/view_courses/<str:id>/assignments/<int:pk>/download_activity_submission', views.download_activity_submission, name='download_activity_submission'),
+    path('student_profile/view_courses/<str:id>/assignment/<int:pk>/edit/<int:fk>',views.edit_student_comment,name='edit_student_comment'),
+    path('student_profile/view_courses/<str:id>/assignment/<int:pk>/delete/<int:fk>',views.delete_student_comment,name='delete_student_comment'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

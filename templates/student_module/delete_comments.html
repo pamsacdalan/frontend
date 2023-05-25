@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'delete_student_comment' batch.course_batch act.id comment.id%}">
+    {%csrf_token%}
+    <h4>Delete Comment</h4>
+    <span>Are you sure you want to delete {{comment_id.id}}?</span>
+    <button type="submit">Delete</button>
+</form>

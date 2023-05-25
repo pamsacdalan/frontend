@@ -559,3 +559,37 @@ def student_edit_profile(request):
         return redirect('/sit-student/student_profile')
     
     return render(request, 'student_module/edit_profile.html', context)
+
+def edit_student_comment(request, id , pk, fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk) 
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':activity,
+        'comment':comment_id,
+    }
+    if request.method == 'POST':
+         person = request.POST['target']
+         user  = request.user
+         msg = request.POST['txtmsg']
+         comment_id.uid = user
+         comment_id.content = msg
+         comment_id.save(update_fields=['uid','content'])
+         return redirect('student_view_assignment_details', id=id,pk=pk)
+    return render(request, "student_module/edit_comments.html", context)
+
+def delete_student_comment(request, id, pk, fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    act= Course_Activity.objects.get(id=pk)
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':act,
+        'comment':comment_id,
+        'id':id,
+    }
+    if request.method == 'POST':
+        comment_id.delete()
+        return redirect('student_view_assignment_details',id=id,pk=pk)
+    return render(request, 'student_module/delete_comments.html',context)
