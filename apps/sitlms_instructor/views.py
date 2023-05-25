@@ -597,6 +597,8 @@ def student_work(request, id, pk):
     for x in list_of_submissions:
         student = Students_Auth.objects.get(pk=x['student_id'])
         filename=str(x['activity_file']).split('/')[-1]
+        # is_submission_on_time = True if x['date_submitted'] < activity.deadline else False
+        # print(is_submission_on_time)
         list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade']])
     # items_no = int(activity.max_score)
     # percent = activity.grading_percentage
@@ -613,7 +615,7 @@ def student_work(request, id, pk):
         'act':activity,
         'list_of_students_nonsubmit':students_nonsubmit_context,
     }
-    print(list_of_submissions)
+    # print(list_of_submissions)
     return render(request, 'instructor_module/student_submissions.html',context)
 
 def save_activity_grades(request,id,pk,fk):
