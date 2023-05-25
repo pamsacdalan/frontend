@@ -2,79 +2,79 @@
 {% load static %}
 
 {% block content %}
-        <!-- Course Header-->
-        <br>
-        <div class="card text-center">
-            <div class="card-header" style="height: 11rem">
-                <br>
-                <br>
-                <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
-                <h6 class="subtitle">{{id}}</h6>
-            </div>
-        </div>
-        <!-- End of Course Header-->
-
-        <!-- Main Content -->
-        <br>
-        <div class='container-fluid' align="right">
-            <!-- Buttons -->
-
-        </div>
-
-        <br>
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
-                    </li>
-            
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'view_students' id %}">Students</a>
-                    </li>
-            
-                    <li class="nav-item  active">
-                        <a class="nav-link active" aria-current="page" href="#">Assignments</a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Course Header-->
+    <br>
+    <div class="card text-center">
+        <div class="card-header" style="height: 11rem">
             <br>
-            <div class="container-fluid">
-                <a href="{% url 'add_assignment' id %}">Create Assignment</a><br><br>
-                <div>
-                    {% if not acts %}
-                    <!-- Show if database is empty-->
-                    <div class="container-fluid text-center">
-                        <table>
-                            <th>Activity Title</th>
-                            <th>Due Date</th>
-                        </table>
-                        <br>
-                        <h5 style="color: gray">No Available Results</h5>
-                    </div>
+            <br>
+            <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+            <h6 class="subtitle">{{id}}</h6>
+        </div>
+    </div>
+    <!-- End of Course Header-->
 
-                    {% else %}
-                    <!-- Show if database is NOT empty-->
+    <!-- Main Content -->
+    <br>
+    <div class='container-fluid' align="right">
+        <!-- Buttons -->
+
+    </div>
+
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+                </li>
+        
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'view_students' id %}">Students</a>
+                </li>
+        
+                <li class="nav-item  active">
+                    <a class="nav-link active" aria-current="page" href="#">Assignments</a>
+                </li>
+            </ul>
+        </div>
+        <br>
+        <div class="container-fluid">
+            <a href="{% url 'add_assignment' id %}">Create Assignment</a><br><br>
+            <div>
+                {% if not acts %}
+                <!-- Show if database is empty-->
+                <div class="container-fluid text-center">
                     <table>
                         <th>Activity Title</th>
                         <th>Due Date</th>
-                        {% for activity in acts %}
-                        <tr>    
-                            <td><a href="{% url 'activity_comments' id activity.pk %}">{{activity.activity_title}}</a></td>    
-                            <td>{{activity.deadline}}</td>
-                            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
-                            <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
-                        </tr>
-                        {% endfor %}
-                    {% endif %}
                     </table>
+                    <br>
+                    <h5 style="color: gray">No Available Results</h5>
                 </div>
-                <br>
-                <button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
-                <button><a href="{% url 'view_students' id %}">View Students</a></button>
-                <br>
-                <br>
+
+                {% else %}
+                <!-- Show if database is NOT empty-->
+                <table>
+                    <th>Activity Title</th>
+                    <th>Due Date</th>
+                    {% for activity in acts %}
+                    <tr>    
+                        <td><a href="{% url 'activity_comments' id activity.pk %}">{{activity.activity_title}}</a></td>    
+                        <td>{{activity.deadline}}</td>
+                        <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
+                        <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+                </table>
             </div>
+            <br>
+            <button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
+            <button><a href="{% url 'view_students' id %}">View Students</a></button>
+            <br>
+            <br>
         </div>
+    </div>
 
 {% endblock %}

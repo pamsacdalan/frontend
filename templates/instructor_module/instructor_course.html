@@ -1,4 +1,3 @@
-
 {% extends './index.html' %}
 {% load static %}
 
@@ -42,10 +41,10 @@
                 <div class="row justify-content-md-center">
                     <div class="col-3">
                         <div class="card border-primary mb-3" style="max-width: 18rem; height: 11rem;">
-                            <div class="card-header">
+                            <div class="card-header bg-primary text-white">
                                 Upcoming Deadlines
                             </div>
-                            <div class="card-body text-center text-dark">
+                            <div class="card-body text-center">
                                 No upcoming deadlines
                             </div>
                             <div class="card-footer bg-transparent text-right">
@@ -55,74 +54,134 @@
                     </div>
 
                     <div class="col-8">
-                        <div class="card-header" style="height: 11rem;">
+                        <div class="card border-transparent bg-transparent" style="height: 11rem;">
                             <div class="col-md-12">
                             <div class="panel">
-                                <br>
-                              <div class="panel-body">
-                                    <div class="row ">
-                                        <div class="col-1 text-right">
-                                            <span class="align-middle">
-                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
-                                            </span>
-                                        </div>
-
-                                        <div class="col-11">
-                                            <form method="post">
-                                                {% csrf_token %}
-                                                <textarea id="announcement_text" class="form-control" rows ="2" placeholder="Post your announcement here.." name="announcement_text"></textarea>
-                                            
-                                                {% comment %} <input class="button" type="submit" onclick="return checkTextArea() " value="Submit"> {% endcomment %}
-                                                <!-- <input class="button" type="button" onclick="window.location.replace('/sit-instructor/instructor/course/{{ course_batch }}')" value="Cancel" /> -->
-                                                {% comment %} <a href='/sit-instructor/instructor/course/{{ course_batch }}'>Cancel </a> {% endcomment %}
-                                                
-                                                <p id="warning" style="display:none">You need to write something!!</p>
-                                            
-                                                <script>
-                                                
-                                                    function trim_and_remove_blank_lines(string)
-                                                    {
-                                                        return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
-                                                    }
-                                                        
-                                                    function checkTextArea() {
-                                                    var text_area = document.getElementById("announcement_text");
-                                                    var text = document.getElementById("warning");
-                                                    
-                                                    if (trim_and_remove_blank_lines(text_area.value)){
-                                                        text.style.display = "none";
-                                                        return true;
-                                                    } else{
-                                                        text.style.display = "block";
-                                                        return false;
-                                                        }
-                                                    }
-                                                    
-                                                </script>
-                                            
-                                            </form>
-                                            <div class="mar-top clearfix text-right">
+                                <div class="panel-body">
+                                    <br>
+                                    <div class="row justify-content-md-center">
+                                        <div class="d-flex aligns-items-center justify-content-center">
+                                            <div class="col-1">
                                                 <br>
-                                                <button class="btn btn-sm btn-primary" onclick="return checkTextArea() " type="submit">
-                                                    Post
+                                                <span class="align-middle">
+                                                    {% if instructor_details.profile_pic %}
+                                                    {% comment %} print(instructor_details.profile_pic.url) {% endcomment %}
+                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile }}" alt="" id="image-preview">
+                                                    {% else %}
+                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                    {% endif%}
+                                                </span>
+                                            </div>
+    
+                                            <div class="col-11">
+                                                <button class="btn btn-sm btn-light" style="  height: 100px;
+                                                width: 580px;" data-toggle="modal" data-target="#postmodal" onclick="openModal()">
+                                                    <span style="color: gray">
+                                                        Announce something here..
+                                                    </span>
                                                 </button>
+    
+                                                <!-- Post announcement Modal Start-->
+                                                <div class="modal fade" id="postmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content bg-dark">
+                                                            <div class="modal-header text-white">
+                                                                <h6 class="modal-title">Create Announcement for {{course.course_title}}</h6>
+                                                                <!--Close-->
+                                                                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <form method="post" action="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">
+                                                                <div class="modal-body">
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-2 text-right">
+                                                                            <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
+                                                                        </div>
+                                                                        <div class="col-md-14 text-left text-white">
+                                                                            <h6 style="font-size: 13px;" class="align-middle">{{author}}</h6>
+                                                                            <h6 style="font-size: 12px;" class="align-middle">Instructor</h6>
+                                                                        </div>
+                                                                    </div>
+                                                                    <br>
+                                                                    <div class="container">
+                                                                        <div class="row">
+                                                                            <div class="col-12">
+                                                                                {% csrf_token %}
+                                                                                <textarea id="announcement_text" class="form-control" rows ="5" placeholder="Post your announcement here.." name="announcement_text"></textarea>
+                                                                                <p id="warning" style="display:none">You need to write something!!</p>
+                                                                                
+                                                                                    <script>
+                                                                                    
+                                                                                        function trim_and_remove_blank_lines(string)
+                                                                                        {
+                                                                                            return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+                                                                                        }
+                                                                                            
+                                                                                        function checkTextArea() {
+                                                                                        var text_area = document.getElementById("announcement_text");
+                                                                                        var text = document.getElementById("warning");
+                                                                                        
+                                                                                        if (trim_and_remove_blank_lines(text_area.value)){
+                                                                                            text.style.display = "none";
+                                                                                            return true;
+                                                                                        } else{
+                                                                                            text.style.display = "block";
+                                                                                            return false;
+                                                                                            }
+                                                                                        }
+                                                                                        
+                                                                                    </script>
+                                                                            </div>
+                                                                        </div>
+                                                                        <br>
+                                                                        <button class="btn btn-sm btn-post" style="width:100%;" onclick="return checkTextArea() " type="submit" value="submit">
+                                                                            Post
+                                                                        </button>
+                                                                        <br>
+                                                                    </div>
+    
+                                                                </div>
+                                                                {% comment %} <div class="modal-footer">
+                                                                    <div class="mar-top clearfix text-right">
+                                                                        
+                                                                        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div> {% endcomment %}
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Post announcement Modal End-->
+    
+                                                <script>
+                                                    const openModal = () => {
+                                                        $('modal.fade').modal('show');
+                                                    }
+                
+                                                </script>
                                             </div>
                                         </div>
+                                        
                                     </div>
-                                    <br>
+
                                 </div>
                                 
                               </div>
                             </div>
                         </div>
+                        <br>
                     </div>
                 </div>
             </div>
             <br>
+
             <!-- Announcements -->
+            
             {% if not announcements %}
             <!-- Show if database is empty-->
             <div class="container-fluid">
+                
                 <div class="row justify-content-md-center">
                     <div class="col-3">
                         <!-- space -->
@@ -145,19 +204,20 @@
                         </div>
                         
                         <!-- announcement card -->
+                        <br>
                         <div class="col-8">
-                            <div class="card border-light mb-3">
-                                <div class="card-header">
+                            <div class="card border-dark">
+                                <div class="card-header bg-primary" style="height: 3.5rem">
                                     <div class="row">
-                                        <div class="col-1 text-right">
-                                            <span class="align-middle">
-                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
+                                        <div class="col-1">
+                                            <span>
+                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 2.5rem" src="{% static '/img/undraw_profile.svg' %}">
                                             </span>
                                         </div>
-                                        <div class="col-10 text-left">
-                                            <span style="font-size: 17px" class="align-middle">{{author}}</span>
-                                            <br>
-                                            <span style="font-size: 12px" class="align-middle">{{announcement.date_posted}}</span>
+
+                                        <div class="col-10 text-left text-white">
+                                            <h6 style="font-size: 13px" class="align-middle">{{author}}</h6>
+                                            <h6 style="font-size: 11px" class="align-middle">{{announcement.date_posted}}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -187,9 +247,40 @@
                                         <i class="ti-pencil"></i>
                                     </a> 
                                         
-                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" data-toggle="tooltip" title="Remove"> 
+                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" 
+                                        data-toggle="modal"
+                                        data-target="#remove-post-modal"
+                                        onclick="remove_post(this)"
+                                        > 
                                         <i class="ti-trash"></i>
                                     </a>
+
+                                    <!-- Delete Modal Start-->
+                                    <div class="modal fade" id="remove-post-modal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body bg-dark text-center text-white">
+                                                    <br>
+                                                    <p>Are you sure you want to remove this announcement?</p>
+                                                </div>
+                                                <div class="container bg-dark text-center">
+                                                    <form method="post" id="remove-post-form">
+                                                        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+                                                            {% csrf_token %}
+                                                        <button type="submit" class="btn btn-post btn-sm" id="confirm-remove-post-button">Remove</button>
+                                                    </form>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            
+                                    <script>
+                                        function remove_post(selected_post){
+                                            document.getElementById("remove-post-form").action = selected_post.href
+                                        }
+                                    </script>
+                                    <!-- Delete Modal End-->
                                 </div>
                             </div>
                         </div>

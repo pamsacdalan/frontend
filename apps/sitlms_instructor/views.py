@@ -370,7 +370,7 @@ def instructor_course(request, id):
     user_id = user.id
     firstname = User.objects.values_list('first_name', flat=True).get(id=user_id)
     lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
-
+        
     author_name = firstname + " " + lastname
 
     context = {
@@ -386,7 +386,7 @@ def instructor_course(request, id):
 def create_announcement(request,id):
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
         return redirect("instructor-no-access")
-    template = loader.get_template('instructor_module/create_announcement.html')
+    template = loader.get_template('instructor_module/instructor_course.html')
     
     if request.method == "POST":
         text = request.POST['announcement_text']

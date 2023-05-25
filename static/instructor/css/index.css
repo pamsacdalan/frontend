@@ -247,10 +247,13 @@ button,
 select,
 optgroup,
 textarea {
+  resize: none;
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  padding:15px;
+  margin: 5px 0;  /* add top and bottom margin */
 }
 
 button,
@@ -305,6 +308,9 @@ input[type="month"] {
 textarea {
   overflow: auto;
   resize: vertical;
+  box-shadow:4px 4px 10px rgba(0,0,0,0.06);
+  border-radius:50px;
+  padding:15px;
 }
 
 fieldset {
@@ -2802,6 +2808,44 @@ fieldset:disabled a.btn {
   box-shadow: 0 0 0 0.2rem rgba(222, 109, 80, 0.5);
 }
 
+.btn-post {
+  appearance:none;
+  -webkit-appearance:none;
+
+  color: hsl(200, 18%, 97%);
+  background-color: #a70000;
+  border-color: #a70000;
+  
+}
+
+.btn-post:hover {
+  color: #fff;
+  background-color: #b93030;
+
+}
+
+.btn-post:focus, .btn-post.focus {
+  box-shadow: 0 0 0 0.2rem rgba(222, 109, 80, 0.5);
+}
+
+.btn-post.disabled, .btn-post:disabled {
+  color: #212529;
+  background-color: #a70000;
+  border-color: #a70000;
+}
+
+.btn-post:not(:disabled):not(.disabled):active, .btn-post:not(:disabled):not(.disabled).active,
+.show > .btn-post.dropdown-toggle {
+  color: #fff;
+  background-color: #a70000;
+  border-color: #a70000;
+}
+
+.btn-post:not(:disabled):not(.disabled):active:focus, .btn-post:not(:disabled):not(.disabled).active:focus,
+.show > .btn-post.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(222, 109, 80, 0.5);
+}
+
 .btn-secondary {
   color: #fff;
   background-color: #6c757d;
@@ -3011,6 +3055,8 @@ fieldset:disabled a.btn {
   color: #212529;
   background-color: #f8f9fa;
   border-color: #f8f9fa;
+  text-align: left;
+
 }
 
 .btn-light:hover {
@@ -6530,6 +6576,7 @@ a.close.disabled {
   border-top: 1px solid #dee2e6;
   border-bottom-right-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
+  margin: 0px;
 }
 
 .modal-footer > :not(:first-child) {
@@ -11468,7 +11515,8 @@ pre {
 
 .page-footer {
   background: #fcfdff;
-  position: absolute;
+  position: fixed;
+  left: 0;
   bottom: 0;
   width: 100%;
   height: 2.5rem; 
@@ -11693,4 +11741,18 @@ pre {
 
 .section.bg-gray {
   background: white;
+}
+
+#overlay{
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
 }
