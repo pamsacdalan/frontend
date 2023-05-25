@@ -437,6 +437,7 @@ def edit_announcement(request, course_batch, schedule_id):
         return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
     
     return render(request, "instructor_module/edit_announcement.html", context)
+    # return render(request, "instructor_module/instructor_course.html", context)
 
 @user_passes_test(is_instructor)
 def activity_comments(request, id, pk):
