@@ -210,7 +210,6 @@ def student_profile(request):
                         'ongoing_count':ongoing_count,
                         'completed_count':completed_count,
                         'total_count':total_count,
-                        #'bio': Student_Profile.objects.get(user_id=user_id).bio                       
                     }
 
     context  = {
@@ -328,7 +327,6 @@ def student_profile(request):
         'stud_id':user_id,
         'course_count':enrolled_courses,
         'scheduled_course':course_details,
-        #'bio': Student_Profile.objects.get(user_id=user_id).bio
     })
 
 @user_passes_test(is_student) 
