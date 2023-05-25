@@ -128,7 +128,7 @@
     <div class="card">
         <div class="card-header" onclick="toggleCardBody('announcement')">Announcement Section</div>
         <div class="card-body" id="announcement">
-            <
+            
             <table border="1">
                 <tr>
                     <th>Announcement</th>
@@ -190,18 +190,17 @@
     <div class="card">
         <div class="card-header" onclick="toggleCardBody('classmates')">List of Classmates</div>
         <div class="card-body" id="classmates">
-           
             <table border="1">
                 <tr>
                     <th>Name</th>
                     <th>Program</th>
-                    <th>Employment Status</th>
+                   
                 </tr>
                 {% for student in classmate_details %}
                 <tr>
                     <td name="fullname">{{ student.full_name }}</td>
                     <td name="program">{{ student.program_code }}</td>
-                    <
+                    
                 </tr>
                 {% endfor %}
             </table>

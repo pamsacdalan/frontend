@@ -121,7 +121,7 @@
           {% for item in scheduled_course %}
           <div class="col-lg-4 col-md-6" data-aos="fade-up">
             <div class="card mb-4">
-              <img src="{% static 'assets/course.png'%}" class="card-img-top" alt="{{ item.course_name }}">
+              <img src="{% static 'student/assets/imgs/course.png'%}" class="card-img-top" alt="{{ item.course_name }}">
               <div class="card-body">
                 <h4 class="card-title"><a href="/sit-student/student_profile/view_courses/{{ item.course_batch }}">{{ item.course_batch }}</a></h4>
               </div>
