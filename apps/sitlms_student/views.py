@@ -132,7 +132,6 @@ def student_edit_profile(request):
                 }
     return render(request, 'student_module/edit_profile.html',context)
 
-@user_passes_test(is_student) 
 def create_student_photo_folder():
     
     """ This function will create the folder for student profile pic storage"""
@@ -326,6 +325,8 @@ def student_profile(request):
 
 @user_passes_test(is_student) 
 def student_view_assignment_details(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     user = request.user
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
@@ -372,6 +373,8 @@ def student_view_assignment_details(request, id, pk):
 
 @user_passes_test(is_student) 
 def upload_activity_submission(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     # Will try one file upload muna    
     student = request.user.students_auth
     # course_batch = Course_Enrollment.objects.get(pk=id)
@@ -394,6 +397,8 @@ def upload_activity_submission(request, id, pk):
 
 @user_passes_test(is_student) 
 def download_activity_attachment(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     # batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
@@ -413,6 +418,8 @@ def download_activity_attachment(request, id, pk):
 
 @user_passes_test(is_student) 
 def download_activity_submission(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     student = request.user.students_auth
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
