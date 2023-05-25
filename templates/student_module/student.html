@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
     <!-- Bootstrap + Steller main styles -->
 	<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
+    <style>
+        p.small {
+            font-size: 15px !important;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 
@@ -61,6 +67,7 @@
                 <h6 class="subtitle">Hello,</h6>
                 <h6 class="title">{{student_details.first_name}} {{student_details.last_name}}</h6>
                 <p>{{student_details.program_title}}</p>
+                <p class="small">{{student_details.bio}}</p>
 
                 <!-- <div class="buttons pt-3">
                     <button class="btn btn-primary rounded">Calendar</button>
