@@ -59,7 +59,7 @@
         <div class="container">
             <div class="infos">
                 <h6 class="subtitle">Hello,</h6>
-                <h6 class="title">{{student_details.first_name}} {{student_details.last_name}}</h6>
+                <h6 class="title">{{student_details.first_name}} </h6>
                 <p>{{student_details.program_title}}</p>
 
                 <!-- <div class="buttons pt-3">
@@ -103,110 +103,33 @@
         </div>
         </div>
       </section><!-- End Calendar Section -->
-<!-- ======= Schedules Section ======= -->
-<section id="schedules" class="section">
-    <div class="container mt-5"></div>
-    <div class="container text-center">
-       <h6 class="subtitle">Schedules: </h6>
-      <div class="section-title">
-        
-      </div>
+
       
-      {% for item in scheduled_course %}
-      <div class="row">
-        <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-          <div class="icon"><i class="bi bi-calendar4-week"></i></div>
-          <h4 class="title"><a href="/sit-student/student_profile/view_courses/{{item.course_batch}}">{{item.course_batch}}</a></h4>
-          <p class="description">{{item.session_details}}</p>
-          
-          {% if item.frequency == 0 %}
-            <p class="description">Once</p>
-          {% elif item.frequency == 1 %}
-            <p class="description">Daily</p>
-          {% elif item.frequency == 7 %}
-            <p class="description">Weekly</p>
-          {% endif %}
-
-              <p class="description">start date: {{item.start_date}}</p>
-              <p class="description">end date: {{item.end_date}}</p>
+   <!-- ======= Course Section ======= -->
+<section id="courses" class="section">
+    <div class="container mt-5">
+      <div class="text-center">
+        <h6 class="subtitle">Courses:</h6>
+        <div class="row">
+          {% for item in scheduled_course %}
+          <div class="col-lg-4 col-md-6" data-aos="fade-up">
+            <div class="card mb-4">
+              <img src="{% static 'assets/course.png'%}" class="card-img-top" alt="{{ item.course_name }}">
+              <div class="card-body">
+                <h4 class="card-title"><a href="/sit-student/student_profile/view_courses/{{ item.course_batch }}">{{ item.course_batch }}</a></h4>
+              </div>
             </div>
-            </div>
-            {%endfor%}
-      </section><!-- End Schedules Section -->
-
-    <!-- Courses section  -->
-     <section id="courses" class="section"> 
-        <div class="container text-center">
-            <h6 class="subtitle">Courses</h6>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-1.jpg'%}" alt="">
-                        <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>View Course</h5>
-                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                            </div>  
-                        </div>
-                    </div>
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-2.jpg'%}" alt="">
-                        <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>View Course</h5>
-                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                            </div>  
-                        </div>
-                    </div>                  
-                </div>
-                <div class="col-sm-4">
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-3.jpg'%}" alt="">
-                        <div class="overlay">
-                            <div class="overlay">
-                                <div class="overlay-infos">
-                                    <h5>View Course</h5>
-                                    <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                                </div>  
-                            </div>
-                        </div>
-                    </div>
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-4.jpg'%}"alt="">
-                        <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>View Course</h5>
-                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                            </div>  
-                        </div>
-                    </div>                  
-                </div>
-                <div class="col-sm-4">
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-5.jpg'%}" alt="">
-                        <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>View Course</h5>
-                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                            </div>  
-                        </div>
-                    </div>
-                    <div class="img-wrapper">
-                        <img src="{% static 'student/assets/imgs/folio-6.jpg'%}" alt="">
-                        <div class="overlay">
-                            <div class="overlay-infos">
-                                <h5>View Course</h5>
-                                <a href="{% url 'course_details' %}"><i class="ti-angle-double-right"></i></a>
-                            </div>  
-                        </div>
-                    </div>                  
-                </div>
-            </div>
-
+          </div>
+          {% endfor %}
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
+  <!-- End Course Section -->
+  
 
-     <!-- End of courses section -->
+   
+                    
 
 
 
