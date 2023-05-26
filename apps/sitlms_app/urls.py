@@ -52,7 +52,7 @@ urlpatterns = [
     path('course_enrollment/change_schedule/reject/<int:id>/', views.reject_change_schedule, name='reject_change_schedule'),
     path('course_enrollment/change_schedule/view_history/', views.view_history, name='view_history'),
     path('accounts/password_reset_v2',access_test.CustomPasswordResetView.as_view(), name='password_reset_v2'),
-    path('sit-admin/admin_profile',views.student_edit_profile,name="admin_edit_profile"),
+    path('sit-admin/admin_profile',views.edit_profile,name="admin_edit_profile"),
    
     
 ]

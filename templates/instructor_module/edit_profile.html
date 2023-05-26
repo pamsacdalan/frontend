@@ -14,7 +14,7 @@
           <div class="col-md-3">
             <div class="text-center">
               {% if instructor_details.profile_pic %}
-                <img src="{{ instructor_details.profile_pic.url }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                <img src="{{ instructor_details.profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
               {% else %}
                 <img src="{% static '/img/undraw_profile.svg' %}" alt="" class="img-thumbnail mb-4" id="image-preview">
               {% endif%}
@@ -44,8 +44,6 @@
                 } else {
                   // Clear the file input and image preview
                   input.value = '';
-                  //imagePreview.src = '{% static "student/assets/imgs/profile.png" %}'
-                  imagePreview.src = "{{ instructor_details.profile_pic.url }}";
                   alert('Please select a valid image file.');
                 }
               }

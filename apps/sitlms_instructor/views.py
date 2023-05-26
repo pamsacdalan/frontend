@@ -697,64 +697,68 @@ def edit_profile(request):
          
 
         profile_pic = False
-         
-        #uploaded a profile pic
+
         if 'profile_pic' in request.FILES:
             profile_picture = request.FILES['profile_pic']
-            profile_pic = f"{first_name}_{last_name}_{user_id}{os.path.splitext(profile_picture.name)[1]}" 
-            # print(profile_pic, "1111")
+            profile_pic = f"{user_id}{os.path.splitext(profile_picture.name)[1]}"
 
-        #enters here a profile pic is uploaded
+
         if profile_pic:
-            media_root = settings.MEDIA_ROOT
-            student_pic_folder = os.path.join(media_root, 'student_pic')
-            os.makedirs(student_pic_folder, exist_ok=True)
+            static_dirs = settings.STATICFILES_DIRS  # Get the STATICFILES_DIRS list from Django settings
+            instructor_pic_folder = os.path.join(static_dirs[0], 'instructor_pic')
+            os.makedirs(instructor_pic_folder, exist_ok=True)
+
+            file_path = os.path.join(instructor_pic_folder, profile_pic)
             
-            file_path = os.path.join(student_pic_folder, profile_pic)
-            # file_path = os.path.join(student_pic_folder, profile_pic.name)
-            print("profile_pic.name: ",profile_pic)
             with open(file_path, 'wb') as destination:
                 for chunks in profile_picture.chunks():
-                    destination.write(chunks) 
-    
+                    destination.write(chunks)
+
+
+
+
         instructor_auth_details.user.first_name = first_name
         instructor_auth_details.middlename = middlename
         instructor_auth_details.user.last_name = last_name
         instructor_auth_details.birthdate = birthdate
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
-            #student_profile = Student_Profile.objects.get(user_id=user_id)
+            # student_profile = Student_Profile.objects.get(user_id=user_id)
+            print("I entered in line 152")
             instructor_profile.bio = bio
             instructor_profile.address = address
             instructor_profile.user_contact_no = user_contact_no
             instructor_profile.emergency_contact = emergency_contact
             instructor_profile.emergency_contact_no = emergency_contact_no
+
+            # enters here if there is a record in student_profile, used only for updating profile pic
             if profile_pic:
-                instructor_profile.profile_pic = os.path.join('student_pic', profile_pic)
-            
+                instructor_profile.profile_pic = os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)
 
         else:
+            # enters here if there is no record yet in student_profile
+
             if profile_pic:
                 instructor_profile = Student_Profile(
-                bio = bio,
-                address = address,
-                user_contact_no = user_contact_no,
-                emergency_contact = emergency_contact,
-                emergency_contact_no = emergency_contact_no,
-                user_id=user_id,
-                profile_pic=os.path.join('student_pic', profile_pic))
+                    bio=bio,
+                    address=address,
+                    user_contact_no=user_contact_no,
+                    emergency_contact=emergency_contact,
+                    emergency_contact_no=emergency_contact_no,
+                    user_id=user_id,
+                    profile_pic=os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)
+                )
             else:
                 instructor_profile = Student_Profile(
-                bio = bio,
-                address = address,
-                user_contact_no = user_contact_no,
-                emergency_contact = emergency_contact,
-                emergency_contact_no = emergency_contact_no,
-                user_id=user_id,
-                profile_pic="student_pic/profile.png")
+                    bio=bio,
+                    address=address,
+                    user_contact_no=user_contact_no,
+                    emergency_contact=emergency_contact,
+                    emergency_contact_no=emergency_contact_no,
+                    user_id=user_id,
+                    profile_pic=os.path.join(settings.STATIC_URL, 'student/assets/imgs/profile.png')
+                )
 
-        
-        
         
         instructor_profile.save()
         instructor_auth_details.user.save()
