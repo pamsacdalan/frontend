@@ -31,12 +31,11 @@
     <th>Timestamp</th>
     {% for items in cmt  %}
     <tr>
-        <td>{{items.uid}}</td>
+        <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
         <td>{{items.content}}</td>
         <td>{{items.timestamp}}</td>
-        
-        <!-- <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a></td>
-        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a></td> -->
+        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
+        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
     </tr>
     {% endfor %}
 </table>
@@ -49,8 +48,10 @@
         {% else %}
         {% endif %}
      </a></h3>
+     {% if not submission_grade %}
     {{ submission_upload_form.as_p }}
     <button type="submit">Submit</button>
+    {% endif %}
   </form>
 
 {% if submission_grade %}
@@ -59,4 +60,11 @@
 <p>Submission Score: Not graded yet/{{act.max_score}}</p>
 {% endif %}
 
-  <button><a href="{% url 'view_courses' batch.course_batch %}">View Students</a></button>
+{% if not current_submission_filename %}
+{% elif submission_on_time %}
+<p>On time</p>
+{% else %}
+<p>Late</p>
+{% endif %}
+
+  <button><a href="{% url 'view_courses' batch.course_batch %}">View Course Details</a></button>

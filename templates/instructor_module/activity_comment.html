@@ -22,12 +22,12 @@
     <th>Timestamp</th>
     {% for items in cmt  %}
     <tr>
-        <td>{{items.uid}}</td>
+        <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
         <td>{{items.content}}</td>
         <td>{{items.timestamp}}</td>
         
-        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a></td>
-        <td><a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a></td>
+        <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
+        <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
     </tr>
     {% endfor %}
 </table>

@@ -12,7 +12,7 @@
         <td>{{submission.0}}</td>
         <td>{{submission.1}}</td>
         <td><a href="{% url 'instructor_download_activity_submission' batch.course_batch act.id submission.4 %}" download>{{submission.2}}</a></td>
-        <td>{{submission.3}}</td>   
+        <td>{{submission.3}} {% if submission.3 <= act.deadline %}On time{% else %}Late{% endif %} </td>   
         <form action="{% url 'save_activity_grades' batch.course_batch act.id submission.5 %}" method="POST">
             {%csrf_token%}
             <td><input name ="score" type="number" style="width: 50px;" min="0" max="{{item_count}}"value="{{submission.6}}"></td>

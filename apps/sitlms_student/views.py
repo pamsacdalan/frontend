@@ -146,7 +146,7 @@ def student_view_course(request,id):
 #     if not os.path.exists(folder_path):
 #         os.makedirs(folder_path)
         
-
+@user_passes_test(is_student) 
 def student_profile(request):    
     
     """ This function renders the student page """
@@ -305,9 +305,10 @@ def student_profile(request):
         'event_list':json.dumps(event_list),
     })
 
-
-
+@user_passes_test(is_student) 
 def student_view_assignment_details(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     user = request.user
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
@@ -316,14 +317,19 @@ def student_view_assignment_details(request, id, pk):
 
     file_url = request.build_absolute_uri(file_relative_url)
     submission_grade = False
+    submission_on_time = False
     if Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).values('activity_file').exists():
-        current_submission = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().activity_file
+        submission_instance = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last()
+        current_submission = submission_instance.activity_file
         initial_data = {'activity_file': current_submission}
         current_submission_filename = str(current_submission).split('/')[-1]
         # submission_upload_form = ActivitySubmissionUploadForm(initial=initial_data)
         #activity_file=current_submission
         submission_upload_form = ActivitySubmissionUploadForm()
-        submission_grade = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last().grade
+        submission_grade = submission_instance.grade
+        submission_on_time = True if submission_instance.date_submitted < activity.deadline else False
+        # print(submission_instance.date_submitted)
+        # print(activity.deadline)
     else:
         current_submission_filename = False
         submission_upload_form = ActivitySubmissionUploadForm()
@@ -336,17 +342,21 @@ def student_view_assignment_details(request, id, pk):
         'submission_upload_form':submission_upload_form,
         'current_submission_filename':current_submission_filename,
         'submission_grade':submission_grade,
+        'submission_on_time': submission_on_time,
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
         user = request.user
-        comment = Activity_Comments(course_activity = activity, uid = user,content = msg)
+        comment = Activity_Comments(course_activity = activity, uid = user,content = msg, timestamp=timezone.now())
         comment.save()
         return redirect('student_view_assignment_details',id=id,pk=pk)
     
     return render(request, 'student_module/assignment_details.html',context)
 
+@user_passes_test(is_student) 
 def upload_activity_submission(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     # Will try one file upload muna    
     student = request.user.students_auth
     # course_batch = Course_Enrollment.objects.get(pk=id)
@@ -367,7 +377,10 @@ def upload_activity_submission(request, id, pk):
             return redirect('student_view_assignment_details',id=id,pk=pk)
     return redirect('student_view_assignment_details',id=id,pk=pk)
 
+@user_passes_test(is_student) 
 def download_activity_attachment(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     # batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk) # Retrieve the object with the uploaded file
 
@@ -385,7 +398,10 @@ def download_activity_attachment(request, id, pk):
 
     return response
 
+@user_passes_test(is_student) 
 def download_activity_submission(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
     student = request.user.students_auth
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
@@ -532,6 +548,41 @@ def student_edit_profile(request):
         return redirect('/sit-student/student_profile')
     
     return render(request, 'student_module/edit_profile.html', context)
+
+def edit_student_comment(request, id , pk, fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    activity = Course_Activity.objects.get(id=pk) 
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':activity,
+        'comment':comment_id,
+    }
+    if request.method == 'POST':
+         person = request.POST['target']
+         user  = request.user
+         msg = request.POST['txtmsg']
+         comment_id.uid = user
+         comment_id.content = msg
+         comment_id.timestamp = timezone.now()
+         comment_id.save(update_fields=['uid','content','timestamp'])
+         return redirect('student_view_assignment_details', id=id,pk=pk)
+    return render(request, "student_module/edit_comments.html", context)
+
+def delete_student_comment(request, id, pk, fk):
+    batch = Course_Enrollment.objects.get(pk=id)
+    act= Course_Activity.objects.get(id=pk)
+    comment_id = Activity_Comments.objects.get(id=fk)
+    context = {
+       'batch':batch,
+        'act':act,
+        'comment':comment_id,
+        'id':id,
+    }
+    if request.method == 'POST':
+        comment_id.delete()
+        return redirect('student_view_assignment_details',id=id,pk=pk)
+    return render(request, 'student_module/delete_comments.html',context)
 
 def student_edit_profile(request):
     

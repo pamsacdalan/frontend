@@ -22,6 +22,7 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.conf import settings
 import os
+from django.utils import timezone
 
 from apps.sitlms_student.models import Activity_Submission
 
@@ -471,7 +472,7 @@ def activity_comments(request, id, pk):
     if request.method == "POST":
         msg = request.POST['msg_area']
         user = request.user
-        comment = Activity_Comments(course_activity = activity, uid = user,content = msg)
+        comment = Activity_Comments(course_activity = activity, uid = user,content = msg, timestamp=timezone.now())
         comment.save()
         return redirect('activity_comments',id=id,pk=pk)
     return render(request, 'instructor_module/activity_comment.html',context)
@@ -606,6 +607,8 @@ def student_work(request, id, pk):
     for x in list_of_submissions:
         student = Students_Auth.objects.get(pk=x['student_id'])
         filename=str(x['activity_file']).split('/')[-1]
+        # is_submission_on_time = True if x['date_submitted'] < activity.deadline else False
+        # print(is_submission_on_time)
         list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade']])
     # items_no = int(activity.max_score)
     # percent = activity.grading_percentage
@@ -622,7 +625,7 @@ def student_work(request, id, pk):
         'act':activity,
         'list_of_students_nonsubmit':students_nonsubmit_context,
     }
-    print(list_of_submissions)
+    # print(list_of_submissions)
     return render(request, 'instructor_module/student_submissions.html',context)
 
 def save_activity_grades(request,id,pk,fk):
