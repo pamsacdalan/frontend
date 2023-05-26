@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
     <!-- Bootstrap + Steller main styles -->
 	<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
+    <!--FOR CALENDER-->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js'></script>
+    <!--For Custom popup, delete if not needed-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
     <style>
         p.small {
             font-size: 15px !important;
@@ -97,20 +101,17 @@
     <!-- End of Page Header -->
     
   
-
-
-       <!-- ======= Calendar Section ======= -->
-       <section id="calendar" class="section">
-        <div class="container mt-5"></div>
-        <div class="container text-center">
-           <h6 class="subtitle">Calendar</h6>
-           <div class="section-title">
-        {% include 'student_module/calendar.html' %}
-
-        </div>
-        </div>
-      </section><!-- End Calendar Section -->
-
+<!-- ======= Calendar Section ======= -->
+<section id="calendar" class="section">
+    <div class="container mt-5"></div>
+    <div class="container text-center">
+        <h6 class="subtitle">Calendar</h6>
+        <div id="calendar-1"></div>
+    {% include 'student_module/calendar.html' %}
+    
+    </div>
+</section><!-- End Calendar Section -->
+    
       
    <!-- ======= Course Section ======= -->
 <section id="courses" class="section">

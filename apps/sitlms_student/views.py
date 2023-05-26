@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
 from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
 from django.conf import settings
-import os
+import os,json
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
@@ -181,35 +181,59 @@ def student_profile(request):
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
     course_details = [x for x in course_details] # convert query set to list
-    for x in course_details:
-        id = x['course_id_id']
-        x['title'] = Course_Catalog.objects.get(course_id = id).course_desc # add course desc to dictionary
+    detail_count = len(course_details)
+
+    # sa may color ng calendar.html change
+    sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
+    event_list=[]
+    for x in range(detail_count):
+        course_id = course_details[x]['course_id_id']
+        # get instructor id to fetch first name and last name using user id
+        instructor_id = course_details[x]['instructor_id_id']
+        user_id = Instructor_Auth.objects.get(id=instructor_id).user_id
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+
+        item = {}
+
+        item['fullname'] = f'{firstname} {lastname}'
+        item['title'] = course_details[x]['course_batch']
+        item['course_id'] = course_details[x]['course_id_id']
+        item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
         
-        start_date = x['start_date']
-        end_date = x['end_date']
+        start_date = course_details[x]['start_date']
+        end_date = course_details[x]['end_date'] + timedelta(days=1)
 
-        delta = end_date - start_date  # returns timedelta
-        days = []
+        start_iso = datetime.combine(start_date, course_details[x]['start_time']).isoformat()
+        end_iso = datetime.combine(end_date, course_details[x]['end_time']).isoformat()
+        day_of_week = start_date.weekday()
 
-        if x['frequency'] == 0:
-            days.append(start_date)
-        elif x['frequency'] == 1:
-            for i in range(delta.days + 1):
-                day = start_date  + timedelta(days=i)
-                days.append(day)
+        ## Day of Week for Python starts with Monday
+        ## Day of Week for JS starts with Sunday
+        ## Pahelp magcheck for Weekly course
+
+        frequency = course_details[x]['frequency']
+        if frequency == 0:
+            item['start'] = start_iso
+            item['color'] = sample_colors[x]
+        elif frequency == 1:
+            item['start'] = start_iso
+            item['end'] = end_iso
+            item['color'] = sample_colors[x]
         else:
-            weeks = (end_date - start_date).days//7
-            for i in range(0,weeks+1):
-                days.append(start_date + timedelta(days=7*i))
+            item['startRecur'] = start_iso
+            item['endRecur'] = end_iso
+            item['daysOfWeek'] = day_of_week - 1
+            item['color'] = sample_colors[x]
 
-        x['days'] = days
+        event_list.append(item)
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
                         'program_title':program.program_title,
                         'ongoing_count':ongoing_count,
                         'completed_count':completed_count,
-                        'total_count':total_count,
+                        'total_count':total_count,                        
                     }
 
     context  = {
@@ -217,65 +241,8 @@ def student_profile(request):
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':course_details
-               }
-    
-    # return render(request, 'student_module/student.html', context)
-
-    # Get the current date from the URL parameters
-    date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
-    date = datetime.strptime(date_str, '%Y-%m-%d')
-
-    # Calculate the previous and next month values
-    prev_month = date - relativedelta(months=1)
-    next_month = date + relativedelta(months=1)
-
-    prev_date = prev_month.replace(day=1).strftime('%Y-%m-%d')
-    next_date = next_month.replace(day=1).strftime('%Y-%m-%d')
-
-    # Generate the calendar data for the specified month
-    cal = calendar.monthcalendar(date.year, date.month)
-
-    # Get the current month's name and year
-    month_name = date.strftime('%B')
-    year = date.year
-
-    # Prepare the calendar data with event information
-    events = {
-        5: ['Meeting 1', 'Meeting 2'],
-        12: ['Appointment'],
-        20: ['Conference'],
-        25: ['Workshop', 'Training'],
-    }
-
-    calendar_data = []
-    for week in cal:
-        week_data = []
-        for day in week:
-            if day == 0:
-                week_data.append((" ", []))
-            else:
-                events_for_day = events.get(day, [])
-                week_data.append((day, events_for_day))
-        calendar_data.append(week_data)
-
-    # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
-    '''return render(request, 'student_module/student.html', {
-        'calendar': calendar_data,
-        'prev_date': prev_date,
-        'next_date': next_date,
-        'month_name': month_name,
-        'year': year,
-        'events': events,
-        'student_details': student_details,
-        'course_enrolled_list':courses,
-        'stud_id':user_id,
-        'course_count':enrolled_courses,
         'scheduled_course':course_details,
-        
                }
-    )'''
-    #return render(request, 'student_module/student.html', context)
 
     # Get the current date from the URL parameters
     date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
@@ -302,6 +269,14 @@ def student_profile(request):
         20: ['Conference'],
         25: ['Workshop', 'Training'],
     }
+
+    for j in course_details:
+        print(j)
+        print("---")
+
+    for i in event_list:
+        print(i)
+        print("---")
 
     calendar_data = []
     for week in cal:
@@ -327,7 +302,9 @@ def student_profile(request):
         'stud_id':user_id,
         'course_count':enrolled_courses,
         'scheduled_course':course_details,
+        'event_list':json.dumps(event_list),
     })
+
 
 
 def student_view_assignment_details(request, id, pk):
