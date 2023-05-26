@@ -242,8 +242,7 @@ def view_history(request):
 
 
 
-
-def student_edit_profile(request):
+def edit_profile(request):
     
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
@@ -282,7 +281,7 @@ def student_edit_profile(request):
     
     
     
-    context = {'student_details': admin_details      
+    context = {'admin_details': admin_details      
     }
 
     if request.method == 'POST':
@@ -295,23 +294,25 @@ def student_edit_profile(request):
         emergency_contact_no = request.POST['emergency_contact_no']
          
          
-        #default_profile_pic = os.path.join(settings.STATIC_URL, 'student/assets/imgs/profile.png')
-        profile_pic = False 
-        
+        profile_pic = False
+
         if 'profile_pic' in request.FILES:
             profile_picture = request.FILES['profile_pic']
-            profile_pic = f"{first_name}_{last_name}_{user_id}{os.path.splitext(profile_picture.name)[1]}"
+            profile_pic = f"{user_id}{os.path.splitext(profile_picture.name)[1]}"
 
 
         if profile_pic:
-            media_root = settings.MEDIA_ROOT
-            student_pic_folder = os.path.join(media_root, 'student_pic')
+            static_dirs = settings.STATICFILES_DIRS  # Get the STATICFILES_DIRS list from Django settings
+            student_pic_folder = os.path.join(static_dirs[0], 'admin_pic')
             os.makedirs(student_pic_folder, exist_ok=True)
-            
+
             file_path = os.path.join(student_pic_folder, profile_pic)
+            
             with open(file_path, 'wb') as destination:
                 for chunks in profile_picture.chunks():
-                    destination.write(chunks) 
+                    destination.write(chunks)
+
+            
           
 
         admin_auth_details.first_name = first_name
@@ -326,7 +327,7 @@ def student_edit_profile(request):
 
             #enters here if may record sa student_profile, used only for updating profile pic
             if profile_pic:
-                student_profile.profile_pic = os.path.join('student_pic', profile_pic)
+                student_profile.profile_pic = os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)
 
             
 
@@ -341,7 +342,7 @@ def student_edit_profile(request):
                 emergency_contact = emergency_contact,
                 emergency_contact_no = emergency_contact_no,
                 user_id=user_id,
-                profile_pic=os.path.join('student_pic', profile_pic))
+                profile_pic=os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic))
             else:
                 student_profile = Student_Profile(
                 bio = bio,
@@ -350,11 +351,9 @@ def student_edit_profile(request):
                 emergency_contact = emergency_contact,
                 emergency_contact_no = emergency_contact_no,
                 user_id=user_id,
-                profile_pic="student_pic/profile.png")
+                profile_pic=os.path.join(settings.STATIC_URL, 'student/assets/imgs/profile.png'))
 
 
-        
-        
         
         student_profile.save()
         admin_auth_details.save()
