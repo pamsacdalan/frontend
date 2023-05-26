@@ -25,11 +25,11 @@
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
+                        <a class="nav-link text-dark" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
+                        <a class="nav-link text-dark" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
                     </li>
                 </ul>
             </div>
@@ -63,7 +63,7 @@
                                         <div class="d-flex aligns-items-center justify-content-center">
                                             <div class="col-1">
                                                 <br>
-                                                <span class="align-middle">
+                                                <span class="align-items-center">
                                                     {% if instructor_details.profile_pic %}
                                                     {% comment %} print(instructor_details.profile_pic.url) {% endcomment %}
                                                     <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile }}" alt="" id="image-preview">
@@ -73,7 +73,7 @@
                                                 </span>
                                             </div>
     
-                                            <div class="col-11">
+                                            <div class="col-11 align-items-center">
                                                 <button class="btn btn-sm btn-light" style="  height: 100px;
                                                 width: 580px;" data-toggle="modal" data-target="#postmodal" onclick="openModal()">
                                                     <span style="color: gray">
@@ -94,7 +94,7 @@
                                                             </div>
                                                             <form method="post" action="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">
                                                                 <div class="modal-body">
-                                                                    <div class="row align-items-center">
+                                                                    <div class="row d-flex align-items-center">
                                                                         <div class="col-2 text-right">
                                                                             <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}">
                                                                         </div>
@@ -109,7 +109,7 @@
                                                                             <div class="col-12">
                                                                                 {% csrf_token %}
                                                                                 <textarea id="announcement_text" class="form-control" rows ="5" placeholder="Post your announcement here.." name="announcement_text"></textarea>
-                                                                                <p id="warning" style="display:none">You need to write something!!</p>
+                                                                                <p id="warning" style="display:none; color: white;">You need to write something!!</p>
                                                                                 
                                                                                     <script>
                                                                                     
@@ -208,7 +208,7 @@
                         <div class="col-8">
                             <div class="card border-dark">
                                 <div class="card-header bg-primary" style="height: 3.5rem">
-                                    <div class="row">
+                                    <div class="row d-flex align-items-center">
                                         <div class="col-1">
                                             <span>
                                                 <img class="img-profile rounded-circle" style="width: 3rem; height: 2.5rem" src="{% static '/img/undraw_profile.svg' %}">
@@ -216,8 +216,8 @@
                                         </div>
 
                                         <div class="col-10 text-left text-white">
-                                            <h6 style="font-size: 13px" class="align-middle">{{author}}</h6>
-                                            <h6 style="font-size: 11px" class="align-middle">{{announcement.date_posted}}</h6>
+                                            <h6 style="font-size: 13px">{{author}}</h6>
+                                            <h6 style="font-size: 11px">{{announcement.date_posted}}</h6>
                                         </div>
                                     </div>
                                 </div>

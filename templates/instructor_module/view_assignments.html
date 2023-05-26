@@ -40,22 +40,55 @@
         </div>
         <br>
         <div class="container-fluid">
-            <a href="{% url 'add_assignment' id %}">Create Assignment</a><br><br>
+            <div class="container" align="right">
+                <!-- Create Button-->
+                <a class="btn btn-primary btn-icon-split btn-sm" href="{% url 'add_assignment' id %}">
+                    <span>
+                        <i class="ti-briefcase align-bottom"></i>
+                    </span>
+                    <span class="text"> 
+                            Create Assignment
+                    </span>
+                </a>
+            </div>
+            <hr>
+
             <div>
                 {% if not acts %}
                 <!-- Show if database is empty-->
                 <div class="container-fluid text-center">
-                    <table>
-                        <th>Activity Title</th>
-                        <th>Due Date</th>
-                    </table>
                     <br>
-                    <h5 style="color: gray">No Available Results</h5>
+                    <h5 style="color: gray">No Assignments Posted</h5>
                 </div>
 
                 {% else %}
                 <!-- Show if database is NOT empty-->
-                <table>
+                <div class="container">
+                    <br>
+                    <div class="row">
+                        {% for activity in acts %}
+                        <div class="col-sm-4">
+                            <div class="card bg-dark text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{activity.activity_title}}</h5>
+                                    <span class="card-text">Due date:</span>
+                                    <br>
+                                    <span class="card-text">{{activity.deadline}}</span>
+                                    <br>
+                                    <br>
+                                    <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post btn-sm">See comments</a>
+                                </div>
+                                <div class="card-footer text-white">
+                                    2 days ago <!-- Should be day posted-->
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>    
+                {% endif %}
+
+                {% comment %} <table>
                     <th>Activity Title</th>
                     <th>Due Date</th>
                     {% for activity in acts %}
@@ -67,11 +100,8 @@
                     </tr>
                     {% endfor %}
                 {% endif %}
-                </table>
+                </table> {% endcomment %}
             </div>
-            <br>
-            <button><a href="{% url 'view_instructor_course' id %}">Announcements</a></button>
-            <button><a href="{% url 'view_students' id %}">View Students</a></button>
             <br>
             <br>
         </div>

@@ -132,6 +132,9 @@ def view_students(request, id):
 
     program_ids = student_auth_details.values_list('program_id_id')
     program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
+    
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
 
     count = len(students)
 
@@ -154,7 +157,9 @@ def view_students(request, id):
 
 
     context = {'new_list': new_list,
-               'id':id
+               'id':id,
+               'count': count,
+               'course': course
                 }
     
     return HttpResponse(template.render(context,request))  
@@ -272,9 +277,13 @@ def view_assignments (request,id):
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
         return redirect("instructor-no-access")
     acts = Course_Activity.objects.filter(course_batch=id)
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
     context={
         'acts':acts,
         'id':id,
+        'course': course
     }
     # print(acts)
     return render(request, 'instructor_module/view_assignments.html',context)

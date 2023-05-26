@@ -298,6 +298,13 @@ input[type="checkbox"] {
   padding: 0;
 }
 
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
@@ -2809,9 +2816,6 @@ fieldset:disabled a.btn {
 }
 
 .btn-post {
-  appearance:none;
-  -webkit-appearance:none;
-
   color: hsl(200, 18%, 97%);
   background-color: #a70000;
   border-color: #a70000;
@@ -2892,6 +2896,7 @@ fieldset:disabled a.btn {
   background: rgba(0, 0, 0, 0.15);
   display: inline-block;
   padding: 0.375rem 0.75rem;
+  justify-content: center;
 }
 
 .btn-icon-split .text {

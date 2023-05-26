@@ -1,218 +1,142 @@
+{% extends './index.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Instructor Page</title>
-      <!-- Favicon -->
-      <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
-    <!-- font icons -->
-    <link rel="stylesheet" href="{% static 'student/assets/vendors/themify-icons/css/themify-icons.css'%}">
-    <!-- Bootstrap + Steller main styles -->
-	<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
-    
-</head>
-<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+{% block content %}
 
-    <!-- Page navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" data-spy="affix" data-offset-top="0">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'student_profile' %}"><img src="{% static 'img/logo-red.png' %}" width = 150, height=65, alt="77SIT Logo" height="35"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'instructor' %}">Home</a>
-                    </li>
-                </ul>
+  <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container">
+        <h1>Profile</h1>
+        <hr>
+        <br>
+      <div class="row">
+          <!-- left column -->
+          <div class="col-md-3">
+            <div class="text-center">
+              {% if instructor_details.profile_pic %}
+                <img src="{{ instructor_details.profile_pic.url }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+              {% else %}
+                <img src="{% static '/img/undraw_profile.svg' %}" alt="" class="img-thumbnail mb-4" id="image-preview">
+              {% endif%}
+              <h6>Choose a different photo...</h6>
+              
+              <label for="profile_pic" class="custom-file-upload btn-primary form-control form-control-sm text-white">
+                <i class="ti-cloud-up"></i> Upload Photo
+              </label>
+              <input id="profile_pic" name="profile_pic" class="form-control" type="file" style="display: none" onchange="previewImage(event)"/>
+              {% comment %} <input type="file" class="form-control" id="profile_pic" name="profile_pic" onchange="previewImage(event)"> {% endcomment %}
             </div>
-        </div>          
-    </nav>
-    <!-- End of page navibation -->
-
-<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-<div class="container">
-    <h1>Profile</h1>
-  	<hr>
-	<div class="row">
-      <!-- left column -->
-      <div class="col-md-3">
-        <div class="text-center">
-          {% if instructor_details.profile_pic %}
-            <img src="{{ instructor_details.profile_pic.url }}" alt="" class="img-thumbnail mb-4" id="image-preview">
-          {% else %}
-          <img src="{% static 'student/assets/imgs/profile.png'%}" alt="" class="img-thumbnail mb-4" id="image-preview">
-          {% endif%}
-          <h6>Upload a different photo...</h6>
+            <!--  -->
+            <script>
+              function previewImage(event) {
+                var input = event.target;
+                var file = input.files[0];
+                var imagePreview = document.getElementById('image-preview');
+                var reader = new FileReader();
+            
+                // Check if the selected file is an image
+                if (file && file.type.startsWith('image/')) {
+                  reader.onload = function() {
+                    imagePreview.src = reader.result;
+                  };
+            
+                  reader.readAsDataURL(file);
+                } else {
+                  // Clear the file input and image preview
+                  input.value = '';
+                  //imagePreview.src = '{% static "student/assets/imgs/profile.png" %}'
+                  imagePreview.src = "{{ instructor_details.profile_pic.url }}";
+                  alert('Please select a valid image file.');
+                }
+              }
+            </script>
+    
+            <!--  -->
+    
+            <br>
+            <label class="col-lg-3 control-label">Bio:</label>
+            <div class="col-lg-12 align-baseline">
+              <span>
+                <textarea name='bio' cols="21" rows="9" name="bio">{{instructor_details.bio}}</textarea>
+              </span>
+            </div>
+    
+          </div>
           
-          <input type="file" class="form-control" id="profile_pic" name="profile_pic" onchange="previewImage(event)">
-        </div>
-        <!--  -->
-        <script>
-          function previewImage(event) {
-            var input = event.target;
-            var file = input.files[0];
-            var imagePreview = document.getElementById('image-preview');
-            var reader = new FileReader();
-        
-            // Check if the selected file is an image
-            if (file && file.type.startsWith('image/')) {
-              reader.onload = function() {
-                imagePreview.src = reader.result;
-              };
-        
-              reader.readAsDataURL(file);
-            } else {
-              // Clear the file input and image preview
-              input.value = '';
-              //imagePreview.src = '{% static "student/assets/imgs/profile.png" %}'
-              imagePreview.src = "{{ instructor_details.profile_pic.url }}";
-              alert('Please select a valid image file.');
-            }
-          }
-        </script>
-
-        <!--  -->
-
-        {% comment %} <div class="col-md-3"> {% endcomment %}
-          <label class="col-lg-3 control-label">Bio:</label>
-          <div class="col-lg-8">
-
-            <textarea name='bio' cols="21" rows="9" name="bio">{{instructor_details.bio}}</textarea>
-          </div>
-        {% comment %} </div> {% endcomment %}
-
-      </div>
-      
-      
-      <!-- edit form column -->
-      <div class="col-md-9 personal-info">
-    
-        {% comment %} <form class="form-horizontal" role="form" method="post">
-        {% csrf_token %} {% endcomment %}
-          <div class="form-group">
-            <label class="col-lg-3 control-label">First name:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name='first_name' value={{instructor_details.first_name}}>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Middle name:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name='middlename' value={{instructor_details.middlename}}>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Last name:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name='last_name' value={{instructor_details.last_name}}>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Birth date:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="date" name='birthdate' value={{instructor_details.birthdate | date:'Y-m-d'}}>
-            </div>
-          </div>
-          {% comment %} <div class="form-group">
-            <label class="col-lg-3 control-label">Student Number:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" value="2012101524">
-            </div>
-          </div> {% endcomment %}
-          <!-- <div class="form-group">
-            <label class="col-lg-3 control-label">Employee Number:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="emp_no" value={{instructor_details.emp_no}} readonly>
-            </div>
-          </div> -->
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Email:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="email" value={{instructor_details.email}} readonly>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Address:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="address" value="{{instructor_details.address}}">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Contact Number:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="user_contact_no" value="{{instructor_details.user_contact_no}}">
-            </div>
-          </div>
-          <br>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">In Case of Emergency:</label>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Contact Person:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="emergency_contact" value="{{instructor_details.emergency_contact}}">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Contact Number:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" name="emergency_contact_no" value={{instructor_details.emergency_contact_no}}>
-            </div>
-          </div>
-          {% comment %} <div class="form-group">
-            <label class="col-lg-3 control-label">Time Zone:</label>
-            <div class="col-lg-8">
-              <div class="ui-select">
-                <select id="user_time_zone" class="form-control">
-                  <option value="Hawaii">(GMT-10:00) Hawaii</option>
-                  <option value="Alaska">(GMT-09:00) Alaska</option>
-                  <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
-                  <option value="Arizona">(GMT-07:00) Arizona</option>
-                  <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
-                  <option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>
-                  <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
-                  <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-                </select>
+          <!-- edit form column -->
+          <div class="col-md-9 personal-info">
+              <div class="form-group">
+                <label class="col-lg-3 control-label">First name:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name='first_name' value={{instructor_details.first_name}}>
+                </div>
               </div>
-            </div>
-          </div> {% endcomment %}
-          {% comment %} <div class="form-group">
-            <label class="col-md-3 control-label">Username:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="text" value="arnoying" readonly>
-            </div>
-          </div> {% endcomment %}
-          {% comment %} <div class="form-group">
-            <label class="col-md-3 control-label">Password:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="password" value="11111122333">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Confirm password:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="password" value="11111122333">
-            </div>
-          </div> {% endcomment %}
-          <div class="form-group">
-            <label class="col-md-3 control-label"></label>
-            <div class="col-md-8">
-              <a href='/sit-instructor/instructor'></a>
-              <input type="submit" class="btn btn-primary" value="Save Changes">
-              <span></span>
-              <a href='/sit-instructor/instructor/edit_profile/'></a>
-              <input type="reset" class="btn btn-default" value="Cancel">
-            </div>
-          </div>
-        </form>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Middle name:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name='middlename' value={{instructor_details.middlename}}>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Last name:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name='last_name' value={{instructor_details.last_name}}>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Birthday:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="date" name='birthdate' value={{instructor_details.birthdate | date:'Y-m-d'}}>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Email:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name="email" value={{instructor_details.email}} readonly>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Address:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name="address" value="{{instructor_details.address}}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Contact Number:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name="user_contact_no" value="{{instructor_details.user_contact_no}}">
+                </div>
+              </div>
+              <br>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">In Case of Emergency:</label>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Contact Person:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name="emergency_contact" value="{{instructor_details.emergency_contact}}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Contact Number:</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="text" name="emergency_contact_no" value={{instructor_details.emergency_contact_no}}>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label"></label>
+                <div class="col-md-8">
+                  <a href='/sit-instructor/instructor'></a>
+                  <input type="submit" class="btn btn-primary" value="Save Changes">
+                  <span></span>
+                  <a href="{% url 'instructor' %}"></a>
+                  <input type="reset" class="btn btn-default" value="Cancel">
+                </div>
+              </div>
       </div>
-  </div>
-</div>
+    </div>
+</form>
 <hr>
+{% endblock%}

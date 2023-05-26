@@ -94,69 +94,85 @@
         
             <!-- Main Content -->
             <br>
-            <div class='container-fluid' align="right">
-                <!-- Download Button-->
-                <a class="btn btn-primary btn-icon-split btn-sm ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/">
-                    <span>
-                        <i class="ti-download"></i>
-                    </span>
-                    <span class="text"> 
-                        Download Student List
-                    </span>
-                </a>
-            </div>
             <br>
             <div class="container-fluid">
-                {% if not new_list %}
-                    <!-- Show if database is empty-->
-                    <div class="container-fluid text-center">
-                        <div class="table-responsive">
+                <div class ="container">
+                    <div class="row ">
+                        <div class="col-8 align-items-bottom">
+                            <h3 style="margin-left: 38px">List of Students &#9;<span class="text-primary">[{{count}}]</span></h3>
+                        </div>
+                        <div class="col-4" align="right">
+                            <!-- Download Button-->
+                            <a class="btn btn-primary btn-icon-split btn-sm" href="/sit-instructor/instructor/view_courses/{{id}}/">
+                                <span>
+                                    <i class="ti-download align-middle"></i>
+                                </span>
+                                <span class="text"> 
+                                    Download List
+                                </span>
+                            </a>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div class="row">
+                        <div class="container">
+                            {% if not new_list %}
+                            <!-- Show if database is empty-->
+                            <div class="container">
+                                <br>
+                                <h5 style="color: gray">No Available Results</h5>
+                            </div>
+
+                            {% else %}
+                            <!-- Show if database is NOT empty-->
+                            <br>
+                            <div class="container">
+                                <div class="col-8">
+                                    {% for detail in new_list%}
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}">
+                                                {{detail.last_name}}, {{detail.first_name}}
+                                            </li>
+                                        </ul>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                        
+
+                        {% comment %} <div class="table-responsive">
                             <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
                                 <thead class="table-dark" align="center">
-                
+                    
                                     <tr>
                                         <th>Program</th>
                                         <th>Full Name</th>
                                         <th>Email</th>
-                                        
+                                            
                                     </tr>
                                 </thead>
-                            </table>
-                        </div>
-                        
-                        <br>
-                        <h5 style="color: gray">No Available Results</h5>
-                    </div>
-
-                {% else %}
-                    <!-- Show if database is NOT empty-->
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
-                            <thead class="table-dark" align="center">
-            
-                                <tr>
-                                    <th>Program</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
+                                        
                                     
-                                </tr>
-                            </thead>
-                                
-                            
-                            <tr>{% for detail in new_list%}
-                            
-                                <td name= 'program_code'>{{detail.program_code}}</td>
-                                <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
-                                <td name= 'email'>{{detail.username}}</td>
-                                
-                            </tr>
-                            {% endfor %}
-                {% endif %}
-                    </table>
+                                    <tr>{% for detail in new_list%}
+                                    
+                                        <td name= 'program_code'>{{detail.program_code}}</td>
+                                        <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
+                                        <td name= 'email'>{{detail.username}}</td>
+                                        
+                                    </tr>
+                                        {% endfor %}
+                            </table>
+                        </div> {% endcomment %}
+                <br>
+                <br>
             </div>
-            <br>
-            <br>
+                
         </div>
     
-
 {% endblock content %}
