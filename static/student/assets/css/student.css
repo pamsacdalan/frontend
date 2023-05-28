@@ -11465,44 +11465,50 @@ pre {
 }
 
 
-
 .page-footer {
-  background: #fcfdff;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 2.5rem; 
-}
-
-.page-footer .row {
-  height: 100px;
+  background-color: #f8f8f8;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #666;
 }
 
 .page-footer p {
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 
-.page-footer .socials {
-  max-width: 210px;
-  margin-left: auto;
+.page-footer a {
+  color: #666;
 }
 
-.page-footer .socials .social-item {
-  margin-left: auto;
+.page-footer a:hover {
+  color: #333;
 }
 
-@media (max-width: 767.98px) {
+.socials {
+  text-align: right;
+}
+
+.social-item {
+  display: inline-block;
+  margin-left: 10px;
+  color: #666;
+}
+
+.social-item:hover {
+  color: #333;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 767px) {
   .page-footer {
-    padding: 20px 0;
-  }
-  .page-footer .row {
     text-align: center;
   }
-  .page-footer .row .socials {
-    margin: auto;
+  
+  .socials {
+    text-align: center;
+    margin-top: 10px;
   }
 }
-
 .header {
   height: 94vh;
   min-height: 650px;
