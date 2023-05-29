@@ -54,9 +54,18 @@ def instructor(request):
     """ This function renders the instructor page """
     form = ActivityForms(request.POST)
     acts = Course_Activity.objects.all()
+    
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_id = Instructor_Auth.objects.get(user_id=user_id)
+    count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
+    
     context={
         'acts':acts,
         'form':form,
+        'count_courses': count_courses,
     }
     
     return render(request, 'instructor_module/instructor.html',context)
@@ -97,7 +106,6 @@ def instructor_view_enrolled_course(request):
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values()
 
-
     for index in range(len(course_enrolled)):
         course_num = course_enrolled[index]['course_id_id']
         for value in Course_Catalog.objects.values('course_id', 'course_title'):
@@ -108,7 +116,7 @@ def instructor_view_enrolled_course(request):
     
     # print(course_enrolled)
 
-    context = {'course_enrolled_list':course_enrolled
+    context = {'course_enrolled_list':course_enrolled,
                 }
     
 
@@ -128,6 +136,7 @@ def view_students(request, id):
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
     user_ids = student_auth_details.values_list('user_id')
     student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username').order_by('id')
+    
     # print(student_details)
     # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
@@ -136,9 +145,10 @@ def view_students(request, id):
     
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
 
     count = len(students)
-
+    
     # create a new list to pass as context
     new_list = []
 
@@ -160,7 +170,7 @@ def view_students(request, id):
     context = {'new_list': new_list,
                'id':id,
                'count': count,
-               'course': course
+               'course': course,
                 }
     
     return HttpResponse(template.render(context,request))  
@@ -382,12 +392,20 @@ def instructor_course(request, id):
     lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
         
     author_name = firstname + " " + lastname
+    
+    if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+        instructor_profile = Student_Profile.objects.get(user_id=user_id)
+
+        profile_pic = instructor_profile.profile_pic
+    else:
+        profile_pic = ""
 
     context = {
         'course_batch': id,
         'course': course,
         'announcements':announcement_details,
         'author': author_name,
+        'profile_pic': profile_pic,
     }
 
     return HttpResponse(template.render(context,request))  

@@ -99,7 +99,7 @@
                 <div class ="container">
                     <div class="row ">
                         <div class="col-8 align-items-bottom">
-                            <h3 style="margin-left: 38px">List of Students &#9;<span class="text-primary">[{{count}}]</span></h3>
+                            <h4 style="margin-left: 38px">List of Students &#9;<span class="text-primary">[{{count}}]</span></h4>
                         </div>
                         <div class="col-4" align="right">
                             <!-- Download Button-->
@@ -133,7 +133,15 @@
                                     {% for detail in new_list%}
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">
-                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}">
+                                                {% if profile_pic %}
+                                                <span class="align-items-center">
+                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{{ profile_pic}}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                </span>
+                                                {% else %}
+                                                <span class="align-items-center">
+                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                </span>
+                                                {% endif %}
                                                 {{detail.last_name}}, {{detail.first_name}}
                                             </li>
                                         </ul>
