@@ -282,7 +282,20 @@
                                                 <br>
                                                 <div align="left">
                                                     <ul>
-                                                        <a class="btn btn-primary btn-sm" href="/sit-admin/student/view/csv_instruction/downloadfile">Download CSV</a>&emsp;
+                                                        <form action="/sit-admin/student/view/csv_instruction/downloadfile" method="POST">
+                                                            {%csrf_token%}
+                                                            <label>Download CSV For </label>
+                                                            <select name="prog_list">
+                                                                <option selected="selected" disabled>---------</option>
+                                                                {%for program in program_list%}
+                                                                <option>{{program.program_id}}-{{program.program_code}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <input type="submit" value="Download CSV" class="btn btn-primary btn-sm"/>
+                                                        </form>
+                                                        
+
+                                                        <!-- <a class="btn btn-primary btn-sm" href="/sit-admin/student/view/csv_instruction/downloadfile">Download CSV</a>&emsp; -->
                                                     </ul>
                                                 </div>
                                             </div>

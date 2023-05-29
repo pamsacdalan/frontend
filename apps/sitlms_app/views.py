@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
+from apps.sitlms_app.crud.student import view_students
 from .forms import CsvModelForm
 from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile
 import csv 
@@ -22,6 +23,7 @@ from apps.sitlms_app.crud.enrolled_course import string_to_date
 from datetime import datetime, date
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+import pandas as pd
 
 
 
@@ -134,11 +136,31 @@ def view_csv(request):
 @user_passes_test(is_admin)
 def downloadfile(request):
     #Download CSV Template
-    SITE_ROOT = os.path.abspath(os.path.dirname(__file__))
-    filename = open(os.path.join(SITE_ROOT,'cv_template/sample_csv.csv'),'r').read()
-    response = HttpResponse(filename)
-    response['Content-Disposition'] = 'attachment;filename=sample_csv.csv'
-    return response
+      
+    if request.method == "POST":
+        if 'prog_list' in request.POST:
+            prog_id = request.POST['prog_list']
+            SITE_ROOT = os.path.abspath(os.path.dirname(__file__))
+            df = pd.read_csv(os.path.join(SITE_ROOT,'cv_template/sample_csv.csv'))
+            path = os.path.join(SITE_ROOT,'cv_template/')
+            split = prog_id.split("-")
+            val = split[0]
+            df.loc[0,'program_id'] = val
+            df.to_csv(path+'sample_csv.csv', index=False)
+            #FOR DEBUGGING
+            # print(df)
+            # print(prog_id)
+            # print(split[0])
+            #SITE_ROOT = os.path.abspath(os.path.dirname(__file__))
+            filename = open(os.path.join(SITE_ROOT,'cv_template/sample_csv.csv'),'r').read()
+            response = HttpResponse(filename)
+            response['Content-Disposition'] = 'attachment;filename=sample_csv.csv'
+            return response
+        else:
+            prog_id = False
+            messages.error(request,'Please select a Program!')
+            return view_students(request)
+        
 
 @user_passes_test(is_admin)
 def csv_instruction(request):
