@@ -171,12 +171,13 @@ def delete_enrollment(request, course_batch, enrollment_id):
 @user_passes_test(is_admin)
 def edit_enrollment(request, course_batch, enrollment_id):
     "function to edit grade and status of enrolled student for a certain course"
+    status = ["Ongoing", "Completed"]
     enroll_id = Student_Enrollment.objects.filter(
         enrollment_id=enrollment_id).values()  # get the queryset for enrollment_id
     enrollment = Student_Enrollment.objects.get(
         enrollment_id=enrollment_id)  # instantiate from Student_Enrollment model
     student = Students_Auth.objects.get(id=enroll_id[0]['student_id_id'])
-    context = {'enrollment': enrollment, 'student': student, 'course_batch': course_batch}
+    context = {'enrollment': enrollment, 'student': student, 'course_batch': course_batch, "status": status}
 
     if request.method == "POST":
         grade = request.POST['grade']
