@@ -67,7 +67,7 @@ def student(request):
                 else:
                     user = User.objects.create_user(username=username, email = email, password=password, first_name=first_name, last_name=last_name, is_active=True,)
                     user.save()
-                    middlename=request.POST['middlename']
+                    middlename=request.POST['middlename'] if request.POST['middlename'] else None
                     birthdate=request.POST['birthdate']
                     program = Program.objects.values('program_id').get(program_code=request.POST['program_code'])
                     program_id = Program.objects.get(program_id=program['program_id'])
@@ -160,7 +160,7 @@ def update_record(request, id):
     email = request.POST['email']
     username = request.POST['email']
     firstname = request.POST['firstname']
-    middlename = request.POST['middlename']
+    middlename = request.POST['middlename'] if request.POST['middlename'] else None
     lastname = request.POST['lastname']
     birthdate = request.POST['birthdate']
     convert_birthdate = parse_date(birthdate)

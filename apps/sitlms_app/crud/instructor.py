@@ -51,7 +51,7 @@ def add_instructor_info(request):
         username  = request.POST['username']
         password = generate_random_string(8)
         firstname  = request.POST['firstname']
-        middlename  = request.POST['middlename']
+        middlename  = request.POST['middlename'] if request.POST['middlename'] else None
         lastname  = request.POST['lastname']
         birthdate  = request.POST['birthdate']
         if User.objects.filter(username=username).exists():
@@ -87,7 +87,7 @@ def edit_instructor(request,id):
 
         username  = request.POST['username']
         firstname  = request.POST['firstname']
-        middlename  = request.POST['middlename']
+        middlename  = request.POST['middlename'] if request.POST['middlename'] else None
         lastname  = request.POST['lastname']
         birthdate  = request.POST['birthdate']
   
