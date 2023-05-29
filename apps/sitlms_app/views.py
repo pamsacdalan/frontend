@@ -117,7 +117,7 @@ def view_csv(request):
                         username = row[3]
                         program_id = Program.objects.get(program_id=row[1])
                         user = User.objects.create_user(username=username, email = row[3], password=generate_random_string(8), first_name=row[4], last_name=row[6], is_active=True,)
-                        student = Students_Auth(user=user, middlename=row[5], birthdate=row[7], program_id=program_id, student_no=row[0], employment_status=row[8])
+                        student = Students_Auth(user=user, middlename=row[5], birthdate=row[7], program_id=program_id, student_no=row[2], employment_status=row[8])
                         student.save()
                         print(row)
                         print(type(row))
