@@ -76,7 +76,7 @@ def sitadmin_register(request):
             else:
                 user = User.objects.create_user(username=username, email = email, password=password, first_name=first_name, last_name=last_name, is_active=True, is_staff=True, is_superuser=True)
                 user.save()
-                middle_name=request.POST['middle_name']
+                middle_name=request.POST['middle_name'] if request.POST['middle_name'] else None
                 birthdate=request.POST['birthdate']
                 sitadmin = Admin(user=user, middle_name=middle_name, birthdate=birthdate)
                 sitadmin.save()

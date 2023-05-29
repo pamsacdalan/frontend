@@ -326,7 +326,7 @@
                                             <td>{{student.student_no }}</td>
                                             <td>{{student.user.email }}</td>
                                             <td>{{student.user.first_name }}</td>
-                                            <td>{{student.middlename }}</td>
+                                            <td>{% if student.middlename %}{{student.middlename }}{%endif%}</td>
                                             <td>{{student.user.last_name }}</td>
                                             <td>{{student.birthdate }}</td>
                                             <td>{{student.employment_status }}</td>
