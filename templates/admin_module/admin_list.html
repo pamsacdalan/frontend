@@ -183,7 +183,7 @@
                               <tr>
                                   <td>{{ admin.user.username }}</td>
                                   <td>{{ admin.user.first_name }}</td>
-                                  <td>{{ admin.middle_name }}</td>
+                                  <td>{% if admin.middle_name %}{{ admin.middle_name }}{%endif%}</td>
                                   <td>{{ admin.user.last_name }}</td>
                                   <td>{{ admin.birthdate }}</td>
                                   <td>{{ admin.user.is_active }}</td>

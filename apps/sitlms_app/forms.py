@@ -62,8 +62,8 @@ employment_status = (
 class AdminCreateForm(forms.Form):
     email_address = forms.EmailField(label='Email Address', widget=forms.EmailInput(attrs={'class':'form-control' , 'placeholder': 'Email address', "id": 'email_address'}))
     first_name = forms.CharField(min_length=1, max_length = 150, label='First Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'First Name', 'id': 'first_name', 'autocomplete': 'off'}), required=True)
-    last_name = forms.CharField(min_length=1, max_length = 150, label='Last Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
     middle_name = forms.CharField(min_length=2, max_length = 150, label='Middle Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Middle Name', 'id': 'middle_name', 'autocomplete': 'off'}), required=False)
+    last_name = forms.CharField(min_length=1, max_length = 150, label='Last Name', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Last Name','id': 'last_name', 'autocomplete': 'off'}), required=True)
     birthdate = forms.DateField(label='Birthdate', widget=forms.NumberInput(attrs={'class':'form-control','type': 'date', 'autocomplete': 'off'}), required=True,
                     validators=[
                             MaxValueValidator((datetime_jqbm.now(timezone(timedelta(hours=8))) - timedelta(days=1*365.25)).date(),

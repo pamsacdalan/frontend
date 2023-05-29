@@ -84,7 +84,7 @@ class Instructor_Auth(models.Model):
     #password  = models.CharField(max_length=255)
     # email
     #firstname = models.CharField(max_length=255)
-    middlename = models.CharField(max_length=255)
+    middlename = models.CharField(max_length=255,blank=True,null=True)
     #lastname = models.CharField(max_length=255)
     birthdate = models.DateField()
     # active_deactive  = models.BooleanField(default=True)
@@ -123,7 +123,7 @@ class Course_Enrollment(models.Model):
 # Create your models here.
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    middle_name = models.CharField(max_length=255,blank=True)
+    middle_name = models.CharField(max_length=255,blank=True,null=True)
     birthdate = models.DateField(null=True,blank=True)
     access_type = models.IntegerField(default=1, validators=[MaxValueValidator(3), MinValueValidator(1)])
 
@@ -137,7 +137,7 @@ class Students_Auth(models.Model):
     #username = models.CharField(max_length=50)
     #password = models.CharField(max_length=50)
     #firstname = models.CharField(max_length=50)
-    middlename = models.CharField(max_length=50)
+    middlename = models.CharField(max_length=50,blank=True,null=True)
     #lastname = models.CharField(max_length=50)
     #email = models.EmailField(max_length=100)
     birthdate = models.DateField()
