@@ -144,14 +144,14 @@ class Students_Auth(models.Model):
     employment_status = models.CharField(max_length=50, choices=employment_status, default='Deployed')
     active_deactive = models.BooleanField(default=True)
     access_type = models.IntegerField(default=2, validators=[MaxValueValidator(3), MinValueValidator(1)])
-    
+
 class Student_Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, default='Ongoing')
     grades = models.CharField(max_length=3)
-    date_enrolled = models.DateTimeField()
+    date_enrolled = models.DateField()
 
     def __str__(self):
         return self.enrollment_id
