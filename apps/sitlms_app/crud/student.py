@@ -170,6 +170,9 @@ def update_record(request, id):
     access_type = request.POST['access_type']
 
     student = Students_Auth.objects.get(id=id)
+    if User.objects.filter(email=email).exists() and email != student.user.email:         
+        messages.info(request, 'Email Already Used. Contact admin to edit profile instead.')
+        return redirect("/sit-admin/student/view")
     # student_user = Students.objects.get(id=id)
     student.program_id = program_id
     student.student_no = student_no
