@@ -252,7 +252,7 @@ def student_profile(request):
                     }
 
 
-    print(course_detail_list)
+    
 
     # context  = {
     #     'student_details': student_details,
@@ -431,9 +431,9 @@ def download_activity_submission(request, id, pk):
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
-    print(submission)
+    # print(submission)
     file_path = submission.activity_file.path
-    print(file_path)
+    # print(file_path)
     file = open(file_path, 'rb')
 
     # Set the appropriate response headers
@@ -496,7 +496,7 @@ def student_edit_profile(request):
 
     """ This function renders the student edit profile"""
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
-    print(student_auth_details.user_id, user_id)
+    # print(student_auth_details.user_id, user_id)
     
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
@@ -576,7 +576,7 @@ def student_edit_profile(request):
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
             # student_profile = Student_Profile.objects.get(user_id=user_id)
-            print("I entered in line 152")
+            # print("I entered in line 152")
             student_profile.bio = bio
             student_profile.address = address
             student_profile.user_contact_no = user_contact_no
