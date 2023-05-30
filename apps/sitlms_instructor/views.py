@@ -15,14 +15,13 @@ from datetime import date, datetime
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
-from functools import partial
 from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
-from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.conf import settings
 import os
 from django.utils import timezone
+import shutil
 
 from apps.sitlms_student.models import Activity_Submission
 
@@ -54,9 +53,18 @@ def instructor(request):
     """ This function renders the instructor page """
     form = ActivityForms(request.POST)
     acts = Course_Activity.objects.all()
+    
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_id = Instructor_Auth.objects.get(user_id=user_id)
+    count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
+    
     context={
         'acts':acts,
         'form':form,
+        'count_courses': count_courses,
     }
     
     return render(request, 'instructor_module/instructor.html',context)
@@ -97,7 +105,6 @@ def instructor_view_enrolled_course(request):
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values()
 
-
     for index in range(len(course_enrolled)):
         course_num = course_enrolled[index]['course_id_id']
         for value in Course_Catalog.objects.values('course_id', 'course_title'):
@@ -108,7 +115,7 @@ def instructor_view_enrolled_course(request):
     
     # print(course_enrolled)
 
-    context = {'course_enrolled_list':course_enrolled
+    context = {'course_enrolled_list':course_enrolled,
                 }
     
 
@@ -128,27 +135,43 @@ def view_students(request, id):
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
     user_ids = student_auth_details.values_list('user_id')
     student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username').order_by('id')
+    
     # print(student_details)
     # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
     program_ids = student_auth_details.values_list('program_id_id')
-    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
+    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code', 'program_title')  # program code to be added to new_list
     
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
 
     count = len(students)
-
+    
     # create a new list to pass as context
     new_list = []
 
 
+    # for x in range(count):
+    #     for program in program_code:
+    #         if student_auth_details[x]['program_id_id'] == program['program_id']:
+    #             new_list.append({**student_auth_details[x], **student_details[x], **program})
+
     for x in range(count):
         for program in program_code:
             if student_auth_details[x]['program_id_id'] == program['program_id']:
-                new_list.append({**student_auth_details[x], **student_details[x], **program})
-
-    # print(new_list)
+                if student_auth_details[x]['user_id'] in Student_Profile.objects.values_list('user_id', flat=True):
+                    profile_path = Student_Profile.objects.filter(user_id=student_auth_details[x]['user_id']).values('profile_pic')
+                    profile_path = profile_path[0]['profile_pic']
+                    profile_path = os.path.normpath(profile_path)
+                    if profile_path.startswith(settings.MEDIA_URL):
+                        profile_path = profile_path.replace(settings.MEDIA_URL, settings.STATIC_URL, 1)
+                    profile_path = profile_path.replace('\\', '/')
+                    print(profile_path)
+                    
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': profile_path})
+                else:
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': ''})
 
     def sort_by_name(dictionary):
         return dictionary['last_name'].lower()
@@ -160,7 +183,7 @@ def view_students(request, id):
     context = {'new_list': new_list,
                'id':id,
                'count': count,
-               'course': course
+               'course': course,
                 }
     
     return HttpResponse(template.render(context,request))  
@@ -299,24 +322,29 @@ def add_assignment(request, id):
         batch = Course_Enrollment.objects.filter(pk=id).first()
         title = request.POST['activity_title']
         desc=request.POST['activity_desc']
-        attachment=request.FILES['activity_attachment']
+        attachment=request.FILES.get('activity_attachment')
         d1 = request.POST.get('deadline_0')
         d2 = request.POST.get('deadline_1')
         deadline = d1+" "+d2
-        date_object = datetime.strptime(deadline, '%Y-%m-%d %H:%M')
+        date_object = timezone.make_aware(datetime.strptime(deadline, '%Y-%m-%d %H:%M'))
         score = request.POST['scores']
         percent = request.POST['percentage']
 
-        if date_object <= datetime.now():
-            return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
+        if date_object <= timezone.now():
+            # return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
+            messages.error(request,'Deadline should be in the future. Please re-create assignment.')
+            return redirect("view_assignments",  id=id)
+        elif attachment is not None and attachment.size > 25 * 1024 * 1024:
+            messages.error(request,'Maximum file size is 25MB. Please re-create assignment.')
         else:
-            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline, max_score = score, grading_percentage = percent)
+            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = date_object, max_score = score, grading_percentage = percent)
             activity_post.save()
             messages.success(request,"Success!")
             return redirect("view_assignments",  id=id)
     else:
         form = ActivityForms()
-    return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
+    return redirect("view_assignments",  id=id)
+    # return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
 
 @user_passes_test(is_instructor)
 def update_assignment(request,id,pk):
@@ -361,6 +389,18 @@ def delete_assignment(request, id, pk):
         'id':id,
     }
     if request.method == 'POST':
+        prev_instances=act.activity_attachment if act.activity_attachment else False
+        # print(prev_instances)
+        if prev_instances:
+            file_path = prev_instances.path
+            # print(file_path)
+            if os.path.isfile(file_path):
+                # print(3)
+                os.remove(file_path)
+                folder_path = os.path.dirname(file_path)
+                # print(folder_path)
+                shutil.rmtree(folder_path)
+            prev_instances.delete()
         act.delete()
         return redirect('view_assignments',id=id)
     return render(request,'instructor_module/delete_assignment.html',context)
@@ -382,12 +422,21 @@ def instructor_course(request, id):
     lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
         
     author_name = firstname + " " + lastname
+    
+    if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+        instructor_profile = Student_Profile.objects.get(user_id=user_id)
+
+        profile_pic = instructor_profile.profile_pic
+    else:
+        profile_pic = ""
+    
 
     context = {
         'course_batch': id,
         'course': course,
         'announcements':announcement_details,
         'author': author_name,
+        'profile_pic': profile_pic,
     }
 
     return HttpResponse(template.render(context,request))  
@@ -458,7 +507,7 @@ def activity_comments(request, id, pk):
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
-    file_relative_url = activity.activity_attachment.url  # Get the relative URL of the uploaded file
+    file_relative_url = activity.activity_attachment.url if activity.activity_attachment else "#" # Get the relative URL of the uploaded file
 
     # Construct the absolute URL by prepending the protocol and domain
     file_url = request.build_absolute_uri(file_relative_url)

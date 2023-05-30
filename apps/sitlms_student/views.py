@@ -18,6 +18,8 @@ from calendar import monthcalendar
 import calendar
 from django.template.loader import render_to_string
 from dateutil.relativedelta import relativedelta
+from django.contrib import messages
+import re
 # Create your views here.
 
 def is_student(user):
@@ -378,6 +380,10 @@ def upload_activity_submission(request, id, pk):
             instance = Activity_Submission(course_activity=activity,student_id=student,activity_file=attachment, date_submitted=timezone.now())
             instance.save()
             return redirect('student_view_assignment_details',id=id,pk=pk)
+        else:
+            for x,y in form.errors.items():
+                y=re.sub("<.*?>", '', str(y))
+            messages.error(request, y)
     return redirect('student_view_assignment_details',id=id,pk=pk)
 
 @user_passes_test(is_student) 

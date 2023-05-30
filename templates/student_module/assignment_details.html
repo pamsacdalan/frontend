@@ -1,7 +1,60 @@
+{% load static %}
 
-<h4>Student Name : {{user.first_name}} {{user.last_name}}</h4>
-<!-- <h4>Batch: {{batch.course_batch}}</h4>
-<h4>ID: {{act.id}}</h4> -->
+<head>
+<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
+<style>
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+  }
+  
+  .logo img {
+    height: 40px; /* Adjust the height as needed */
+  }
+  
+  .navbar-links {
+    text-align: right;
+  }
+  
+  .navbar-links a {
+    text-decoration: none;
+    color: black;
+    margin-left: 10px; /* Add spacing between links */
+  }
+</style>
+</head>
+
+
+<body>
+    <div class="navbar">
+    <div class="logo">
+        <a href="{% url 'student_profile' %}">
+      <img src="{% static 'img/logo-red.png' %}" alt="Logo" >
+    </div>
+    <div class="navbar-links">
+      <a href="{% url 'view_courses' batch.course_batch %}">Back to Course Details</a>
+    </div>
+  </div>
+
+
+
+
+
+   <!-- Page Header -->
+   <header class="header" id="home">
+    <div class="container">
+        <div class="infos">
+            <h6 class="subtitle">Hi,</h6>
+            <h6 class="title">{{user.first_name}} </h6>
+            <p>Ready to sumbit your assignment?</p>
+        </div>              
+        <div class="img-holder">
+            <img src="{% static 'student/assets/imgs/man.svg' %}" alt="">
+        </div>      
+    </div>  
 <form method="POST">
     {%csrf_token%}
     <!-- <h3 name="act_id">Assignment ID: {{act.id}}</h3> -->
@@ -47,12 +100,21 @@
         {{current_submission_filename}} 
         {% else %}
         {% endif %}
-     </a></h3>
-     {% if not submission_grade %}
+    </a></h3>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
+            {% if message.tags == "error" %}
+            {{ message }}
+            {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if not submission_grade %}
     {{ submission_upload_form.as_p }}
     <button type="submit">Submit</button>
     {% endif %}
-  </form>
+</form>
 
 {% if submission_grade %}
 <p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
@@ -67,4 +129,5 @@
 <p>Late</p>
 {% endif %}
 
-  <button><a href="{% url 'view_courses' batch.course_batch %}">View Course Details</a></button>
+
+</body>
