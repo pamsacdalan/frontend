@@ -328,7 +328,11 @@
                                             <th>Birthdate</th>
                                             <th>Status</th>
                                             <th>Active</th>
-                                            {% comment %} <th>Access Type</th> {% endcomment %}
+                                            <th>Biography</th>
+                                            <th>Address</th>
+                                            <th>Personal Contact Number</th>
+                                            <th>Contact Person</th>
+                                            <th>Contact Number</th>
                                             <th>Actions</th>
                                     </thead>
                                     <tbody>
@@ -343,7 +347,12 @@
                                             <td>{{student.user.last_name }}</td>
                                             <td>{{student.birthdate }}</td>
                                             <td>{{student.employment_status }}</td>
-                                            <td>{{student.user.is_active }}</td>
+                                            <td>{{student.active_deactive }}</td>
+                                            <td>{{student.biography }}</td>
+                                            <td>{{student.address }}</td>
+                                            <td>{{student.contact_number }}</td>
+                                            <td>{{student.contact_person }}</td>
+                                            <td>{{student.emergency_contact_num }}</td>
                                             {% comment %} <td>{{student.access_type  }}</td> {% endcomment %}
                                             <td>
                                                 <!-- Edit Button-->

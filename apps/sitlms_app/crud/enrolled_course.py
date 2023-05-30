@@ -65,19 +65,20 @@ def string_to_date(frequencies, start_date, end_date, start_time, end_time, cour
 
         
         while (end_date) >= start_date:
-            start_date_obj = start_date.date()
-            start_time_obj = datetime.strptime(start_time, '%H:%M').time()
-            end_time_obj = datetime.strptime(end_time, '%H:%M').time()
+            if start_date.weekday() < 5:
+                start_date_obj = start_date.date()
+                start_time_obj = datetime.strptime(start_time, '%H:%M').time()
+                end_time_obj = datetime.strptime(end_time, '%H:%M').time()
 
-            schedule = Schedule(
-                session_date = start_date_obj,
-                start_time = start_time_obj,
-                end_time = end_time_obj,
-                # end_date = concatenated_end_datetime,
-                course_batch = Course_Enrollment.objects.get(course_batch=course_batch),
+                schedule = Schedule(
+                    session_date = start_date_obj,
+                    start_time = start_time_obj,
+                    end_time = end_time_obj,
+                    # end_date = concatenated_end_datetime,
+                    course_batch = Course_Enrollment.objects.get(course_batch=course_batch),
 
-                )
-            schedule.save()
+                    )
+                schedule.save()
             start_date += delta
 
 
