@@ -2,6 +2,12 @@
 {% if student_submission %}<h3><a href="{% url 'instructor_download_activity_submission' batch.course_batch act.id student.id %}" download>{{ student_submission }}</a></h3> {% endif %}
 {% if marks %}<b>{{ marks }}</b>/{{max_score}}{% else %}No marks{% endif %}<br><br>
 <table>
+    <tr>
+        <th>Name</th>
+        <th>Timestamp</th>
+        <th>Content</th>
+        <th>...</th>
+    </tr>
     {% for comment in comments %}
     <tr>
         <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
