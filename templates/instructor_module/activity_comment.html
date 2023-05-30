@@ -5,7 +5,7 @@
     {%csrf_token%}
     <h3 name="act_id">Activity ID: {{act.id}}</h3>
     <h3>Activity Title: {{act.activity_title}}</h3>
-    <h3>Activity Attachment: <a href="{% url 'download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
+    {% if act.activity_attachment %}<h3>Activity Attachment: <a href="{% url 'download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>{% endif %}
     <h3>Activity Given Date: {{act.start_date}}</h3>
     <h3>Activity Due Date: {{act.deadline}}</h3>  
     <h3>Activity Total Items: {{act.max_score}}</h3>

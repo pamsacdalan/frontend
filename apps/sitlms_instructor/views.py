@@ -15,14 +15,13 @@ from datetime import date, datetime
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
-from functools import partial
 from apps.sitlms_app.crud.enrolled_course import string_to_date, frequency_rev
 import csv
-from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.conf import settings
 import os
 from django.utils import timezone
+import shutil
 
 from apps.sitlms_student.models import Activity_Submission
 
@@ -309,24 +308,29 @@ def add_assignment(request, id):
         batch = Course_Enrollment.objects.filter(pk=id).first()
         title = request.POST['activity_title']
         desc=request.POST['activity_desc']
-        attachment=request.FILES['activity_attachment']
+        attachment=request.FILES.get('activity_attachment')
         d1 = request.POST.get('deadline_0')
         d2 = request.POST.get('deadline_1')
         deadline = d1+" "+d2
-        date_object = datetime.strptime(deadline, '%Y-%m-%d %H:%M')
+        date_object = timezone.make_aware(datetime.strptime(deadline, '%Y-%m-%d %H:%M'))
         score = request.POST['scores']
         percent = request.POST['percentage']
 
-        if date_object <= datetime.now():
-            return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
+        if date_object <= timezone.now():
+            # return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
+            messages.error(request,'Deadline should be in the future. Please re-create assignment.')
+            return redirect("view_assignments",  id=id)
+        elif attachment is not None and attachment.size > 25 * 1024 * 1024:
+            messages.error(request,'Maximum file size is 25MB. Please re-create assignment.')
         else:
-            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = deadline, max_score = score, grading_percentage = percent)
+            activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = date_object, max_score = score, grading_percentage = percent)
             activity_post.save()
             messages.success(request,"Success!")
             return redirect("view_assignments",  id=id)
     else:
         form = ActivityForms()
-    return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
+    return redirect("view_assignments",  id=id)
+    # return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id,})
 
 @user_passes_test(is_instructor)
 def update_assignment(request,id,pk):
@@ -371,6 +375,18 @@ def delete_assignment(request, id, pk):
         'id':id,
     }
     if request.method == 'POST':
+        prev_instances=act.activity_attachment if act.activity_attachment else False
+        # print(prev_instances)
+        if prev_instances:
+            file_path = prev_instances.path
+            # print(file_path)
+            if os.path.isfile(file_path):
+                # print(3)
+                os.remove(file_path)
+                folder_path = os.path.dirname(file_path)
+                # print(folder_path)
+                shutil.rmtree(folder_path)
+            prev_instances.delete()
         act.delete()
         return redirect('view_assignments',id=id)
     return render(request,'instructor_module/delete_assignment.html',context)
@@ -476,7 +492,7 @@ def activity_comments(request, id, pk):
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
-    file_relative_url = activity.activity_attachment.url  # Get the relative URL of the uploaded file
+    file_relative_url = activity.activity_attachment.url if activity.activity_attachment else "#" # Get the relative URL of the uploaded file
 
     # Construct the absolute URL by prepending the protocol and domain
     file_url = request.build_absolute_uri(file_relative_url)
