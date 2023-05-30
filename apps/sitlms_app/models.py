@@ -151,7 +151,7 @@ class Student_Enrollment(models.Model):
     course_batch = models.ForeignKey(Course_Enrollment, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, default='Ongoing')
     grades = models.CharField(max_length=3)
-    date_enrolled = models.DateTimeField()
+    date_enrolled = models.DateField()
 
     def __str__(self):
         return self.enrollment_id
@@ -205,3 +205,11 @@ class Student_Profile(models.Model):
     def str(self):
         return self.user.username
 
+class SubmitIssue(models.Model):
+    sender_firstname = models.CharField()
+    sender_lastname = models.CharField()
+    sender_access_type= models.IntegerField()
+    sender_subject = models.CharField()
+    sender_message = models.CharField()
+    status = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(default=datetime.now())

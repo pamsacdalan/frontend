@@ -12,6 +12,7 @@ from datetime import date, datetime ,timedelta
 from django.db.models import Max
 from datetimerange import DateTimeRange
 from operator import itemgetter
+from django.utils import timezone
 
 
 def get_redundant_schedule(course_batch):
@@ -106,10 +107,11 @@ def enroll_student(request, id):
                 student_id=Students_Auth.objects.get(user_id=item),
                 course_batch=Course_Enrollment.objects.get(course_batch=id),
                 grades='TBD',
-                date_enrolled=date.today())
+                date_enrolled = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()),timezone.get_current_timezone()))
+
 
             enrollment.save()
-        print(f'{id_list} id list')
+        # print(f'{id_list} id list')
         return redirect('view_enrolled_course')
 
 

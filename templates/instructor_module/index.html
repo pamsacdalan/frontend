@@ -41,6 +41,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/sit-instructor/instructor/view_courses">Notifications</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#report">Report Issue</a>
+                                </li>
                                 <div class="dropdown">
                                     <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{ user.first_name }}
@@ -92,6 +95,58 @@
                 </div>
 
             </div>
+            <section id="report" class="position-relative section">
+                <div class="container text-center">
+                    <h6 class="subtitle">Report Issues</h6> 
+                    <div class="contact text-left">
+                        <div class="contact-infos">
+                            <div class="item">
+                                <i class="ti-location-pin"></i>
+                                <div class="">
+                                    <h5>Location</h5>
+                                    <p> 27th Floor, The Orient Square Building, 
+                                        Emerald Avenue, Ortigas Center, Pasig City,
+                                        Philippines 1605
+                                    </p>
+                                </div>                          
+                            </div>
+                            <div class="item">
+                                <i class="ti-mobile"></i>
+                                <div>
+                                    <h5>Phone Number</h5>
+                                    <p>PH: +63279157747</p>
+                                </div>                          
+                            </div>
+                            <div class="item">
+                                <i class="ti-email"></i>
+                                <div class="mb-0">
+                                    <h5>Email Address</h5>
+                                    <p>itsupport@example.com</p>
+                                </div>
+                            </div>
+                            <div class="form">
+                                <h6 class="section-title mb-4">Get In Touch</h6>
+                                <form method="POST" action = "/sit-instructor/instructor/report_issues">
+                                    {%csrf_token%}
+                                    <div class="form-group">
+                                        <label>Subject</label>
+                                        <input type="text" name="subject" class="form-control" placeholder="Enter subject" required >
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="message" id="" cols="30" rows="5" class="form-control" placeholder="Message"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block rounded w-lg">Send Message</button>
+                                </form>
+                            </div> 
+                        </div>                
+                    </div>
+                
+                </div>   
+                <div id="map">
+                    <iframe src="https://snazzymaps.com/embed/61257"></iframe>
+                </div>      
+            </section>
+            <!-- End of Contact Section -->
 
             <!-- Page Footer -->
             <footer class="sticky-footer">

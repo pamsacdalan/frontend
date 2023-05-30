@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue
 from django.conf import settings
 import os,json
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
@@ -162,6 +162,7 @@ def student_profile(request):
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
     
 
+
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
     
@@ -171,8 +172,8 @@ def student_profile(request):
    
     
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
-    for enrollment in ongoing_enrollments:
-        print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
+    # for enrollment in ongoing_enrollments:
+    #     print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
         
     ## Schedule
     student_id = Students_Auth.objects.get(user=user_id)
@@ -182,8 +183,15 @@ def student_profile(request):
     course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
-    course_details = [x for x in course_details] # convert query set to list
+    # course_details = [x for x in course_details] # convert query set to list
+    course_detail_list = []
     detail_count = len(course_details)
+
+    # get course title and course description
+    course_ids = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values('course_id_id')
+    course_desc = Course_Catalog.objects.filter(course_id__in=course_ids).values()
+
+
 
     # sa may color ng calendar.html change
     sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
@@ -229,6 +237,11 @@ def student_profile(request):
             item['color'] = sample_colors[x]
 
         event_list.append(item)
+        
+        """ Adding Course Desc and Course Title in Context"""
+        for item in course_desc:
+            if course_details[x]['course_id_id'] == item['course_id']:
+                course_detail_list.append({**course_details[x], **item})
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
@@ -238,13 +251,16 @@ def student_profile(request):
                         'total_count':total_count,                        
                     }
 
-    context  = {
-        'student_details': student_details,
-        'course_enrolled_list':courses,
-        'stud_id':user_id,
-        'course_count':enrolled_courses,
-        'scheduled_course':course_details,
-               }
+
+    
+
+    # context  = {
+    #     'student_details': student_details,
+    #     'course_enrolled_list':courses,
+    #     'stud_id':user_id,
+    #     'course_count':enrolled_courses,
+    #     'scheduled_course':course_details,
+    #            }
 
     # Get the current date from the URL parameters
     date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
@@ -272,13 +288,14 @@ def student_profile(request):
         25: ['Workshop', 'Training'],
     }
 
-    for j in course_details:
-        print(j)
-        print("---")
+    #DEBUG
+    # for j in course_details:
+    #     print(j)
+    #     print("---")
 
-    for i in event_list:
-        print(i)
-        print("---")
+    # for i in event_list:
+    #     print(i)
+    #     print("---")
 
     calendar_data = []
     for week in cal:
@@ -291,6 +308,8 @@ def student_profile(request):
                 week_data.append((day, events_for_day))
         calendar_data.append(week_data)
 
+    
+        
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html', {
         'calendar': calendar_data,
@@ -303,7 +322,7 @@ def student_profile(request):
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':course_details,
+        'scheduled_course':course_detail_list,
         'event_list':json.dumps(event_list),
     })
 
@@ -412,9 +431,9 @@ def download_activity_submission(request, id, pk):
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
-    print(submission)
+    # print(submission)
     file_path = submission.activity_file.path
-    print(file_path)
+    # print(file_path)
     file = open(file_path, 'rb')
 
     # Set the appropriate response headers
@@ -477,7 +496,7 @@ def student_edit_profile(request):
 
     """ This function renders the student edit profile"""
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
-    print(student_auth_details.user_id, user_id)
+    # print(student_auth_details.user_id, user_id)
     
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
@@ -559,7 +578,7 @@ def student_edit_profile(request):
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
             # student_profile = Student_Profile.objects.get(user_id=user_id)
-            print("I entered in line 152")
+            # print("I entered in line 152")
             student_profile.bio = bio
             student_profile.address = address
             student_profile.user_contact_no = user_contact_no
@@ -603,3 +622,23 @@ def student_edit_profile(request):
         return redirect('/sit-student/student_profile')
     
     return render(request, 'student_module/edit_profile.html', context) 
+
+def report_issues(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    if request.method == "POST":
+        student_report_issues = Students_Auth.objects.get(user_id=user_id)
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+        student_access = student_report_issues.access_type
+        subject = request.POST['inputsubject']
+        msg = request.POST['contact-message']
+
+        issue = SubmitIssue(sender_firstname = firstname,sender_lastname = lastname,sender_access_type= student_access,sender_subject = subject,sender_message = msg)
+        issue.save()
+        #DEBUG
+        # print(f'{firstname} | {lastname} | {student_access}')
+        # print(f'{subject} \n {msg}')
+    return redirect('/sit-student/student_profile')
