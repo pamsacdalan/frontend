@@ -272,13 +272,17 @@ def edit_profile(request):
 
     """ This function renders the student edit profile"""
     admin_auth_details = User.objects.get(id=user_id)
-    
+    admin_middlename_obj = Admin.objects.get(user_id=user_id)
+    # print(Admin.objects.get(user_id=user_id).middle_name)
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
+        student_profile.profile_pic = str(student_profile.profile_pic).replace("\\","/")
+        student_profile.save()
         
-
+    
         
-        admin_details ={ 'first_name':admin_auth_details.first_name, 
+        admin_details ={ 'first_name':admin_auth_details.first_name,
+                         'middle_name': admin_middlename_obj.middle_name, 
                         'last_name':admin_auth_details.last_name,
                         'bio':student_profile.bio,
                         'address':student_profile.address,
@@ -290,7 +294,8 @@ def edit_profile(request):
                     }   
     
     else:
-        admin_details ={ 'first_name':admin_auth_details.first_name, 
+        admin_details ={ 'first_name':admin_auth_details.first_name,
+                         'middle_name': admin_middlename_obj.middle_name,
                         'last_name':admin_auth_details.last_name,
                         'bio':"",
                         'address':"",
@@ -308,6 +313,7 @@ def edit_profile(request):
 
     if request.method == 'POST':
         first_name = request.POST['first_name']
+        middle_name = request.POST['middle_name']
         last_name = request.POST['last_name']
         bio = request.POST['bio']
         address = request.POST['address']
@@ -338,6 +344,9 @@ def edit_profile(request):
           
 
         admin_auth_details.first_name = first_name
+        admin_middlename_obj.middle_name = middle_name
+        admin_middlename_obj.save()
+
         admin_auth_details.last_name = last_name
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
@@ -349,7 +358,7 @@ def edit_profile(request):
 
             #enters here if may record sa student_profile, used only for updating profile pic
             if profile_pic:
-                student_profile.profile_pic = os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)
+                student_profile.profile_pic = str(os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)).replace("\\","/")
 
             
 
@@ -364,7 +373,7 @@ def edit_profile(request):
                 emergency_contact = emergency_contact,
                 emergency_contact_no = emergency_contact_no,
                 user_id=user_id,
-                profile_pic=os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic))
+                profile_pic=str(os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)).replace("\\","/"))
             else:
                 student_profile = Student_Profile(
                 bio = bio,

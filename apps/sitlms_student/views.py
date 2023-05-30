@@ -481,6 +481,8 @@ def student_edit_profile(request):
     
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
+        student_profile.profile_pic = str(student_profile.profile_pic).replace("\\","/")
+        student_profile.save()
         
 
         
@@ -566,7 +568,7 @@ def student_edit_profile(request):
 
             # enters here if there is a record in student_profile, used only for updating profile pic
             if profile_pic:
-                student_profile.profile_pic = os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)
+                student_profile.profile_pic = str(os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)).replace("\\","/")
 
         else:
             # enters here if there is no record yet in student_profile
@@ -579,7 +581,7 @@ def student_edit_profile(request):
                     emergency_contact=emergency_contact,
                     emergency_contact_no=emergency_contact_no,
                     user_id=user_id,
-                    profile_pic=os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)
+                    profile_pic=str(os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)).replace("\\","/")
                 )
             else:
                 student_profile = Student_Profile(

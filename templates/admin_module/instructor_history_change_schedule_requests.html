@@ -200,8 +200,8 @@
                                     <td name= 'course_batch'>{{schedule.course_batch_id}}</td>
                                     <td name= 'old_start_date'>{{schedule.old_start_date}}</td>
                                     <td name= 'old_end_date'>{{schedule.old_end_date}}</td>
-                                    <td name= 'old_start_time'>{{schedule.old_start_time}} </td>
-                                    <td name= 'old_end_time'>{{schedule.old_end_time}}</td>
+                                    <td name= 'old_start_time'>{{schedule.old_start_time|time:"h:i A" }} </td>
+                                    <td name= 'old_end_time'>{{schedule.old_end_time|time:"h:i A" }}</td>
                                     <td name= 'old_frequency'>
                                         {% if schedule.old_frequency == 0%} Once
                                         {% elif schedule.old_frequency == 1%} Daily
@@ -210,8 +210,8 @@
                                     </td>
                                     <td name= 'new_start_date'>{{schedule.new_start_date}}</td>
                                     <td name= 'new_end_date'>{{schedule.new_end_date}}</td>
-                                    <td name= 'new_start_time'>{{schedule.new_start_time}} </td>
-                                    <td name= 'new_end_time'>{{schedule.new_end_time}}</td>
+                                    <td name= 'new_start_time'>{{schedule.new_start_time|time:"h:i A" }} </td>
+                                    <td name= 'new_end_time'>{{schedule.new_end_time|time:"h:i A" }}</td>
                                     <td name= 'new_frequency'>
                                         {% if schedule.new_frequency == 0%} Once
                                         {% elif schedule.new_frequency == 1%} Daily

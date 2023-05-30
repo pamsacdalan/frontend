@@ -62,7 +62,7 @@ def enroll_student(request, id):
 
     template = loader.get_template('admin_module/enroll_student.html')
     student_available = Student_Enrollment.objects.values_list('student_id').filter(course_batch__in=get_redundant_schedule(id)).distinct()
-    students = Students_Auth.objects.exclude(id__in=student_available).filter(active_deactive="Active").values()  # can enroll only all active students
+    students = Students_Auth.objects.exclude(id__in=student_available).filter(active_deactive=True).values()  # can enroll only all active students
     student_list = students.values().order_by('user_id')
     student_ids = student_list.values_list('user_id')
     student_details = User.objects.filter(id__in=student_ids).values().order_by('id')
