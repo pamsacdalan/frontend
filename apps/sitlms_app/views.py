@@ -68,7 +68,13 @@ def dashboard(request):
     
     """ This function renders the admin module dashboard """
     
-    return render(request, 'admin_module/dashboard.html')
+    # return render(request, 'admin_module/dashboard.html')
+    # Instructor
+    instructor_list = Instructor_Auth.objects.all()
+    # sum = Instructor_Auth.objects.all().aggregate(Sum('user_id')).values
+    context = {'instructor_list':instructor_list}
+    # return HttpResponse(template.render(context,request))
+    return render(request, 'admin_module/dashboard.html',context)
 
 
 def password_reset(request, data):
