@@ -14,3 +14,5 @@ class Activity_Submission(models.Model):
     grade = models.IntegerField(blank=True, null=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
     activity_file = models.FileField(upload_to=activity_attachment_path, blank=True)
+
+

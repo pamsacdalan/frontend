@@ -768,3 +768,23 @@ def edit_profile(request):
 
 
     return render(request, 'instructor_module/edit_profile.html', context)
+
+def report_issues(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    if request.method == "POST":
+        student_report_issues = Instructor_Auth.objects.get(user_id=user_id)
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+        student_access = student_report_issues.access_type
+        subject = request.POST['subject']
+        msg = request.POST['message']
+
+        issue = SubmitIssue(sender_firstname = firstname,sender_lastname = lastname,sender_access_type= student_access,sender_subject = subject,sender_message = msg)
+        issue.save()
+        #DEBUG
+        # print(f'{firstname} | {lastname} | {student_access}')
+        # print(f'{subject} \n {msg}')
+    return redirect('/sit-instructor/instructor')

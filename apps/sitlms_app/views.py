@@ -8,7 +8,7 @@ from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from apps.sitlms_app.crud.student import view_students
 from .forms import CsvModelForm
-from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile, SubmitIssue
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -69,8 +69,13 @@ def home(request):
 def dashboard(request):
     
     """ This function renders the admin module dashboard """
-    
-    return render(request, 'admin_module/dashboard.html')
+    issues = SubmitIssue.objects.all().values()
+    count_issues = issues.filter(status=0).count()
+    context = {
+        'issues':issues,
+        'alerts':count_issues,     
+    }
+    return render(request, 'admin_module/dashboard.html',context)
 
 
 def password_reset(request, data):
@@ -385,3 +390,35 @@ def edit_profile(request):
         return redirect('/sit-admin/dashboard/')
     
     return render(request, 'admin_module/edit_profile.html', context)
+
+def view_issues(request):
+    """Details to display issues page"""
+    
+    instructors = SubmitIssue.objects.filter(sender_access_type=1, status=0)
+    students = SubmitIssue.objects.filter(sender_access_type=2, status=0)
+    done = SubmitIssue.objects.filter(status = 1)
+    context = {
+        'students':students,
+        'instructors':instructors,
+        'done':done,
+    }
+    #DEBUG
+    # print(instructors)
+    # print("---------------------")
+    # print(students)
+    return render(request,'admin_module/view_issues.html', context)
+
+def view_issues_details(request, id):
+    """Details to display clickable issues notif"""
+    issues = SubmitIssue.objects.get(id=id)
+
+    context = {
+        'issue':issues,
+    }
+
+    if request.method == 'POST':
+        issues.status = 1
+        issues.save(update_fields=['status'])
+        return redirect('/sit-admin/dashboard')
+    return render(request,'admin_module/issue_details.html', context)
+

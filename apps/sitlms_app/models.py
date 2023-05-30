@@ -205,3 +205,11 @@ class Student_Profile(models.Model):
     def str(self):
         return self.user.username
 
+class SubmitIssue(models.Model):
+    sender_firstname = models.CharField()
+    sender_lastname = models.CharField()
+    sender_access_type= models.IntegerField()
+    sender_subject = models.CharField()
+    sender_message = models.CharField()
+    status = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(default=datetime.now())
