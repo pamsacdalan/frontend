@@ -240,14 +240,36 @@
                                             <p>Birthday: </p><input class = "form-control" type="date" name = "birthdate" value = "{{student.birthdate | date:'Y-m-d'}}" type="date"/>
                                         </div>
                                         <div class="col-2">
-                                            <p>Status : </p><input class = "form-control" type="text" name = "employment_status" value = " {{student.employment_status}}"/>
+                                            {% comment %} <p>Status : </p><input class = "form-control" type="text" name = "employment_status" value = " {{student.employment_status}}"/> {% endcomment %}
+                                            <p>Status : </p>
+                                            <select class="form-control" name="employment_status" required>
+                                                <option selected hidden>
+                                                     {{student.employment_status}}
+                                                </option>
+                    
+                                                <option value= "Deployed" >Deployed</option>
+                                                <option value= "Training" >Training</option>
+                                                                                                
+                                            </select>
                                         </div>
                                         <div class="col-2">
-                                            <p>Active | Inactive : </p><input class = "form-control" type="text" name = "active_deactive" value = "{{student.user.is_active}}"/>
+                                            {% comment %} <p>Active | Inactive : </p><input class = "form-control" type="text" name = "active_deactive" value = "{{student.user.is_active}}"/> {% endcomment %}
+                                            <p>Active | Inactive : </p>
+                                            <select class="form-control" name="active_deactive" required>
+                                                <option selected hidden>
+                                                     {% if student.active_deactive == True %} Active
+                                                     {% else %} Inactive
+                                                     {% endif %}
+                                                </option>
+                    
+                                                <option value= "True" >Active</option>
+                                                <option value= "False" >Inactive</option>
+                                                                                                
+                                            </select>
                                         </div>
-                                        <div class="col-2">
+                                        {% comment %} <div class="col-2">
                                             <p>Access Type : </p><input class = "form-control" type="text" name = "access_type" value = "{{student.access_type}}"/>
-                                        </div>
+                                        </div> {% endcomment %}
                                     </div>
                                 </div>                       
                                 <br>

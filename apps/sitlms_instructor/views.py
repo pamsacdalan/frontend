@@ -704,6 +704,8 @@ def edit_profile(request):
 
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         instructor_profile = Student_Profile.objects.get(user_id=user_id)
+        instructor_profile.profile_pic = str(instructor_profile.profile_pic).replace("\\","/")
+        instructor_profile.save()
 
         instructor_details ={'first_name':instructor_auth_details.user.first_name, 
                             'middlename':instructor_auth_details.middlename,
@@ -785,7 +787,7 @@ def edit_profile(request):
 
             # enters here if there is a record in student_profile, used only for updating profile pic
             if profile_pic:
-                instructor_profile.profile_pic = os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)
+                instructor_profile.profile_pic = str(os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)).replace("\\","/")
 
         else:
             # enters here if there is no record yet in student_profile
@@ -798,7 +800,7 @@ def edit_profile(request):
                     emergency_contact=emergency_contact,
                     emergency_contact_no=emergency_contact_no,
                     user_id=user_id,
-                    profile_pic=os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)
+                    profile_pic=str(os.path.join(settings.STATIC_URL, 'instructor_pic', profile_pic)).replace("\\","/")
                 )
             else:
                 instructor_profile = Student_Profile(
@@ -820,3 +822,23 @@ def edit_profile(request):
 
 
     return render(request, 'instructor_module/edit_profile.html', context)
+
+def report_issues(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    if request.method == "POST":
+        student_report_issues = Instructor_Auth.objects.get(user_id=user_id)
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+        student_access = student_report_issues.access_type
+        subject = request.POST['subject']
+        msg = request.POST['message']
+
+        issue = SubmitIssue(sender_firstname = firstname,sender_lastname = lastname,sender_access_type= student_access,sender_subject = subject,sender_message = msg)
+        issue.save()
+        #DEBUG
+        # print(f'{firstname} | {lastname} | {student_access}')
+        # print(f'{subject} \n {msg}')
+    return redirect('/sit-instructor/instructor')

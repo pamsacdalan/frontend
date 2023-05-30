@@ -178,6 +178,11 @@
                                     <th>Middle name</th>
                                     <th>Last name</th>
                                     <th>Birthdate</th>
+                                    <th>Biography</th>
+                                    <th>Address</th>
+                                    <th>Personal Contact Number</th>
+                                    <th>Contact Person</th>
+                                    <th>Contact Number</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -188,6 +193,11 @@
                             <td name= 'middlename'>{% if instructors.middlename %}{{instructors.middlename}}{%endif%}</td>
                             <td name= 'lastname'>{{instructors.user.last_name}}</td>
                             <td name= 'birthdate'>{{instructors.birthdate}}</td>
+                            <td>{{student.biography }}</td>
+                            <td>{{student.address }}</td>
+                            <td>{{student.contact_number }}</td>
+                            <td>{{student.contact_person }}</td>
+                            <td>{{student.emergency_contact_num }}</td>
                             {% comment %} <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}
 
                             <td align="center"><a  class="btn btn-dark btn-circle btn-sm" href="/sit-admin/instructor/edit/{{ instructors.id }}">

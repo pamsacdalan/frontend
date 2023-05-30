@@ -23,29 +23,49 @@
               <label for="profile_pic" class="custom-file-upload btn-primary form-control form-control-sm text-white">
                 <i class="ti-cloud-up"></i> Upload Photo
               </label>
-              <input id="profile_pic" name="profile_pic" class="form-control" type="file" style="display: none" onchange="previewImage(event)"/>
+              <input id="profile_pic" name="profile_pic" class="form-control" type="file" accept="image/*" style="display: none" onchange="previewImage(event)"/>
               {% comment %} <input type="file" class="form-control" id="profile_pic" name="profile_pic" onchange="previewImage(event)"> {% endcomment %}
             </div>
             <!--  -->
             <script>
               function previewImage(event) {
-                var input = event.target;
-                var file = input.files[0];
-                var imagePreview = document.getElementById('image-preview');
-                var reader = new FileReader();
-            
-                // Check if the selected file is an image
-                if (file && file.type.startsWith('image/')) {
-                  reader.onload = function() {
-                    imagePreview.src = reader.result;
-                  };
-            
-                  reader.readAsDataURL(file);
-                } else {
-                  // Clear the file input and image preview
-                  input.value = '';
-                  alert('Please select a valid image file.');
-                }
+                  var input = event.target;
+                  var file = input.files[0];
+                  var imagePreview = document.getElementById('image-preview');
+                  var reader = new FileReader();
+                  var path = "{{ instructor_details.profile_pic }}";
+          
+                  // Check if the selected file is an image
+                  if (file && file.type.startsWith('image/')) {
+                    // Check the file size
+                    var fileSizeInMB = file.size / (1024 * 1024); // Convert bytes to MB
+                    var maxSizeInMB = 25;
+        
+                    if (fileSizeInMB > maxSizeInMB) {
+                    // Clear the file input and image preview
+                        input.value = '';
+                        
+                        if (path){ //path has a value
+                        imagePreview.src = path;
+                        }
+                        else{
+                        imagePreview.src = "{% static 'student/assets/imgs/profile.png' %}";
+                        }
+                        alert('Please select an image smaller than 25MB.' );
+                        return;
+                    }
+        
+                      reader.onload = function() {
+                          imagePreview.src = reader.result;
+                      };
+          
+                      reader.readAsDataURL(file);
+                  } else {
+                      // Clear the file input and image preview
+                      input.value = '';
+                      imagePreview.src = path;  
+                      alert('Please select a valid image file.');
+                  }
               }
             </script>
     
@@ -130,7 +150,7 @@
                   <input type="submit" class="btn btn-primary" value="Save Changes">
                   <span></span>
                   <a href="{% url 'instructor' %}"></a>
-                  <input type="reset" class="btn btn-default" value="Cancel">
+                  <input type="reset" class="btn btn-default" value="Clear Changes">
                 </div>
               </div>
       </div>

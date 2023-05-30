@@ -1,0 +1,53 @@
+
+<h4>Ongoing Issues: Instructors</h4>
+<table>
+    <th>Name</th>
+    <th>Subject</th>
+    <th>Message</th>
+    <th>Date</th>
+    <th>Status</th>
+    {%for items in instructors%}
+    <tr>
+        <td>{{items.sender_firstname}} {{items.sender_lastname}}</td>
+        <td>{{items.sender_subject}}</td>
+        <td>{{items.sender_message}}</td>
+        <td>{{items.timestamp}}</td>
+        <td>{{items.status}}</td>
+    </tr>
+    {%endfor%}
+</table>
+<h4>Ongoing Issues:Students</h4>
+<table>
+    <th>Name</th>
+    <th>Subject</th>
+    <th>Message</th>
+    <th>Date</th>
+    <th>Status</th>
+    {%for items in students%}
+    <tr>
+        <td>{{items.sender_firstname}} {{items.sender_lastname}}</td>
+        <td>{{items.sender_subject}}</td>
+        <td>{{items.sender_message}}</td>
+        <td>{{items.timestamp}}</td>
+        <td>{{items.status}}</td>
+    </tr>
+    {%endfor%}
+</table>
+<br>
+<h4>Completed Issues:Students & Instructors</h4>
+<table>
+    <th>Name</th>
+    <th>Subject</th>
+    <th>Message</th>
+    <th>Date</th>
+    <th>Status</th>
+    {%for items in done%}
+    <tr>
+        <td>{{items.sender_firstname}} {{items.sender_lastname}}</td>
+        <td>{{items.sender_subject}}</td>
+        <td>{{items.sender_message}}</td>
+        <td>{{items.timestamp}}</td>
+        <td>{{items.status}}</td>
+    </tr>
+    {%endfor%}
+</table>

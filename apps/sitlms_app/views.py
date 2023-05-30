@@ -8,7 +8,7 @@ from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from apps.sitlms_app.crud.student import view_students
 from .forms import CsvModelForm
-from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile, SubmitIssue
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -76,6 +76,12 @@ def dashboard(request):
     # sum = Instructor_Auth.objects.all().aggregate(Sum('user_id')).values
     context = {'instructor_list':instructor_list}
     # return HttpResponse(template.render(context,request))
+    issues = SubmitIssue.objects.all().values()
+    count_issues = issues.filter(status=0).count()
+    context = {
+        'issues':issues,
+        'alerts':count_issues,     
+    }
     return render(request, 'admin_module/dashboard.html',context)
 
 
@@ -278,13 +284,17 @@ def edit_profile(request):
 
     """ This function renders the student edit profile"""
     admin_auth_details = User.objects.get(id=user_id)
-    
+    admin_middlename_obj = Admin.objects.get(user_id=user_id)
+    # print(Admin.objects.get(user_id=user_id).middle_name)
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
+        student_profile.profile_pic = str(student_profile.profile_pic).replace("\\","/")
+        student_profile.save()
         
-
+    
         
-        admin_details ={ 'first_name':admin_auth_details.first_name, 
+        admin_details ={ 'first_name':admin_auth_details.first_name,
+                         'middle_name': admin_middlename_obj.middle_name, 
                         'last_name':admin_auth_details.last_name,
                         'bio':student_profile.bio,
                         'address':student_profile.address,
@@ -296,7 +306,8 @@ def edit_profile(request):
                     }   
     
     else:
-        admin_details ={ 'first_name':admin_auth_details.first_name, 
+        admin_details ={ 'first_name':admin_auth_details.first_name,
+                         'middle_name': admin_middlename_obj.middle_name,
                         'last_name':admin_auth_details.last_name,
                         'bio':"",
                         'address':"",
@@ -314,6 +325,7 @@ def edit_profile(request):
 
     if request.method == 'POST':
         first_name = request.POST['first_name']
+        middle_name = request.POST['middle_name']
         last_name = request.POST['last_name']
         bio = request.POST['bio']
         address = request.POST['address']
@@ -344,6 +356,9 @@ def edit_profile(request):
           
 
         admin_auth_details.first_name = first_name
+        admin_middlename_obj.middle_name = middle_name
+        admin_middlename_obj.save()
+
         admin_auth_details.last_name = last_name
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
@@ -355,7 +370,7 @@ def edit_profile(request):
 
             #enters here if may record sa student_profile, used only for updating profile pic
             if profile_pic:
-                student_profile.profile_pic = os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)
+                student_profile.profile_pic = str(os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)).replace("\\","/")
 
             
 
@@ -370,7 +385,7 @@ def edit_profile(request):
                 emergency_contact = emergency_contact,
                 emergency_contact_no = emergency_contact_no,
                 user_id=user_id,
-                profile_pic=os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic))
+                profile_pic=str(os.path.join(settings.STATIC_URL, 'admin_pic', profile_pic)).replace("\\","/"))
             else:
                 student_profile = Student_Profile(
                 bio = bio,
@@ -391,3 +406,35 @@ def edit_profile(request):
         return redirect('/sit-admin/dashboard/')
     
     return render(request, 'admin_module/edit_profile.html', context)
+
+def view_issues(request):
+    """Details to display issues page"""
+    
+    instructors = SubmitIssue.objects.filter(sender_access_type=1, status=0)
+    students = SubmitIssue.objects.filter(sender_access_type=2, status=0)
+    done = SubmitIssue.objects.filter(status = 1)
+    context = {
+        'students':students,
+        'instructors':instructors,
+        'done':done,
+    }
+    #DEBUG
+    # print(instructors)
+    # print("---------------------")
+    # print(students)
+    return render(request,'admin_module/view_issues.html', context)
+
+def view_issues_details(request, id):
+    """Details to display clickable issues notif"""
+    issues = SubmitIssue.objects.get(id=id)
+
+    context = {
+        'issue':issues,
+    }
+
+    if request.method == 'POST':
+        issues.status = 1
+        issues.save(update_fields=['status'])
+        return redirect('/sit-admin/dashboard')
+    return render(request,'admin_module/issue_details.html', context)
+
