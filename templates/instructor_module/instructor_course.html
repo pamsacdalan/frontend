@@ -18,18 +18,18 @@
         <br>
         <div class="card">
             <!-- Navbar -->
-            <div class="card-header">
+            <div class="card-header text-primary">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item active">
                         <a class="nav-link active" aria-current="page" href="#">Announcements</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link text-dark" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
+                        <a class="nav-link" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link text-dark" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
+                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
                     </li>
                 </ul>
             </div>
@@ -40,8 +40,8 @@
             <div class='container-fluid'>
                 <div class="row justify-content-md-center">
                     <div class="col-3">
-                        <div class="card border-primary mb-3" style="max-width: 18rem; height: 11rem;">
-                            <div class="card-header bg-primary text-white">
+                        <div class="card border-dark mb-3" style="max-width: 18rem; height: 11rem;">
+                            <div class="card-header bg-dark text-white">
                                 Upcoming Deadlines
                             </div>
                             <div class="card-body text-center">
@@ -63,14 +63,15 @@
                                         <div class="d-flex aligns-items-center justify-content-center">
                                             <div class="col-1">
                                                 <br>
+                                                {% if profile_pic %}
                                                 <span class="align-items-center">
-                                                    {% if instructor_details.profile_pic %}
-                                                    {% comment %} print(instructor_details.profile_pic.url) {% endcomment %}
-                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile }}" alt="" id="image-preview">
-                                                    {% else %}
-                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
-                                                    {% endif%}
+                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
                                                 </span>
+                                                {% else %}
+                                                <span class="align-items-center">
+                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                </span>
+                                                {% endif %}
                                             </div>
     
                                             <div class="col-11 align-items-center">
@@ -207,12 +208,18 @@
                         <br>
                         <div class="col-8">
                             <div class="card border-dark">
-                                <div class="card-header bg-primary" style="height: 3.5rem">
+                                <div class="card-header bg-dark" style="height: 3.5rem">
                                     <div class="row d-flex align-items-center">
                                         <div class="col-1">
-                                            <span>
-                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 2.5rem" src="{% static '/img/undraw_profile.svg' %}">
+                                            {% if profile_pic %}
+                                            <span style="margin-left: 10px">
+                                                <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
                                             </span>
+                                            {% else %}
+                                            <span>
+                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                            </span>
+                                            {% endif %}
                                         </div>
 
                                         <div class="col-10 text-left text-white">

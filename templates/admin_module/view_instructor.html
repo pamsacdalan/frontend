@@ -185,7 +185,7 @@
                             {% comment %} <td name= 'instructor_id'>{{instructors.id}}</td> {% endcomment %}
                             <td name= 'username'>{{instructors.user.username}}</td>
                             <td name= 'firstname'>{{instructors.user.first_name}}</td>
-                            <td name= 'middlename'>{{instructors.middlename}}</td>
+                            <td name= 'middlename'>{% if instructors.middlename %}{{instructors.middlename}}{%endif%}</td>
                             <td name= 'lastname'>{{instructors.user.last_name}}</td>
                             <td name= 'birthdate'>{{instructors.birthdate}}</td>
                             {% comment %} <td name= 'Status'>{{instructors.access_type}}</td> {% endcomment %}

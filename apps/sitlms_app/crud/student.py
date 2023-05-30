@@ -67,7 +67,7 @@ def student(request):
                 else:
                     user = User.objects.create_user(username=username, email = email, password=password, first_name=first_name, last_name=last_name, is_active=True,)
                     user.save()
-                    middlename=request.POST['middlename']
+                    middlename=request.POST['middlename'] if request.POST['middlename'] else None
                     birthdate=request.POST['birthdate']
                     program = Program.objects.values('program_id').get(program_code=request.POST['program_code'])
                     program_id = Program.objects.get(program_id=program['program_id'])
@@ -93,7 +93,8 @@ def student(request):
 def view_students(request):
     template = loader.get_template('admin_module/view_students.html')
     students = Students_Auth.objects.all()                           #access the model and show all the content
-    
+    """Details for drop down(CSV Template) selection"""
+    list_of_programs = Program.objects.all().values().order_by('program_id')
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)
         
@@ -106,7 +107,7 @@ def view_students(request):
     except EmptyPage:
             students_page = paginator.page(paginator.num_pages)
                 
-    context = {'students_page':students_page, 'students': students}
+    context = {'students_page':students_page, 'students': students,'program_list':list_of_programs,}
     return HttpResponse(template.render(context,request))
     # return render(request, 'admin_module/view_students.html', {'students':students})  #passes the students as context to the show.html
     
@@ -160,7 +161,7 @@ def update_record(request, id):
     email = request.POST['email']
     username = request.POST['email']
     firstname = request.POST['firstname']
-    middlename = request.POST['middlename']
+    middlename = request.POST['middlename'] if request.POST['middlename'] else None
     lastname = request.POST['lastname']
     birthdate = request.POST['birthdate']
     convert_birthdate = parse_date(birthdate)
