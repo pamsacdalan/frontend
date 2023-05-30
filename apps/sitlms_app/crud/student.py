@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from apps.sitlms_app.models import Students, Students_Auth, Program
+from apps.sitlms_app.models import Students, Students_Auth, Program, Student_Profile
 from apps.sitlms_app.forms import StudentForm
 from django.shortcuts import render, redirect
 from django.utils.dateparse import parse_date
@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_app.crud.access_test import is_admin, send_initial_password_resest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Value, CharField
 
 def pass_gen():
 
@@ -92,9 +93,25 @@ def student(request):
 @user_passes_test(is_admin)
 def view_students(request):
     template = loader.get_template('admin_module/view_students.html')
-    students = Students_Auth.objects.all()                           #access the model and show all the content
+    students = Students_Auth.objects.all().annotate(biography=Value("",output_field=CharField()),
+                                                    address=Value("",output_field=CharField()),
+                                                    contact_number=Value("",output_field=CharField()),
+                                                    contact_person=Value("",output_field=CharField()),
+                                                    emergency_contact_num=Value("",output_field=CharField()),)                           #access the model and show all the content
     """Details for drop down(CSV Template) selection"""
     list_of_programs = Program.objects.all().values().order_by('program_id')
+
+    user_id_list = Student_Profile.objects.values_list("user_id", flat=True)
+    for x in students:
+        if x.user_id in user_id_list:
+            print(x.user_id,Student_Profile.objects.values("bio").get(user_id=x.user_id)['bio'])
+            x.biography = Student_Profile.objects.values("bio").get(user_id=x.user_id)['bio']
+            x.address = Student_Profile.objects.values("address").get(user_id=x.user_id)['address']
+            x.contact_number = Student_Profile.objects.values("user_contact_no").get(user_id=x.user_id)['user_contact_no']
+            x.contact_person = Student_Profile.objects.values("emergency_contact").get(user_id=x.user_id)['emergency_contact']
+            x.emergency_contact_num = Student_Profile.objects.values("emergency_contact_no").get(user_id=x.user_id)['emergency_contact_no']
+
+
     # for pagination
     page = request.GET.get('page', 1) # default page (default to first page)
         
@@ -107,7 +124,10 @@ def view_students(request):
     except EmptyPage:
             students_page = paginator.page(paginator.num_pages)
                 
-    context = {'students_page':students_page, 'students': students,'program_list':list_of_programs,}
+    context = {'students_page':students_page, 
+               'students': students,
+               'program_list':list_of_programs,}
+    
     return HttpResponse(template.render(context,request))
     # return render(request, 'admin_module/view_students.html', {'students':students})  #passes the students as context to the show.html
     
@@ -166,8 +186,9 @@ def update_record(request, id):
     birthdate = request.POST['birthdate']
     convert_birthdate = parse_date(birthdate)
     employment_status = request.POST['employment_status']
-    active_deactive = request.POST['active_deactive']
-    access_type = request.POST['access_type']
+    #active_deactive = request.POST['active_deactive']
+    active_deactive = True if request.POST['active_deactive'] == "True" else False
+    #access_type = request.POST['access_type']
 
     student = Students_Auth.objects.get(id=id)
     if User.objects.filter(email=email).exists() and email != student.user.email:         
@@ -184,7 +205,7 @@ def update_record(request, id):
     student.birthdate = convert_birthdate
     student.employment_status = employment_status
     student.active_deactive = active_deactive
-    student.access_type = access_type
+    #student.access_type = access_type
     student.user.save()
     student.save()
 

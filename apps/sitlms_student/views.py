@@ -162,6 +162,7 @@ def student_profile(request):
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
     
 
+
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
     
@@ -182,8 +183,15 @@ def student_profile(request):
     course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
-    course_details = [x for x in course_details] # convert query set to list
+    # course_details = [x for x in course_details] # convert query set to list
+    course_detail_list = []
     detail_count = len(course_details)
+
+    # get course title and course description
+    course_ids = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values('course_id_id')
+    course_desc = Course_Catalog.objects.filter(course_id__in=course_ids).values()
+
+
 
     # sa may color ng calendar.html change
     sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
@@ -229,6 +237,11 @@ def student_profile(request):
             item['color'] = sample_colors[x]
 
         event_list.append(item)
+        
+        """ Adding Course Desc and Course Title in Context"""
+        for item in course_desc:
+            if course_details[x]['course_id_id'] == item['course_id']:
+                course_detail_list.append({**course_details[x], **item})
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
@@ -238,13 +251,16 @@ def student_profile(request):
                         'total_count':total_count,                        
                     }
 
-    context  = {
-        'student_details': student_details,
-        'course_enrolled_list':courses,
-        'stud_id':user_id,
-        'course_count':enrolled_courses,
-        'scheduled_course':course_details,
-               }
+
+    
+
+    # context  = {
+    #     'student_details': student_details,
+    #     'course_enrolled_list':courses,
+    #     'stud_id':user_id,
+    #     'course_count':enrolled_courses,
+    #     'scheduled_course':course_details,
+    #            }
 
     # Get the current date from the URL parameters
     date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
@@ -306,7 +322,7 @@ def student_profile(request):
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':course_details,
+        'scheduled_course':course_detail_list,
         'event_list':json.dumps(event_list),
     })
 
@@ -417,9 +433,9 @@ def download_activity_submission(request, id, pk):
     course_batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     submission = Activity_Submission.objects.filter(course_activity=activity,student_id=student).last()
-    print(submission)
+    # print(submission)
     file_path = submission.activity_file.path
-    print(file_path)
+    # print(file_path)
     file = open(file_path, 'rb')
 
     # Set the appropriate response headers
@@ -482,10 +498,12 @@ def student_edit_profile(request):
 
     """ This function renders the student edit profile"""
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
-    print(student_auth_details.user_id, user_id)
+    # print(student_auth_details.user_id, user_id)
     
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
         student_profile = Student_Profile.objects.get(user_id=user_id)
+        student_profile.profile_pic = str(student_profile.profile_pic).replace("\\","/")
+        student_profile.save()
         
 
         
@@ -562,7 +580,7 @@ def student_edit_profile(request):
 
         if user_id in Student_Profile.objects.values_list('user_id', flat=True):
             # student_profile = Student_Profile.objects.get(user_id=user_id)
-            print("I entered in line 152")
+            # print("I entered in line 152")
             student_profile.bio = bio
             student_profile.address = address
             student_profile.user_contact_no = user_contact_no
@@ -571,7 +589,7 @@ def student_edit_profile(request):
 
             # enters here if there is a record in student_profile, used only for updating profile pic
             if profile_pic:
-                student_profile.profile_pic = os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)
+                student_profile.profile_pic = str(os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)).replace("\\","/")
 
         else:
             # enters here if there is no record yet in student_profile
@@ -584,7 +602,7 @@ def student_edit_profile(request):
                     emergency_contact=emergency_contact,
                     emergency_contact_no=emergency_contact_no,
                     user_id=user_id,
-                    profile_pic=os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)
+                    profile_pic=str(os.path.join(settings.STATIC_URL, 'student_pic', profile_pic)).replace("\\","/")
                 )
             else:
                 student_profile = Student_Profile(

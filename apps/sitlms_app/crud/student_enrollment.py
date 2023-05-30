@@ -12,6 +12,7 @@ from datetime import date, datetime ,timedelta
 from django.db.models import Max
 from datetimerange import DateTimeRange
 from operator import itemgetter
+from django.utils import timezone
 
 
 def get_redundant_schedule(course_batch):
@@ -62,7 +63,7 @@ def enroll_student(request, id):
 
     template = loader.get_template('admin_module/enroll_student.html')
     student_available = Student_Enrollment.objects.values_list('student_id').filter(course_batch__in=get_redundant_schedule(id)).distinct()
-    students = Students_Auth.objects.exclude(id__in=student_available).filter(active_deactive="Active").values()  # can enroll only all active students
+    students = Students_Auth.objects.exclude(id__in=student_available).filter(active_deactive=True).values()  # can enroll only all active students
     student_list = students.values().order_by('user_id')
     student_ids = student_list.values_list('user_id')
     student_details = User.objects.filter(id__in=student_ids).values().order_by('id')
@@ -106,10 +107,11 @@ def enroll_student(request, id):
                 student_id=Students_Auth.objects.get(user_id=item),
                 course_batch=Course_Enrollment.objects.get(course_batch=id),
                 grades='TBD',
-                date_enrolled=date.today())
+                date_enrolled = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()),timezone.get_current_timezone()))
+
 
             enrollment.save()
-        print(f'{id_list} id list')
+        # print(f'{id_list} id list')
         return redirect('view_enrolled_course')
 
 
