@@ -211,13 +211,14 @@
                                 <div class="card-header bg-dark" style="height: 3.5rem">
                                     <div class="row d-flex align-items-center">
                                         <div class="col-1">
+                                            
                                             {% if profile_pic %}
                                             <span style="margin-left: 10px">
-                                                <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem; border-radius: 50%;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
                                             </span>
                                             {% else %}
                                             <span>
-                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
                                             </span>
                                             {% endif %}
                                         </div>

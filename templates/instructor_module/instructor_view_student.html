@@ -133,16 +133,12 @@
                                     {% for detail in new_list%}
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">
-                                                {% if profile_pic %}
-                                                <span class="align-items-center">
-                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{{ profile_pic}}" alt="" class="img-thumbnail mb-4" id="image-preview">
-                                                </span>
+                                                {% if detail.profile_pic %}
+                                                    <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
                                                 {% else %}
-                                                <span class="align-items-center">
-                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
-                                                </span>
+                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
                                                 {% endif %}
-                                                {{detail.last_name}}, {{detail.first_name}}
+                                                {{detail.last_name}}, {{detail.first_name}} 
                                             </li>
                                         </ul>
                                     {% endfor %}

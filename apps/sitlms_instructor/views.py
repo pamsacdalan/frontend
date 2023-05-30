@@ -140,7 +140,7 @@ def view_students(request, id):
     # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
     program_ids = student_auth_details.values_list('program_id_id')
-    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
+    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code', 'program_title')  # program code to be added to new_list
     
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
@@ -152,12 +152,26 @@ def view_students(request, id):
     new_list = []
 
 
+    # for x in range(count):
+    #     for program in program_code:
+    #         if student_auth_details[x]['program_id_id'] == program['program_id']:
+    #             new_list.append({**student_auth_details[x], **student_details[x], **program})
+
     for x in range(count):
         for program in program_code:
             if student_auth_details[x]['program_id_id'] == program['program_id']:
-                new_list.append({**student_auth_details[x], **student_details[x], **program})
-
-    # print(new_list)
+                if student_auth_details[x]['user_id'] in Student_Profile.objects.values_list('user_id', flat=True):
+                    profile_path = Student_Profile.objects.filter(user_id=student_auth_details[x]['user_id']).values('profile_pic')
+                    profile_path = profile_path[0]['profile_pic']
+                    profile_path = os.path.normpath(profile_path)
+                    if profile_path.startswith(settings.MEDIA_URL):
+                        profile_path = profile_path.replace(settings.MEDIA_URL, settings.STATIC_URL, 1)
+                    profile_path = profile_path.replace('\\', '/')
+                    print(profile_path)
+                    
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': profile_path})
+                else:
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': ''})
 
     def sort_by_name(dictionary):
         return dictionary['last_name'].lower()
@@ -415,6 +429,7 @@ def instructor_course(request, id):
         profile_pic = instructor_profile.profile_pic
     else:
         profile_pic = ""
+    
 
     context = {
         'course_batch': id,
