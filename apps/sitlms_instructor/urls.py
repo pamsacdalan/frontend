@@ -34,6 +34,7 @@ urlpatterns = [
     path('instructor/edit_profile/', views.edit_profile,name="instructor_edit_profile"),
     path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/student_work/private_comments/<int:student>', views.private_comments, name='instructor_private_comments'),
     path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/student_work/private_comments/<int:student>/add', views.add_private_comment_instructor, name='instructor_private_comments_add'),
+    path('instructor/view_courses/<str:id>/assignments/comments/<int:pk>/student_work/private_comments/<int:student>/delete/<int:comment_id>', views.delete_private_comment_instructor, name='instructor_private_comments_delete'),
 
       
     

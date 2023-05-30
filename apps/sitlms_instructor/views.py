@@ -843,6 +843,7 @@ def report_issues(request):
         # print(f'{firstname} | {lastname} | {student_access}')
         # print(f'{subject} \n {msg}')
     return redirect('/sit-instructor/instructor')
+
 @user_passes_test(is_instructor)
 def private_comments(request, id, pk, student):
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
@@ -865,8 +866,19 @@ def private_comments(request, id, pk, student):
     }
     return render(request, 'instructor_module/act_private_comments.html', context)
 
+@user_passes_test(is_instructor)
 def add_private_comment_instructor(request, id, pk, student):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
     if request.method=="POST":
         instance = ActivityPrivateComments(course_activity=Course_Activity.objects.get(id=pk),student=Students_Auth.objects.get(pk=student),uid=request.user,content=request.POST.get("comment_content"))
         instance.save()
+    return redirect('instructor_private_comments', id=id,pk=pk,student=student)
+
+@user_passes_test(is_instructor)
+def delete_private_comment_instructor(request, id, pk, student, comment_id):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
+    instance = ActivityPrivateComments.objects.get(pk=comment_id)
+    instance.delete()
     return redirect('instructor_private_comments', id=id,pk=pk,student=student)

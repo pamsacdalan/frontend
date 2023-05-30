@@ -7,6 +7,7 @@
         <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
         <td>{{comment.timestamp}}</td>
         <td>{{comment.content}}</td>
+        {% if request.user == comment.uid %}<td><a href="{% url 'instructor_private_comments_delete' batch.course_batch act.id student.id comment.pk %}">Delete</a></td>{% endif %}
     </tr>
     {% endfor %}
 </table>

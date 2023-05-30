@@ -212,4 +212,4 @@ class SubmitIssue(models.Model):
     sender_subject = models.CharField()
     sender_message = models.CharField()
     status = models.IntegerField(default=0)
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=datetime.now)
