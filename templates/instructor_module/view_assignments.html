@@ -101,7 +101,8 @@
                                                         <div class="col text-left">
                                                             <label>Due Date *</label>
                                                             <br>
-                                                            <input id="deadline" name="deadline" class="form-control form-control-sm" type="date" required/>
+                                                            <input class="form-control form-control-sm" type="date" name="deadline_0" required id="id_deadline_0"><input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
+                                                            <!--<input id="deadline" name="deadline" class="form-control form-control-sm" type="date"/>-->
                                                             {% comment %} {{form.deadline}} {% endcomment %}
                                                         </div> 
                                                     </div>
@@ -169,6 +170,16 @@
                 <!-- Show if database is NOT empty-->
                 <div class="container">
                     <br>
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
+                            {% if message.tags == "error" %}
+                                {{ message }}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <br>
+                    {% endif %}
                     <div class="row">
                         {% for activity in acts %}
                         <div class="col-sm-4">

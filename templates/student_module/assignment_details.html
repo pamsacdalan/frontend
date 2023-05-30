@@ -100,12 +100,21 @@
         {{current_submission_filename}} 
         {% else %}
         {% endif %}
-     </a></h3>
-     {% if not submission_grade %}
+    </a></h3>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
+            {% if message.tags == "error" %}
+            {{ message }}
+            {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if not submission_grade %}
     {{ submission_upload_form.as_p }}
     <button type="submit">Submit</button>
     {% endif %}
-  </form>
+</form>
 
 {% if submission_grade %}
 <p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
