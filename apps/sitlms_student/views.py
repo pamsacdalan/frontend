@@ -611,7 +611,7 @@ def report_issues(request):
     user_id = queryset.first().id
 
     if request.method == "POST":
-        student_report_issues = Instructor_Auth.objects.get(user_id=user_id)
+        student_report_issues = Students_Auth.objects.get(user_id=user_id)
         firstname = User.objects.get(id=user_id).first_name
         lastname = User.objects.get(id=user_id).last_name
         student_access = student_report_issues.access_type
