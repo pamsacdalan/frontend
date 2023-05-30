@@ -1,5 +1,5 @@
 from django.db import models
-from apps.sitlms_app.models import Course_Enrollment, Instructor_Auth
+from apps.sitlms_app.models import Course_Enrollment, Instructor_Auth, Students_Auth
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -37,4 +37,11 @@ class Activity_Comments(models.Model):
     course_activity = models.ForeignKey(Course_Activity, on_delete=models.CASCADE)
     uid = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField()
-    timestamp = models.DateTimeField(default=datetime.now)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+class ActivityPrivateComments(models.Model):
+    course_activity = models.ForeignKey(Course_Activity, on_delete=models.CASCADE)
+    student = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    content = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(default=timezone.now)

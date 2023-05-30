@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from apps.sitlms_instructor.forms import ActivityForms
-from apps.sitlms_instructor.models import Activity_Comments, Course_Activity, Course_Announcement
+from apps.sitlms_instructor.models import Activity_Comments, ActivityPrivateComments, Course_Activity, Course_Announcement
 from dateutil.parser import parse
 from datetime import date, datetime
 from django.urls import reverse
@@ -625,7 +625,10 @@ def student_work(request, id, pk):
         filename=str(x['activity_file']).split('/')[-1]
         # is_submission_on_time = True if x['date_submitted'] < activity.deadline else False
         # print(is_submission_on_time)
-        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade']])
+        #last_private_comment = False
+        last_private_comment = ActivityPrivateComments.objects.filter(course_activity=activity,student=student).order_by("timestamp").last().content if ActivityPrivateComments.objects.filter(course_activity=activity,student=student).exists() else False
+        # print(last_private_comment)
+        list_of_submissions_2.append([student.user.last_name, student.user.first_name, filename, x['date_submitted'], student.pk, x['id'], x['grade'], last_private_comment])
     # items_no = int(activity.max_score)
     # percent = activity.grading_percentage
     students_submitted = Activity_Submission.objects.filter(course_activity=activity).values('student_id')
@@ -634,7 +637,8 @@ def student_work(request, id, pk):
     # print(students_not_submitted)
     for x in students_not_submitted:
         student = Students_Auth.objects.get(pk=x['student_id'])
-        students_nonsubmit_context.append([student.user.last_name, student.user.first_name])
+        last_private_comment = ActivityPrivateComments.objects.filter(course_activity=activity,student=student).order_by("timestamp").last().content if ActivityPrivateComments.objects.filter(course_activity=activity,student=student).exists() else False
+        students_nonsubmit_context.append([student.user.last_name, student.user.first_name, student.pk, last_private_comment])
     context = {
         'list_of_submissions': list_of_submissions_2,
         'batch':batch,
@@ -651,6 +655,8 @@ def save_activity_grades(request,id,pk,fk):
 
     if request.method =="POST":
         grade = request.POST['score']
+        if grade == "":
+            grade = None
         student.grade = grade
         student.save(update_fields=['grade'])
        
@@ -784,3 +790,31 @@ def edit_profile(request):
 
 
     return render(request, 'instructor_module/edit_profile.html', context)
+
+@user_passes_test(is_instructor)
+def private_comments(request, id, pk, student):
+    if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
+        return redirect("instructor-no-access")
+    #batch = Course_Enrollment.objects.get(pk=id)
+    #activity = Course_Activity.objects.get(id=pk)
+    #student = Activity_Submission.objects.get(pk=student)
+    comments = ActivityPrivateComments.objects.filter(course_activity=Course_Activity.objects.get(id=pk),student=student).order_by("timestamp")
+    student_submission = str(Activity_Submission.objects.get(course_activity=pk, student_id=student).activity_file).split('/')[-1] if Activity_Submission.objects.filter(course_activity=pk, student_id=student).exists() else False
+    marks = Activity_Submission.objects.get(course_activity=pk, student_id=student).grade if Activity_Submission.objects.filter(course_activity=pk, student_id=student).exists() and Activity_Submission.objects.get(course_activity=pk, student_id=student).grade else False
+    max_score = Course_Activity.objects.get(id=pk).max_score
+    context = {
+        "comments":comments,
+        'batch':Course_Enrollment.objects.get(pk=id),
+        'act':Course_Activity.objects.get(id=pk),
+        'student':Students_Auth.objects.get(pk=student),
+        'student_submission':student_submission,
+        'marks': marks,
+        'max_score':max_score,
+    }
+    return render(request, 'instructor_module/act_private_comments.html', context)
+
+def add_private_comment_instructor(request, id, pk, student):
+    if request.method=="POST":
+        instance = ActivityPrivateComments(course_activity=Course_Activity.objects.get(id=pk),student=Students_Auth.objects.get(pk=student),uid=request.user,content=request.POST.get("comment_content"))
+        instance.save()
+    return redirect('instructor_private_comments', id=id,pk=pk,student=student)

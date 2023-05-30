@@ -1,0 +1,22 @@
+<h1>{{student.user.first_name}} {{student.user.last_name}}</h1>
+{% if student_submission %}<h3><a href="{% url 'instructor_download_activity_submission' batch.course_batch act.id student.id %}" download>{{ student_submission }}</a></h3> {% endif %}
+{% if marks %}<b>{{ marks }}</b>/{{max_score}}{% else %}No marks{% endif %}<br><br>
+<table>
+    {% for comment in comments %}
+    <tr>
+        <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
+        <td>{{comment.timestamp}}</td>
+        <td>{{comment.content}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+<form action="{% url 'instructor_private_comments_add' batch.course_batch act.id student.id %}" method="POST">
+    {%csrf_token%}
+    <textarea rows="2" name="comment_content"></textarea><br>  
+    <button type="submit">Send</button>
+</form>
+
+<button><a href="{% url 'student_work' batch.course_batch act.id %}">Back</a></button>
