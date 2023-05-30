@@ -142,9 +142,9 @@ class Students_Auth(models.Model):
     #email = models.EmailField(max_length=100)
     birthdate = models.DateField()
     employment_status = models.CharField(max_length=50, choices=employment_status, default='Deployed')
-    active_deactive = models.CharField(max_length=50, choices=active_inactive, default="Active")
+    active_deactive = models.BooleanField(default=True)
     access_type = models.IntegerField(default=2, validators=[MaxValueValidator(3), MinValueValidator(1)])
-
+    
 class Student_Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students_Auth, on_delete=models.CASCADE)
