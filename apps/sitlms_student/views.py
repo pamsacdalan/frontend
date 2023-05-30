@@ -162,6 +162,7 @@ def student_profile(request):
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
     
 
+
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
     
@@ -182,8 +183,15 @@ def student_profile(request):
     course_batch_list = student_courses.values_list('course_batch_id') # get course_batch
     # get course details using course_batch
     course_details = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values()
-    course_details = [x for x in course_details] # convert query set to list
+    # course_details = [x for x in course_details] # convert query set to list
+    course_detail_list = []
     detail_count = len(course_details)
+
+    # get course title and course description
+    course_ids = Course_Enrollment.objects.filter(course_batch__in=course_batch_list).values('course_id_id')
+    course_desc = Course_Catalog.objects.filter(course_id__in=course_ids).values()
+
+
 
     # sa may color ng calendar.html change
     sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
@@ -229,6 +237,11 @@ def student_profile(request):
             item['color'] = sample_colors[x]
 
         event_list.append(item)
+        
+        """ Adding Course Desc and Course Title in Context"""
+        for item in course_desc:
+            if course_details[x]['course_id_id'] == item['course_id']:
+                course_detail_list.append({**course_details[x], **item})
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
@@ -238,13 +251,16 @@ def student_profile(request):
                         'total_count':total_count,                        
                     }
 
-    context  = {
-        'student_details': student_details,
-        'course_enrolled_list':courses,
-        'stud_id':user_id,
-        'course_count':enrolled_courses,
-        'scheduled_course':course_details,
-               }
+
+    print(course_detail_list)
+
+    # context  = {
+    #     'student_details': student_details,
+    #     'course_enrolled_list':courses,
+    #     'stud_id':user_id,
+    #     'course_count':enrolled_courses,
+    #     'scheduled_course':course_details,
+    #            }
 
     # Get the current date from the URL parameters
     date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
@@ -271,15 +287,6 @@ def student_profile(request):
         20: ['Conference'],
         25: ['Workshop', 'Training'],
     }
-
-    for j in course_details:
-        print(j)
-        print("---")
-
-    for i in event_list:
-        print(i)
-        print("---")
-
     calendar_data = []
     for week in cal:
         week_data = []
@@ -303,7 +310,7 @@ def student_profile(request):
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':course_details,
+        'scheduled_course':course_detail_list,
         'event_list':json.dumps(event_list),
     })
 
