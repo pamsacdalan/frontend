@@ -3,9 +3,10 @@
 
 {% block content %}
     <!-- Course Header-->
-    <br>
-    <div class="card text-center">
-        <div class="card-header" style="height: 11rem">
+    <div class="card text-center" style="height: 15rem">
+        <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+        <div class="card-img-overlay text-white">
+            <br>
             <br>
             <br>
             <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
@@ -15,7 +16,6 @@
     <!-- End of Course Header-->
 
     <!-- Main Content -->
-    <br>
     <div class='container-fluid' align="right">
         <!-- Buttons -->
 
@@ -23,33 +23,47 @@
 
     <br>
     <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-dark">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+                    <a class="nav-link text-white " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
                 </li>
         
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'view_students' id %}">Students</a>
+                    <a class="nav-link text-white" aria-current="page" href="{% url 'view_students' id %}">Students</a>
                 </li>
         
                 <li class="nav-item  active">
-                    <a class="nav-link active" aria-current="page" href="#">Assignments</a>
+                    <a class="nav-link text-primary active" aria-current="page" href="#">Assignments</a>
                 </li>
             </ul>
         </div>
         <br>
         <div class="container-fluid">
-            <div class="container" align="right">
-                <!-- Create Button-->
-                <a class="btn btn-primary btn-icon-split btn-sm" href="{% url 'add_assignment' id %}" data-toggle="modal" data-target="#actmodal" onclick="openModal()" >
-                    <span>
-                        <i class="ti-briefcase align-bottom"></i>
-                    </span>
-                    <span class="text"> 
-                            Create Assignment
-                    </span>
-                </a>
+            <div class="container">
+                <br>
+                <div class="row">
+                    <div class="col-8 align-items-bottom">
+                        <h4 style="margin-left: 38px">List of Assignments &#9;</h4>
+                        {% if count_acts == 1 %}
+                            <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignment</span>
+                        {% else %}
+                            <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignments</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-4" align="right">
+                        <!-- Create Button-->
+                        <a class="btn btn-primary btn-icon-split btn-sm" href="{% url 'add_assignment' id %}" data-toggle="modal" data-target="#actmodal" onclick="openModal()" >
+                            <span>
+                                <i class="ti-briefcase align-bottom"></i>
+                            </span>
+                            <span class="text"> 
+                                    Create Assignment
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
 
                 <!-- Post activity Modal Start-->
                 <div class="modal fade" id="actmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
@@ -92,19 +106,26 @@
 
                                                     <div class="row">
                                                         
-                                                        <div class='col text-left'>
+                                                        <div class='col-6 text-left'>
                                                             <label>URL Attachment</label>
                                                             <br>
                                                             <input id="activity_attachment" name="activity_attachment" class="form-control form-control-sm" type="file"/>
                                                             {% comment %} {{form.activity_attachment}} {% endcomment %}
                                                         </div>
-                                                        <div class="col text-left">
+                                                        <div class="col-3 text-left">
                                                             <label>Due Date *</label>
                                                             <br>
-                                                            <input class="form-control form-control-sm" type="date" name="deadline_0" required id="id_deadline_0"><input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
+                                                            <input class="form-control form-control-sm" type="date" name="deadline_0" required id="id_deadline_0">
+                                                            
                                                             <!--<input id="deadline" name="deadline" class="form-control form-control-sm" type="date"/>-->
                                                             {% comment %} {{form.deadline}} {% endcomment %}
                                                         </div> 
+                                                        <div class="col-3 text-left">
+                                                            <label>Deadline *</label>
+                                                            <br>
+                                                            <input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
+                                                            {% comment %} {{form.scores}} {% endcomment %}
+                                                        </div>
                                                     </div>
                                                     
                                                     <br> 
@@ -183,22 +204,29 @@
                     <div class="row">
                         {% for activity in acts %}
                         <div class="col-sm-4">
-                            <div class="card bg-dark text-white">
+                            <div class="card bg-dark text-white" style="margin-left: 39px; width: 20rem">
                                 <div class="card-body">
                                     <h5 class="card-title">{{activity.activity_title}}</h5>
-                                    <span class="card-text">Due date:</span>
+                                    {% comment %} <span style="font-size: 13px;" class="card-text">Date Posted:</span> {% endcomment %}
+                                    <p style="font-size: 13px;" class="card-text">{{activity.activity_desc}}</p>
                                     <br>
-                                    <span class="card-text">{{activity.deadline}}</span>
-                                    <br>
-                                    <br>
-                                    <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post btn-sm">Open</a>
+                                    <div class="row">
+                                        <div class="col">
+                                            <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post">View</a>
+                                        </div>
+                                        <div class="col-7 ">
+                                            <span class="align-items-center" style="font-size: 13px;" class="card-text">Due date:</span>
+                                            <p style="font-size: 13px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer text-white">
                                     <div class="container">
                                         <div class="row">
-                                            <div class="col text-left text-gray-dark">
-                                                2 days ago <!-- Should be day posted-->
-                                            </div>
+                                            {% comment %} <div class="col text-left text-gray-dark"> {% endcomment %}
+                                            <!-- Date Posted -->
+                                            <h6 style="font-size: 13px; margin-left: 0">{{activity.start_date|date:'M d, Y h:m A'}}</h6>
+                                            {% comment %} </div> {% endcomment %}
 
                                             <div class="col text-right text-white">
                                                 <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">

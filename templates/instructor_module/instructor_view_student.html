@@ -65,8 +65,10 @@
     </div> {% endcomment %}
         <!-- Course Header-->
         <br>
-        <div class="card text-center">
-            <div class="card-header" style="height: 11rem">
+        <div class="card text-center" style="height: 15rem">
+            <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+            <div class="card-img-overlay text-white">
+                <br>
                 <br>
                 <br>
                 <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
@@ -76,18 +78,18 @@
         <!-- End of Course Header-->
         <br>
         <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-dark">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+                        <a class="nav-link text-white" aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
                     </li>
             
                     <li class="nav-item active">
-                        <a class="nav-link active" aria-current="page" href="#">Students</a>
+                        <a class="nav-link text-primary active" aria-current="page" href="#">Students</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' id %}">Assignments</a>
+                        <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' id %}">Assignments</a>
                     </li>
                 </ul>
             </div>
@@ -99,7 +101,13 @@
                 <div class ="container">
                     <div class="row ">
                         <div class="col-8 align-items-bottom">
-                            <h4 style="margin-left: 38px">List of Students &#9;<span class="text-primary">[{{count}}]</span></h4>
+                            <h4 style="margin-left: 38px">List of Students &#9;</h4>
+                            {% if count_acts == 1 %}
+                            <span class="subtitle text-primary" style="margin-left: 38px">{{count}} Student</span>
+                            {% else %}
+                            <span class="subtitle text-primary" style="margin-left: 38px">{{count}} Students</span>
+                            {% endif %}
+                            
                         </div>
                         <div class="col-4" align="right">
                             <!-- Download Button-->
@@ -131,20 +139,47 @@
                             <div class="container">
                                 <div class="col-8">
                                     {% for detail in new_list%}
-                                        <ul class="list-group list-group-flush">
+                                        <table id="Main table">
+                                            <tr>
+                                                <td style="width: 1.8rem;"></td>
+                                                <td name="profile_pic" style="width: 3rem; height: 3rem">
+                                                {% if detail.profile_pic %}
+                                                    <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
+                                                {% else %}
+                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
+                                                {% endif %}
+                                                </td>
+                                                
+                                                <td class="text-left" name= 'full_name' style="width: 25rem; height: 3rem">{{detail.last_name}}, {{detail.first_name}}</td>
+                                                {% comment %} <td class="text-left" name= 'email' style="width: 25rem;height: 3rem">{{detail.username}}</td> {% endcomment %}
+                                                <td class="text-left" name= 'program_code'style="width: 20rem; height: 3rem" >{{detail.program_title}}</td>
+                                            </tr>
+                                        </table>
+                                        <hr>
+                                         {% comment %} <ul class="list-group list-group-horizontal">
                                             <li class="list-group-item">
                                                 {% if detail.profile_pic %}
                                                     <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
                                                 {% else %}
                                                     <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
                                                 {% endif %}
+                                                 
+                                            </li>
+                                            <li class="list-group-item">
                                                 {{detail.last_name}}, {{detail.first_name}} 
                                             </li>
-                                        </ul>
+                                            <li class="list-group-item">
+                                                &nbsp;
+                                            </li>
+                                            <li class="list-group-item">
+                                                {{detail.program_title}}
+                                            </li>
+                                        </ul> {% endcomment %}
                                     {% endfor %}
                                 </div>
                             </div>
                             {% endif %}
+                            
                         </div>
                     </div>
                 </div>

@@ -6,7 +6,9 @@
 {% block content %}
         <!-- Course Header-->
         <div class="card text-center">
-            <div class="card-header" style="height: 11rem">
+            <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+            <div class="card-img-overlay text-white">
+                <br>
                 <br>
                 <br>
                 <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
@@ -18,18 +20,18 @@
         <br>
         <div class="card">
             <!-- Navbar -->
-            <div class="card-header text-primary">
+            <div class="card-header bg-dark">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item active">
-                        <a class="nav-link active" aria-current="page" href="#">Announcements</a>
+                        <a class="nav-link text-primary active" aria-current="page" href="#">Announcements</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
+                        <a class="nav-link text-white" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
                     </li>
             
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
+                        <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
                     </li>
                 </ul>
             </div>
@@ -225,7 +227,7 @@
 
                                         <div class="col-10 text-left text-white">
                                             <h6 style="font-size: 13px">{{author}}</h6>
-                                            <h6 style="font-size: 11px">{{announcement.date_posted}}</h6>
+                                            <h6 style="font-size: 11px">{{announcement.date_posted|date:'M d, Y h:m A'}}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -251,9 +253,125 @@
 
                                 <!-- Footer -->
                                 <div class="card-footer text-right">
-                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}" data-toggle="tooltip" title="Edit">
+                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}" data-toggle="modal" data-target="#editmodal" onclick="openModal()">
                                         <i class="ti-pencil"></i>
                                     </a> 
+
+                                    <!-- Edit announcement Modal Start-->
+                                    <div class="modal fade" id="editmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content bg-dark">
+                                                <div class="modal-header text-white">
+                                                    <h6 class="modal-title">Edit Announcement for {{course.course_title}}</h6>
+                                                    <!--Close-->
+                                                    <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                    <div class="modal-body">
+                                                        <br>
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="container text-left">
+                                                                        <div class="card-header bg-light text-dark" style="height: 3.5rem">
+                                                                            <div class="row d-flex align-items-center">
+                                                                                <div class="col-1">
+                                                                                    {% if profile_pic %}
+                                                                                    <span style="margin-left: 10px">
+                                                                                        <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem; border-radius: 50%;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                                                    </span>
+                                                                                    {% else %}
+                                                                                    <span>
+                                                                                        <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                                                    </span>
+                                                                                    {% endif %}
+                                                                                </div>
+                                        
+                                                                                <div class="col text-left text-dark">
+                                                                                    <h6 style="font-size: 13px">{{author}}</h6>
+                                                                                    <h6 style="font-size: 11px">{{announcement.date_posted|date:'M d, Y h:m A'}}</h6>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- Body -->
+                                                                        <div class="card-body">
+                                                                            <div class="col-md-12">
+                                                                                <div class="panel">
+                                                                                    <div class="panel-body">
+                                                                                        <div class="row ">
+                                                                                            <!-- Announcement content-->
+                                                                                            <div class="col-11">
+                                                                                                <span class="align-middle">
+                                                                                                    <form method="post">
+                                                                                                        {% csrf_token %}
+                                                                                                    
+                                                                                                        {% comment %} <label for="announcement_text">Text:</label><br> {% endcomment %}
+                                                                                                        <textarea style="border-radius: 0" id="announcement_text" class="text form-control form-control-sm" cols="60" rows ="7" name="announcement_text">{{ announcement.announcement_text }}</textarea><br><br>
+                                                                                                    
+                                                                                                        <input class="btn btn-post" type="submit" onclick = "return checkTextArea() " value="Update"/>
+                                                                                                        <!-- <input class="button" type="button" onclick="window.location.replace('/sit-instructor/instructor/course/{{ course_batch }}')" value="Cancel" /> -->
+                                                                                                        <a class="btn btn-light" href='/sit-instructor/instructor/course/{{ course_batch }}'>Cancel </a>
+                                                                                                    
+                                                                                                        <p id="warning" style="display:none">You need to write something!!</p>
+                                                                                                    
+                                                                                                        <script>
+                                                                                                    
+                                                                                                            function trim_and_remove_blank_lines(string)
+                                                                                                            {
+                                                                                                                return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+                                                                                                            }
+                                                                                                                    
+                                                                                                            function checkTextArea() {
+                                                                                                            var text_area = document.getElementById("announcement_text");
+                                                                                                            var text = document.getElementById("warning");
+                                                                                                            
+                                                                                                            if (trim_and_remove_blank_lines(text_area.value)){
+                                                                                                                text.style.display = "none";
+                                                                                                                return true;
+                                                                                                            } else{
+                                                                                                                text.style.display = "block";
+                                                                                                                return false;
+                                                                                                                }
+                                                                                                            }
+                                                                                                        </script>
+                                                                                                    
+                                                                                                    </form>
+                                                                                                </span>
+                                                                                            </div>
+                                                        
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <br>
+                                                        </div>
+
+                                                    </div>
+                                                    {% comment %} <div class="modal-footer">
+                                                        <div class="mar-top clearfix text-right">
+                                                            
+                                                            <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div> {% endcomment %}
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Edit announcement Modal End-->
+
+                                    <script>
+                                        const openModal = () => {
+                                            $('modal.fade').modal('show');
+                                        }
+
+                                    </script>
                                         
                                     <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" 
                                         data-toggle="modal"

@@ -140,7 +140,8 @@ def view_students(request, id):
     # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
     program_ids = student_auth_details.values_list('program_id_id')
-    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code', 'program_title')  # program code to be added to new_list
+    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code','program_title')  # program code to be added to new_list
+    
     
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
@@ -303,11 +304,13 @@ def view_assignments (request,id):
     acts = Course_Activity.objects.filter(course_batch=id)
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    count_acts = Course_Activity.objects.filter(course_batch=id).values().count()
     
     context={
         'acts':acts,
         'id':id,
-        'course': course
+        'course': course,
+        'count_acts': count_acts
     }
     # print(acts)
     return render(request, 'instructor_module/view_assignments.html',context)
