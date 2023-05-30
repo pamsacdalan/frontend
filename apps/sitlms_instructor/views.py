@@ -53,9 +53,18 @@ def instructor(request):
     """ This function renders the instructor page """
     form = ActivityForms(request.POST)
     acts = Course_Activity.objects.all()
+    
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_id = Instructor_Auth.objects.get(user_id=user_id)
+    count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
+    
     context={
         'acts':acts,
         'form':form,
+        'count_courses': count_courses,
     }
     
     return render(request, 'instructor_module/instructor.html',context)
@@ -96,7 +105,6 @@ def instructor_view_enrolled_course(request):
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values()
 
-
     for index in range(len(course_enrolled)):
         course_num = course_enrolled[index]['course_id_id']
         for value in Course_Catalog.objects.values('course_id', 'course_title'):
@@ -107,7 +115,7 @@ def instructor_view_enrolled_course(request):
     
     # print(course_enrolled)
 
-    context = {'course_enrolled_list':course_enrolled
+    context = {'course_enrolled_list':course_enrolled,
                 }
     
 
@@ -127,27 +135,43 @@ def view_students(request, id):
     student_auth_details = Students_Auth.objects.filter(id__in=students).values('user_id', 'middlename', 'program_id_id').order_by('user_id')
     user_ids = student_auth_details.values_list('user_id')
     student_details = User.objects.filter(id__in=user_ids).values('first_name', 'last_name', 'username').order_by('id')
+    
     # print(student_details)
     # student_details = sorted(student_details, key=lambda student_details: student_details.last_name)
 
     program_ids = student_auth_details.values_list('program_id_id')
-    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code')  # program code to be added to new_list
+    program_code = Program.objects.filter(program_id__in=program_ids).values('program_id','program_code', 'program_title')  # program code to be added to new_list
     
     course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
     course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
 
     count = len(students)
-
+    
     # create a new list to pass as context
     new_list = []
 
 
+    # for x in range(count):
+    #     for program in program_code:
+    #         if student_auth_details[x]['program_id_id'] == program['program_id']:
+    #             new_list.append({**student_auth_details[x], **student_details[x], **program})
+
     for x in range(count):
         for program in program_code:
             if student_auth_details[x]['program_id_id'] == program['program_id']:
-                new_list.append({**student_auth_details[x], **student_details[x], **program})
-
-    # print(new_list)
+                if student_auth_details[x]['user_id'] in Student_Profile.objects.values_list('user_id', flat=True):
+                    profile_path = Student_Profile.objects.filter(user_id=student_auth_details[x]['user_id']).values('profile_pic')
+                    profile_path = profile_path[0]['profile_pic']
+                    profile_path = os.path.normpath(profile_path)
+                    if profile_path.startswith(settings.MEDIA_URL):
+                        profile_path = profile_path.replace(settings.MEDIA_URL, settings.STATIC_URL, 1)
+                    profile_path = profile_path.replace('\\', '/')
+                    print(profile_path)
+                    
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': profile_path})
+                else:
+                    new_list.append({**student_auth_details[x], **student_details[x], **program, 'profile_pic': ''})
 
     def sort_by_name(dictionary):
         return dictionary['last_name'].lower()
@@ -159,7 +183,7 @@ def view_students(request, id):
     context = {'new_list': new_list,
                'id':id,
                'count': count,
-               'course': course
+               'course': course,
                 }
     
     return HttpResponse(template.render(context,request))  
@@ -398,12 +422,21 @@ def instructor_course(request, id):
     lastname = User.objects.values_list('last_name', flat=True).get(id=user_id)
         
     author_name = firstname + " " + lastname
+    
+    if user_id in Student_Profile.objects.values_list('user_id', flat=True):
+        instructor_profile = Student_Profile.objects.get(user_id=user_id)
+
+        profile_pic = instructor_profile.profile_pic
+    else:
+        profile_pic = ""
+    
 
     context = {
         'course_batch': id,
         'course': course,
         'announcements':announcement_details,
         'author': author_name,
+        'profile_pic': profile_pic,
     }
 
     return HttpResponse(template.render(context,request))  
@@ -784,3 +817,23 @@ def edit_profile(request):
 
 
     return render(request, 'instructor_module/edit_profile.html', context)
+
+def report_issues(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    if request.method == "POST":
+        student_report_issues = Instructor_Auth.objects.get(user_id=user_id)
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+        student_access = student_report_issues.access_type
+        subject = request.POST['subject']
+        msg = request.POST['message']
+
+        issue = SubmitIssue(sender_firstname = firstname,sender_lastname = lastname,sender_access_type= student_access,sender_subject = subject,sender_message = msg)
+        issue.save()
+        #DEBUG
+        # print(f'{firstname} | {lastname} | {student_access}')
+        # print(f'{subject} \n {msg}')
+    return redirect('/sit-instructor/instructor')

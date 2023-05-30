@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue
 from django.conf import settings
 import os,json
 from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
@@ -172,8 +172,8 @@ def student_profile(request):
    
     
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
-    for enrollment in ongoing_enrollments:
-        print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
+    # for enrollment in ongoing_enrollments:
+    #     print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
         
     ## Schedule
     student_id = Students_Auth.objects.get(user=user_id)
@@ -287,6 +287,16 @@ def student_profile(request):
         20: ['Conference'],
         25: ['Workshop', 'Training'],
     }
+
+    #DEBUG
+    # for j in course_details:
+    #     print(j)
+    #     print("---")
+
+    # for i in event_list:
+    #     print(i)
+    #     print("---")
+
     calendar_data = []
     for week in cal:
         week_data = []
@@ -298,6 +308,8 @@ def student_profile(request):
                 week_data.append((day, events_for_day))
         calendar_data.append(week_data)
 
+    
+        
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html', {
         'calendar': calendar_data,
@@ -608,3 +620,23 @@ def student_edit_profile(request):
         return redirect('/sit-student/student_profile')
     
     return render(request, 'student_module/edit_profile.html', context) 
+
+def report_issues(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    if request.method == "POST":
+        student_report_issues = Students_Auth.objects.get(user_id=user_id)
+        firstname = User.objects.get(id=user_id).first_name
+        lastname = User.objects.get(id=user_id).last_name
+        student_access = student_report_issues.access_type
+        subject = request.POST['inputsubject']
+        msg = request.POST['contact-message']
+
+        issue = SubmitIssue(sender_firstname = firstname,sender_lastname = lastname,sender_access_type= student_access,sender_subject = subject,sender_message = msg)
+        issue.save()
+        #DEBUG
+        # print(f'{firstname} | {lastname} | {student_access}')
+        # print(f'{subject} \n {msg}')
+    return redirect('/sit-student/student_profile')
