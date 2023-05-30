@@ -374,7 +374,7 @@ def delete_assignment(request, id, pk):
                 # print(3)
                 os.remove(file_path)
                 folder_path = os.path.dirname(file_path)
-                print(folder_path)
+                # print(folder_path)
                 shutil.rmtree(folder_path)
             prev_instances.delete()
         act.delete()
