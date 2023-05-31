@@ -8,6 +8,7 @@ from apps.sitlms_instructor import views
 urlpatterns = [
     path('instructor', views.instructor,name="instructor"),
     path('program/view/',views.post_activity,name="revert"),
+    path('instructor/view_report_issues', views.view_report_issues, name='view_report_issues'),
     path('instructor/report_issues', views.report_issues, name='report_issues'),
     path('instructor/view_courses', views.instructor_view_enrolled_course, name='view_courses'),
     path('instructor/view_students/<str:id>', views.view_students, name='view_students'),

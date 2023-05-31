@@ -482,7 +482,7 @@ def remove_announcement(request, course_batch, schedule_id):
         announcement.delete()
         return HttpResponseRedirect(reverse('view_instructor_course', kwargs={'id': course_batch}))
     
-    return render(request, "instructor_module/delete_announcement.html", {'course_batch': course_batch})
+    return render(request, "instructor_module/instructor_course.html", {'course_batch': course_batch})
 
 @user_passes_test(is_instructor)
 def edit_announcement(request, course_batch, schedule_id):
@@ -828,6 +828,9 @@ def edit_profile(request):
 
 
     return render(request, 'instructor_module/edit_profile.html', context)
+
+def view_report_issues(request):
+    return render(request, 'instructor_module/report_issue.html')
 
 def report_issues(request):
     user = request.user

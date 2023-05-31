@@ -46,6 +46,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  padding-left: 50;
 }
 
 html {
@@ -57,6 +58,7 @@ html {
 
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
+
 }
 
 body {
@@ -567,8 +569,8 @@ pre code {
 
 .container {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 5px;
+  padding-left: 5px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -9028,7 +9030,9 @@ button.bg-dark:focus {
 
 .mt-4,
 .my-4 {
+  border: 1px solid red;
   margin-top: 1.5rem !important;
+  margin-left: 5rem !important;
 }
 
 .mr-4,
@@ -9053,6 +9057,7 @@ button.bg-dark:focus {
 .mt-5,
 .my-5 {
   margin-top: 3rem !important;
+
 }
 
 .mr-5,
@@ -11516,13 +11521,19 @@ pre {
   padding-bottom: 2.5rem;    /* Footer height */
 }
 
-
+footer {
+  position: sticky;
+  left: 0;
+  bottom: 1rem;
+  width: 100%;
+  height: 2.5rem; 
+}
 
 .page-footer {
   background: #fcfdff;
   position: fixed;
   left: 0;
-  bottom: 0;
+  bottom: 1rem;
   width: 100%;
   height: 2.5rem; 
 }
@@ -11733,7 +11744,7 @@ pre {
 
 .section {
   position: relative;
-  padding: 5rem 0;
+  padding: 2rem 0;
 }
 
 .section:nth-child(even) {
@@ -11760,4 +11771,10 @@ pre {
   background-color: rgba(0,0,0,0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
+}
+
+.center {
+  margin: auto;
+  width: 100%;
+  padding: 10px;
 }

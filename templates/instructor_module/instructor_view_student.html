@@ -2,67 +2,6 @@
 {% load static %}
 
 {% block content %}
-{% comment %} 
-    <div class="container-fluid">
-        <br>
-        <div class="card-header py-3">
-            List of Students for {{id}}
-        </div>
-
-        <br>
-        <div align="right"> <!-- buttons here-->
-            <!-- Back Button -->
-            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses" data-toggle="tooltip" title="Back to Courses">
-                <span>
-                    <i class="ti-control-backward"></i>
-                </span>
-            </a>
-            <!-- Announcement Button-->
-            <a class="btn btn-primary ml-2" href="{% url 'view_instructor_course' id %}" data-toggle="tooltip" title="Announcements">
-                <span>
-                    <i class="ti-announcement"></i>
-                </span>
-            </a>
-            <!-- Assignments Button-->
-            <a class="btn btn-primary ml-2" href="{% url 'view_assignments' id %}" data-toggle="tooltip" title="Assignments">
-                <span>
-                    <i class="ti-files"></i>
-                </span>
-            </a>
-            <!-- Download Button-->
-            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/" data-toggle="tooltip" title="Download Student List">
-                <span>
-                    <i class="ti-download"></i>
-                </span>
-            </a>
-            <br><br>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
-                <thead class="table-dark" align="center">
-
-                    <tr>
-                        <th>Program</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        
-                    </tr>
-                </thead>
-            
-                <tr>{% for detail in new_list%}
-                
-                    <td name= 'program_code'>{{detail.program_code}}</td>
-                    <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
-                    <td name= 'email'>{{detail.username}}</td>
-                    
-                </tr>
-                {% endfor %}
-            </table>
-            <br>
-            
-        </div>
-    </div> {% endcomment %}
         <!-- Course Header-->
         <br>
         <div class="card text-center" style="height: 15rem">
