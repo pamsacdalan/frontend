@@ -2,79 +2,10 @@
 {% load static %}
 
 {% block content %}
-<!-- Table list -->
-{% comment %} <div class="container-fluid">
-    <br>
-    <div class="card-header py-3">
-        Courses Details
-    </div>
-    <br>
-    <div align="right"> <!-- buttons here-->
-        <!-- View Pending Requests  Button -->
-        <a href="/sit-instructor/instructor/view_courses/view_pending_requests/" class="btn btn-primary ml-2" data-toggle="tooltip" title="View pending requests">
-             <span>
-                <i class="ti-folder"></i>
-            </span>
-        </a>
-    </div>
-    <br>
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
-                    <thead class="table-dark" align="center">
-                        <tr>
-                            <th>Course Batch</th>
-                            <th>Course Title</th>
-                            <th>Course Mode</th>
-                            <th>Session Details</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Frequency</th>
-                            <th>Actions</th>
-                            
-                        </tr>
-                    </thead>
-                
-                <tr>{% for course in course_enrolled_list%}
-                
-                    <td name= 'course_batch'><a href="/sit-instructor/instructor/course/{{course.course_batch}}">{{course.course_batch}}</a></td>
-                    <td name= 'course_id'>{{course.course_id_id}}</td>
-                    <td name= 'course_mode'>
-                        {% if course.course_mode == 0%} Webinar
-                        {% elif course.course_mode == 1%} Onsite
-                        {% else %} Self-Paced
-                        {% endif %}
-                    </td>
-                    <td name= 'session_details'>{{course.session_details | urlize | safe}}</td>
-                    
-                    
-                    <td name= 'start_date'>{{course.start_date}}</td>
-                    <td name= 'end_date'>{{course.end_date}}</td>
-                    <td name= 'start_time'>{{course.start_time}}</td>
-                    <td name= 'end_time'>{{course.end_time}}</td>
-                    <td name= 'frequency'>
-                        {% if course.frequency == 0%} Once
-                        {% elif course.frequency == 1%} Daily
-                        {% else %} Weekly
-                        {% endif %}
-                    </td>
-                    <td> <a href="/sit-instructor/instructor/view_students/{{course.course_batch}}"> View Students</a>
-                        <a href="/sit-instructor/instructor/view_courses/request_for_change_schedule/{{course.course_batch}}">Request for Change Schedule</a> 
-                    </td>
-                    
-                </tr>
-                    {% endfor %}
-                </table>
-                <br>
-                <br>
-
-            </div>
-</div> {% endcomment %}
-
-
 
 <!-- Courses section -->
+<br>
+<br>
 <div class="container text-center">
     <h6 class="title">Enrolled Courses</h6>
 </div>

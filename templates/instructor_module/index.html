@@ -33,7 +33,7 @@
                                     <a class="nav-link" href="/sit-instructor/instructor">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#schedules">Calendar</a>
+                                    <a class="nav-link" href="/sit-instructor/instructor/calendar">Calendar</a>
                                 </li>                 
                                 <li class="nav-item">
                                     <a class="nav-link" href="/sit-instructor/instructor/view_courses">Courses</a>
@@ -58,20 +58,42 @@
                 <!-- End of page navibation -->
             
                 <!-- Page Header -->
-                <div class="container mt-5">
+                <div class="container">
                     {% block header %}{% endblock header %}    
                 </div>  
         
                 <!-- Page Content -->
-                <section class="section">
+                <section class="section" style="margin-top: 5rem">
                     <div class = "container-fluid">
-                        <div class="container center">
-                            {% block content %}{% endblock content %}
+                        <div class="container">
+                            <div class="text-center">
+                                {% block cover %} {% endblock %}
+                                <div class="card-img-overlay text-white">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    {% block course_header %} {% endblock course_header %}
+                                </div>
+                            </div>
+                            <!-- End of Course Header-->
+                        </div>
+                        <div class="container-fluid center">
+                            <div class="row">
+                                {% comment %} <div class="col-2">
+                                    <div class="container">
+                                        {% include 'instructor_module/shortcuts.html'%}
+                                    </div>
+                                </div> {% endcomment %}
+                                <div class="col">
+                                    {% block content %}{% endblock content %}
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </section>
-        
-        
+                
                 <!-- Logout Modal-->
                 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel"
                 aria-hidden="true">

@@ -1,2 +1,131 @@
 {% extends './index.html' %}
 {% load static %}
+
+{% block content %}
+
+<html>
+<head>
+      <!--FOR CALENDER-->
+      <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js'></script>
+      <!--For Custom popup, delete if not needed-->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+<body>
+  <!-- ======= Calendar Section ======= -->
+  <section id="calendar" class="section">
+    <div class="container mt-0"></div>
+    <div class="container text-center" style="margin-top: 0;">
+        {% comment %} <h6 class="subtitle">Calendar</h6> {% endcomment %}
+        <div id="calendar-1" style="margin: 0 auto;"></div>
+    </div>
+  </section>
+  <!-- End Calendar Section -->
+
+  <style>
+    .subtitle {
+      font-size: 20px;
+    }
+    .fc-button {
+        background-color: #a70000 !important;
+    }
+    .fc-scrollgrid-sync-inner {
+      background-color: #a70000 !important;
+      color: white !important;
+    }
+
+    .fc-daygrid-day-frame {
+      background-color: #f6f2f2 !important;
+    }
+
+    .fc-daygrid-day-number {
+      color: black !important;
+    }
+    
+    .fc-col-header-cell {
+      font-size: 21px;
+    }
+
+    .fc-toolbar-title {
+      font-size: 25px;
+      font-weight: bold;
+    }
+    
+    /* Targeting Saturday and Sunday columns */
+    .fc-day-sat .fc-daygrid-day-frame {
+      background-color: #fddde2 !important; /* Replace #e2b2b9 with the desired color code */
+    }
+    
+    .fc-day-sun .fc-daygrid-day-frame {
+      background-color: #fddde2 !important; /* Replace #e2b2b9 with the desired color code */
+    }
+
+</style>
+
+
+  <script>
+
+     var sample_events = {{event_list|safe}};
+     var url_regex = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?([^ ])+");
+
+      for (var i = 0; i<sample_events.length; i++){
+        try{
+          link_search = sample_events[i].url.match(url_regex);
+          if (link_search.length > 0){
+            link = link_search[0];
+            url  = (link.indexOf('://') === -1) ? 'http://' + link : link; //prepend http to urls without it
+            sample_events[i].url = url;
+          }
+        }
+        catch {
+          delete sample_events[i].url;
+        }
+      }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar-1');
+    
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        eventClick: function(info) { // change to hover and edit styling
+          var eventObj = info.event;
+    
+          if (eventObj.url) {
+                Swal.fire({
+                title: eventObj.title,
+                html: `
+                  <b>Description:</b> ${eventObj.extendedProps.full_desc}<br>
+                  <b>Start Time:</b> ${eventObj.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+                  <b>End Time:</b> ${eventObj.end.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+                  <b>Link:</b> <a href="${eventObj.url}">${eventObj.url}</a>
+                `,
+              });
+
+            info.jsEvent.preventDefault(); // prevents browser from following link in current tab.
+          } else {
+            // custom popup; change if not needed
+            Swal.fire({
+            title: eventObj.title,
+            html: `
+              <b>Description:</b> ${eventObj.extendedProps.full_desc}<br>
+              <b>Start Time:</b> ${eventObj.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+              <b>End Time:</b> ${eventObj.end.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+            `,
+          });
+          }
+        },  
+        // weekends: false, // hide the weekends
+        events: sample_events,
+        eventTimeFormat: { // like '14:30:00'
+          hour: '2-digit',
+          minute: '2-digit',
+          meridiem: 'short'
+        }
+      });
+    
+      calendar.render();
+    });
+    
+    </script>
+</head>
+</body>
+</html>
+{% endblock%}
+

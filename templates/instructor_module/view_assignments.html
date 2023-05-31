@@ -1,297 +1,291 @@
 {% extends './index.html' %}
 {% load static %}
 
+
+{% block cover %}
+    <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+{% endblock %}
+
+{% block course_header %}
+    <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+    <h6 class="subtitle">{{id}}</h6>
+{% endblock %}
+
+
 {% block content %}
-    <!-- Course Header-->
-    <div class="card text-center" style="height: 15rem">
-        <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
-        <div class="card-img-overlay text-white">
-            <br>
-            <br>
-            <br>
-            <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
-            <h6 class="subtitle">{{id}}</h6>
-        </div>
-    </div>
-    <!-- End of Course Header-->
 
     <!-- Main Content -->
-    <div class='container-fluid' align="right">
-        <!-- Buttons -->
+    <div class="container-fluid" style="margin-top: 2rem">
+        <div class="row">
+            <div  align="left">
+                <!-- shortcuts -->
+            </div>
 
-    </div>
-
-    <br>
-    <div class="card">
-        <div class="card-header bg-dark">
-            <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item">
-                    <a class="nav-link text-white " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
-                </li>
-        
-                <li class="nav-item">
-                    <a class="nav-link text-white" aria-current="page" href="{% url 'view_students' id %}">Students</a>
-                </li>
-        
-                <li class="nav-item  active">
-                    <a class="nav-link text-primary active" aria-current="page" href="#">Assignments</a>
-                </li>
-            </ul>
-        </div>
-        <br>
-        <div class="container-fluid">
             <div class="container">
-                <br>
-                <div class="row">
-                    <div class="col-8 align-items-bottom">
-                        <h4 style="margin-left: 38px">List of Assignments &#9;</h4>
-                        {% if count_acts == 1 %}
-                            <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignment</span>
-                        {% else %}
-                            <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignments</span>
-                        {% endif %}
+                <div class="card" style="width: 99%">
+                    <div class="card-header bg-dark">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link text-white " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+                            </li>
+                    
+                            <li class="nav-item">
+                                <a class="nav-link text-white" aria-current="page" href="{% url 'view_students' id %}">Students</a>
+                            </li>
+                    
+                            <li class="nav-item  active">
+                                <a class="nav-link text-primary active" aria-current="page" href="#">Assignments</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-4" align="right">
-                        <!-- Create Button-->
-                        <a class="btn btn-primary btn-icon-split btn-sm" href="{% url 'add_assignment' id %}" data-toggle="modal" data-target="#actmodal" onclick="openModal()" >
-                            <span>
-                                <i class="ti-briefcase align-bottom"></i>
-                            </span>
-                            <span class="text"> 
-                                    Create Assignment
-                            </span>
-                        </a>
-                    </div>
-                </div>
-
-
-                <!-- Post activity Modal Start-->
-                <div class="modal fade" id="actmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content bg-dark">
-                            <div class="modal-header text-white">
-                                <h6 class="modal-title">Post Assignment for {{course.course_title}}</h6>
-                                <!--Close-->
-                                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
+                    <br>
+                    <div class="container-fluid">
+                        <div class="container">
+                            <br>
+                            <div class="row">
+                                <div class="col-8 align-items-bottom">
+                                    <h4 style="margin-left: 38px">List of Assignments &#9;</h4>
+                                    {% if count_acts == 1 %}
+                                        <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignment</span>
+                                    {% else %}
+                                        <span class="subtitle text-primary" style="margin-left: 38px">{{count_acts}} Assignments</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-4" align="right">
+                                    <!-- Create Button-->
+                                    <a class="btn btn-primary btn-icon-split btn-sm" href="{% url 'add_assignment' id %}" data-toggle="modal" data-target="#actmodal" onclick="openModal()" >
+                                        <span>
+                                            <i class="ti-briefcase align-bottom"></i>
+                                        </span>
+                                        <span class="text"> 
+                                                Create Assignment
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
-                                <div class="modal-body">
-                                    <br>
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="container text-white">
-                                                {{ error_msg }}
-
-                                                <form method="POST" action="{% url 'add_assignment' id %}" enctype="multipart/form-data">
-                                                    {% csrf_token %}
+            
+            
+                            <!-- Post activity Modal Start-->
+                            <div class="modal fade" id="actmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content bg-dark">
+                                        <div class="modal-header text-white">
+                                            <h6 class="modal-title">Post Assignment for {{course.course_title}}</h6>
+                                            <!--Close-->
+                                            <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                            <div class="modal-body">
+                                                <br>
+                                                <div class="container">
                                                     <div class="row">
-                                                        <div class='col text-left'>
-                                                            <label>Title *</label>
-                                                            <br>
-                                                            <input id="activity_title" name="activity_title" class="form-control form-control-sm" type="text" required />
-                                                            {% comment %} {{form.activity_title}} {% endcomment %}
-                                                            <br>
+                                                        <div class="container text-white">
+                                                            {{ error_msg }}
+            
+                                                            <form method="POST" action="{% url 'add_assignment' id %}" enctype="multipart/form-data">
+                                                                {% csrf_token %}
+                                                                <div class="row">
+                                                                    <div class='col text-left'>
+                                                                        <label>Title *</label>
+                                                                        <br>
+                                                                        <input id="activity_title" name="activity_title" class="form-control form-control-sm" type="text" required />
+                                                                        {% comment %} {{form.activity_title}} {% endcomment %}
+                                                                        <br>
+                                                                    </div>
+                                                                </div> 
+                                                                <div class="row">
+                                                                    <div class='col text-left'>
+                                                                        <label>Description *</label>
+                                                                        <br>
+                                                                        <input id="activity_desc" style="height: 7rem;" name="activity_desc" class="form-control form-control-sm" required/>
+                                                                        {% comment %} {{form.activity_desc}} {% endcomment %}
+                                                                        <br>
+                                                                    </div>
+                                                                </div>
+            
+                                                                <div class="row">
+                                                                    
+                                                                    <div class='col-6 text-left'>
+                                                                        <label>URL Attachment</label>
+                                                                        <br>
+                                                                        <input id="activity_attachment" name="activity_attachment" class="form-control form-control-sm" type="file"/>
+                                                                        {% comment %} {{form.activity_attachment}} {% endcomment %}
+                                                                    </div>
+                                                                    <div class="col-3 text-left">
+                                                                        <label>Due Date *</label>
+                                                                        <br>
+                                                                        <input class="form-control form-control-sm" type="date" name="deadline_0" required id="id_deadline_0">
+                                                                        
+                                                                        <!--<input id="deadline" name="deadline" class="form-control form-control-sm" type="date"/>-->
+                                                                        {% comment %} {{form.deadline}} {% endcomment %}
+                                                                    </div> 
+                                                                    <div class="col-3 text-left">
+                                                                        <label>Deadline *</label>
+                                                                        <br>
+                                                                        <input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
+                                                                        {% comment %} {{form.scores}} {% endcomment %}
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <br> 
+                                                                <div class="row">
+                                                                    <div class="col-2 text-left">
+                                                                        <label>Total Score *</label>
+                                                                        <br>
+                                                                        <input id="scores" name="scores" class="form-control form-control-sm" type="number" min="1" required/>
+                                                                        {% comment %} {{form.scores}} {% endcomment %}
+                                                                    </div>
+                                                                    <div class="col-2 text-left">
+                                                                        <label>Percentage *</label>
+                                                                        <br>
+                                                                        <input id="percentage" name="percentage" class="form-control form-control-sm" type="number" min="1" required/>
+                                                                        {% comment %} {{form.percentage}} {% endcomment %}
+                                                                    </div> 
+            
+                                                                </div>
+                                                                <br>
+                                                                {% comment %} <button type="submit">Add Activity</button> {% endcomment %}
+                                                                <button class="btn btn-sm btn-post" style="width:100%;" type="submit" value="submit">
+                                                                    Post Activity
+                                                                </button>
+                                                            </form>
                                                         </div>
-                                                    </div> 
-                                                    <div class="row">
-                                                        <div class='col text-left'>
-                                                            <label>Description *</label>
-                                                            <br>
-                                                            <input id="activity_desc" style="height: 7rem;" name="activity_desc" class="form-control form-control-sm" required/>
-                                                            {% comment %} {{form.activity_desc}} {% endcomment %}
-                                                            <br>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        
-                                                        <div class='col-6 text-left'>
-                                                            <label>URL Attachment</label>
-                                                            <br>
-                                                            <input id="activity_attachment" name="activity_attachment" class="form-control form-control-sm" type="file"/>
-                                                            {% comment %} {{form.activity_attachment}} {% endcomment %}
-                                                        </div>
-                                                        <div class="col-3 text-left">
-                                                            <label>Due Date *</label>
-                                                            <br>
-                                                            <input class="form-control form-control-sm" type="date" name="deadline_0" required id="id_deadline_0">
-                                                            
-                                                            <!--<input id="deadline" name="deadline" class="form-control form-control-sm" type="date"/>-->
-                                                            {% comment %} {{form.deadline}} {% endcomment %}
-                                                        </div> 
-                                                        <div class="col-3 text-left">
-                                                            <label>Deadline *</label>
-                                                            <br>
-                                                            <input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
-                                                            {% comment %} {{form.scores}} {% endcomment %}
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <br> 
-                                                    <div class="row">
-                                                        <div class="col-2 text-left">
-                                                            <label>Total Score *</label>
-                                                            <br>
-                                                            <input id="scores" name="scores" class="form-control form-control-sm" type="number" min="1" required/>
-                                                            {% comment %} {{form.scores}} {% endcomment %}
-                                                        </div>
-                                                        <div class="col-2 text-left">
-                                                            <label>Percentage *</label>
-                                                            <br>
-                                                            <input id="percentage" name="percentage" class="form-control form-control-sm" type="number" min="1" required/>
-                                                            {% comment %} {{form.percentage}} {% endcomment %}
-                                                        </div> 
-
                                                     </div>
                                                     <br>
-                                                    {% comment %} <button type="submit">Add Activity</button> {% endcomment %}
-                                                    <button class="btn btn-sm btn-post" style="width:100%;" type="submit" value="submit">
-                                                        Post Activity
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <br>
-                                    </div>
-
-                                </div>
-                                {% comment %} <div class="modal-footer">
-                                    <div class="mar-top clearfix text-right">
-                                        
-                                        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div> {% endcomment %}
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- Post activity Modal End-->
-
-                <script>
-                    const openModal = () => {
-                        $('modal.fade').modal('show');
-                    }
-
-                </script>
-
-
-            </div>
-            <hr>
-
-            <div>
-                {% if not acts %}
-                <!-- Show if database is empty-->
-                <div class="container-fluid text-center">
-                    <br>
-                    <h5 style="color: gray">No Assignments Posted</h5>
-                </div>
-
-                {% else %}
-                <!-- Show if database is NOT empty-->
-                <div class="container">
-                    <br>
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
-                            {% if message.tags == "error" %}
-                                {{ message }}
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                        <br>
-                    {% endif %}
-                    <div class="row">
-                        {% for activity in acts %}
-                        <div class="col-sm-4">
-                            <div class="card bg-dark text-white" style="margin-left: 39px; width: 20rem">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{activity.activity_title}}</h5>
-                                    {% comment %} <span style="font-size: 13px;" class="card-text">Date Posted:</span> {% endcomment %}
-                                    <p style="font-size: 13px;" class="card-text">{{activity.activity_desc}}</p>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col">
-                                            <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post">View</a>
-                                        </div>
-                                        <div class="col-7 ">
-                                            <span class="align-items-center" style="font-size: 13px;" class="card-text">Due date:</span>
-                                            <p style="font-size: 13px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-white">
-                                    <div class="container">
-                                        <div class="row">
-                                            {% comment %} <div class="col text-left text-gray-dark"> {% endcomment %}
-                                            <!-- Date Posted -->
-                                            <h6 style="font-size: 13px; margin-left: 0">{{activity.start_date|date:'M d, Y h:m A'}}</h6>
-                                            {% comment %} </div> {% endcomment %}
-
-                                            <div class="col text-right text-white">
-                                                <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">
-                                                    <i class="ti-pencil"></i>
-                                                </a>
-                                                <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}" 
-                                                    data-toggle="modal"
-                                                    data-target="#remove-act-modal"
-                                                    onclick="remove_act(this)">
-                                                    <i class="ti-trash"></i>
-                                                </a>
-                                                <!-- Delete Modal Start-->
-                                                <div class="modal fade" id="remove-act-modal" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body bg-dark text-center text-white">
-                                                                <br>
-                                                                <p>Are you sure you want to remove this assignment?</p>
-                                                            </div>
-                                                            <div class="container bg-dark text-center">
-                                                                <form method="post" id="remove-act-form">
-                                                                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
-                                                                        {% csrf_token %}
-                                                                    <button type="submit" class="btn btn-post btn-sm" id="confirm-remove-act-button">Remove</button>
-                                                                </form>
-                                                                <br>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
-                                                <script>
-                                                    function remove_act(selected_act){
-                                                        document.getElementById("remove-act-form").action = selected_act.href
-                                                    }
-                                                </script>
-                                                <!-- Delete Modal End-->
+            
                                             </div>
-
-                                        </div>
+                                            {% comment %} <div class="modal-footer">
+                                                <div class="mar-top clearfix text-right">
+                                                    
+                                                    <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div> {% endcomment %}
+                                        </form>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Post activity Modal End-->
+            
+                            <script>
+                                const openModal = () => {
+                                    $('modal.fade').modal('show');
+                                }
+            
+                            </script>
+            
+            
                         </div>
-                        {% endfor %}
+                        <hr>
+            
+                        <div>
+                            {% if not acts %}
+                            <!-- Show if database is empty-->
+                            <div class="container-fluid text-center">
+                                <br>
+                                <h5 style="color: gray">No Assignments Posted</h5>
+                            </div>
+            
+                            {% else %}
+                            <!-- Show if database is NOT empty-->
+                            <div class="container">
+                                <br>
+                                {% if messages %}
+                                    {% for message in messages %}
+                                    <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
+                                        {% if message.tags == "error" %}
+                                            {{ message }}
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                    <br>
+                                {% endif %}
+                                <div class="row">
+                                    {% for activity in acts %}
+                                    <div class="col-sm-4">
+                                        <div class="card bg-dark text-white" style="margin-left: 39px; width: 20rem">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{activity.activity_title}}</h5>
+                                                {% comment %} <span style="font-size: 13px;" class="card-text">Date Posted:</span> {% endcomment %}
+                                                <p style="font-size: 13px;" class="card-text">{{activity.activity_desc}}</p>
+                                                <br>
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post btn-sm">View</a>
+                                                    </div>
+                                                    <div class="col-7 text-right">
+                                                        <span style="font-size: 12px;" class="card-text">Due date:</span>
+                                                        <p style="font-size: 12px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer text-white">
+                                                <div class="container">
+                                                    <div class="row align-items-center">
+                                                        {% comment %} <div class="col text-left text-gray-dark"> {% endcomment %}
+                                                        <!-- Date Posted -->
+                                                        <div class="col-5">
+                                                            <h6 style="font-size: 11px; margin-left: 0">{{activity.start_date|date:'M d, Y h:m A'}}</h6>
+                                                        </div>
+                                                        {% comment %} </div> {% endcomment %}
+            
+                                                        <div class="col text-right text-white">
+                                                            <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">
+                                                                <i class="ti-pencil"></i>
+                                                            </a>
+                                                            <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}" 
+                                                                data-toggle="modal"
+                                                                data-target="#remove-act-modal"
+                                                                onclick="remove_act(this)">
+                                                                <i class="ti-trash"></i>
+                                                            </a>
+                                                            <!-- Delete Modal Start-->
+                                                            <div class="modal fade" id="remove-act-modal" tabindex="-1" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-body bg-dark text-center text-white">
+                                                                            <br>
+                                                                            <p>Are you sure you want to remove this assignment?</p>
+                                                                        </div>
+                                                                        <div class="container bg-dark text-center">
+                                                                            <form method="post" id="remove-act-form">
+                                                                                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+                                                                                    {% csrf_token %}
+                                                                                <button type="submit" class="btn btn-post btn-sm" id="confirm-remove-act-button">Remove</button>
+                                                                            </form>
+                                                                            <br>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                function remove_act(selected_act){
+                                                                    document.getElementById("remove-act-form").action = selected_act.href
+                                                                }
+                                                            </script>
+                                                            <!-- Delete Modal End-->
+                                                        </div>
+            
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>    
+                            {% endif %}
+            
+                        </div>
+                        <br>
+                        <br>
                     </div>
-                </div>    
-                {% endif %}
-
-                {% comment %} <table>
-                    <th>Activity Title</th>
-                    <th>Due Date</th>
-                    {% for activity in acts %}
-                    <tr>    
-                        <td><a href="{% url 'activity_comments' id activity.pk %}">{{activity.activity_title}}</a></td>    
-                        <td>{{activity.deadline}}</td>
-                        <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">Edit</a></td>
-                        <td><a href="/sit-instructor/instructor/view_courses/{{id}}/assignments/delete/{{activity.pk}}">Delete</a></td>
-                    </tr>
-                    {% endfor %}
-                {% endif %}
-                </table> {% endcomment %}
+                </div>
             </div>
-            <br>
-            <br>
         </div>
     </div>
+
+    
 
 {% endblock %}

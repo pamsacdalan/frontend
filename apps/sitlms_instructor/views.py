@@ -23,6 +23,17 @@ import os
 from django.utils import timezone
 import shutil
 
+import json
+from django.utils import timezone
+from datetime import datetime, timedelta, date as date2
+from django.contrib.auth.models import User
+from apps.sitlms_instructor.models import Course_Announcement
+from operator import itemgetter
+from calendar import monthcalendar
+import calendar
+from django.template.loader import render_to_string
+from dateutil.relativedelta import relativedelta
+
 from apps.sitlms_student.models import Activity_Submission
 
 def is_instructor(user):
@@ -890,3 +901,53 @@ def delete_private_comment_instructor(request, id, pk, student, comment_id):
     instance = ActivityPrivateComments.objects.get(pk=comment_id)
     instance.delete()
     return redirect('instructor_private_comments', id=id,pk=pk,student=student)
+
+
+
+
+def calendar(request):
+    """ function to render the schedule of the instructor on a calendar"""
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
+    instructor_id = instructor_auth_details.id
+    instructor_courses = Course_Enrollment.objects.filter(instructor_id_id=instructor_id).values()
+    instructor_courses = [x for x in instructor_courses] # convert to list
+    course_count = len(instructor_courses)
+
+    sample_colors = [
+        "#800000" , "#722F37", "#800020", "#C8385A", "#7B0000", "#B03060", "#800000", "#800000"
+    ]
+
+    event_list = []
+
+    for x in range(course_count):
+        course_id = instructor_courses[x]['course_id_id']
+        course_batch = instructor_courses[x]['course_batch']
+        schedules = Schedule.objects.filter(course_batch=course_batch).values()
+
+        start_time = instructor_courses[x]['start_time']
+        end_time = instructor_courses[x]['end_time']
+
+        for i in schedules:
+            item = {}
+            item['start'] = datetime.combine(i['session_date'], start_time).isoformat()
+            item['end'] = datetime.combine(i['session_date'], end_time).isoformat()
+            item['title'] = instructor_courses[x]['course_batch']
+            item['course_id'] = instructor_courses[x]['course_id_id']
+            item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
+            item['url'] = instructor_courses[x]['session_details'].lower()
+            item['course_batch'] = course_batch
+
+            try:
+                item['color'] = sample_colors[x]
+            except:
+                item['color'] = '#A7000'
+
+            event_list.append(item)
+
+    return render(request, 'instructor_module/calendar.html', {
+        'event_list':json.dumps(event_list),
+    })

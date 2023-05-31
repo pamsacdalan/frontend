@@ -605,6 +605,7 @@ pre code {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+
 }
 
 .row {
@@ -9030,9 +9031,11 @@ button.bg-dark:focus {
 
 .mt-4,
 .my-4 {
-  border: 1px solid red;
-  margin-top: 1.5rem !important;
-  margin-left: 5rem !important;
+  margin-left: 1.5rem!important;
+  padding-top: 10px!important;
+  padding-left: 10px!important;
+  padding-right: 10px!important;
+  padding-bottom: 10px!important;
 }
 
 .mr-4,

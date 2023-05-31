@@ -1,346 +1,320 @@
 {% extends './index.html' %}
 {% load static %}
 
+
 <!-- View announcements page-->
 
+{% block cover %}
+    <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+{% endblock %}
+
+
+{% block course_header %}
+<h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+<h6 class="subtitle">{{course_batch}}</h6>
+{% endblock %}
+
 {% block content %}
-
         <!-- Course Header-->
-        <div class="card text-center">
-            <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
-            <div class="card-img-overlay text-white">
-                <br>
-                <br>
-                <br>
-                <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
-                <h6 class="subtitle">{{course_batch}}</h6>
-            </div>
-        </div>
-        <!-- End of Course Header-->
-
-        <br>
-        <div class="card">
-            <!-- Navbar -->
-            <div class="card-header bg-dark">
-                <ul class="nav nav-tabs card-header-tabs">
-                    <li class="nav-item active">
-                        <a class="nav-link text-primary active" aria-current="page" href="#">Announcements</a>
-                    </li>
-            
-                    <li class="nav-item">
-                        <a class="nav-link text-white" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
-                    </li>
-            
-                    <li class="nav-item">
-                        <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
-                    </li>
-                </ul>
-            </div>
         
-            <!-- Main Content -->
-            <br>
-            <br>
-            <div class='container-fluid'>
-                <div class="row justify-content-md-center">
-                    <div class="col-3">
-                        <div class="card border-dark mb-3" style="max-width: 18rem; height: 11rem;">
-                            <div class="card-header bg-dark text-white">
-                                Upcoming Deadlines
-                            </div>
-                            <div class="card-body text-center">
-                                No upcoming deadlines
-                            </div>
-                            <div class="card-footer bg-transparent text-right">
-                                View all
+        <div class="container-fluid" style="margin-top: 2rem">
+            <div class="row">
+                
+                <div class="container">
+                    <div class="card">
+                        <!-- Navbar -->
+                        <div class="card-header bg-dark">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item active">
+                                    <a class="nav-link text-primary active" aria-current="page" href="#">Announcements</a>
+                                </li>
+                        
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" aria-current="page" href="/sit-instructor/instructor/view_students/{{course_batch}}">Students</a>
+                                </li>
+                        
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
+                                </li>
+                            </ul>
+                        </div>
+                    
+                        <!-- Main Content -->
+                        <br>
+                        <br>
+                        <div class='container-fluid'>
+                            <div class="row justify-content-md-center">
+                                <div class="col-3">
+                                    <div class="card border-dark mb-3" style="max-width: 18rem; height: 11rem;">
+                                        <div class="card-header bg-dark text-white">
+                                            Upcoming Deadlines
+                                        </div>
+                                        <div class="card-body text-center">
+                                            No upcoming deadlines
+                                        </div>
+                                        <div class="card-footer bg-transparent text-right">
+                                            View all
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="col-8">
+                                    <div class="card border-transparent bg-transparent" style="height: 11rem;">
+                                        <div class="col-md-12">
+                                        <div class="panel">
+                                            <div class="panel-body">
+                                                <br>
+                                                <div class="row justify-content-md-center">
+                                                    <div class="d-flex aligns-items-center justify-content-center">
+                                                        <div class="col-1">
+                                                            <br>
+                                                            {% if profile_pic %}
+                                                            <span class="align-items-center">
+                                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                            </span>
+                                                            {% else %}
+                                                            <span class="align-items-center">
+                                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                            </span>
+                                                            {% endif %}
+                                                        </div>
+                
+                                                        <div class="col-11 align-items-center">
+                                                            <button class="btn btn-sm btn-light" style="  height: 100px;
+                                                            width: 580px;" data-toggle="modal" data-target="#postmodal" onclick="openModal()">
+                                                                <span style="color: gray">
+                                                                    Announce something here..
+                                                                </span>
+                                                            </button>
+                
+                                                            <!-- Post announcement Modal Start-->
+                                                            <div class="modal fade" id="postmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content bg-dark">
+                                                                        <div class="modal-header text-white">
+                                                                            <h6 class="modal-title">Create Announcement for {{course.course_title}}</h6>
+                                                                            <!--Close-->
+                                                                            <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">×</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <form method="post" action="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">
+                                                                            <div class="modal-body">
+                                                                                <div class="row d-flex align-items-center">
+                                                                                    <div class="col-2 text-right" style="margin-left: 12px">
+                                                                                        {% if profile_pic %}
+                                                                                        <span class="align-items-center">
+                                                                                            <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                                                        </span>
+                                                                                        {% else %}
+                                                                                        <span class="align-items-center">
+                                                                                            <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                                                        </span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div class="col-md-14 text-left text-white">
+                                                                                        <h6 style="font-size: 13px;" class="align-middle">{{author}}</h6>
+                                                                                        <h6 style="font-size: 12px;" class="align-middle">Instructor</h6>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <br>
+                                                                                <div class="container">
+                                                                                    <div class="row">
+                                                                                        <div class="col-12">
+                                                                                            {% csrf_token %}
+                                                                                            <textarea id="announcement_text" class="form-control" rows ="5" placeholder="Post your announcement here.." name="announcement_text"></textarea>
+                                                                                            <p id="warning" style="display:none; color: white;">You need to write something!!</p>
+                                                                                            
+                                                                                                <script>
+                                                                                                
+                                                                                                    function trim_and_remove_blank_lines(string)
+                                                                                                    {
+                                                                                                        return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+                                                                                                    }
+                                                                                                        
+                                                                                                    function checkTextArea() {
+                                                                                                    var text_area = document.getElementById("announcement_text");
+                                                                                                    var text = document.getElementById("warning");
+                                                                                                    
+                                                                                                    if (trim_and_remove_blank_lines(text_area.value)){
+                                                                                                        text.style.display = "none";
+                                                                                                        return true;
+                                                                                                    } else{
+                                                                                                        text.style.display = "block";
+                                                                                                        return false;
+                                                                                                        }
+                                                                                                    }
+                                                                                                    
+                                                                                                </script>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <br>
+                                                                                    <button class="btn btn-sm btn-post" style="width:100%;" onclick="return checkTextArea() " type="submit" value="submit">
+                                                                                        Post
+                                                                                    </button>
+                                                                                    <br>
+                                                                                </div>
+                
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Post announcement Modal End-->
+                
+                                                            <script>
+                                                                const openModal = () => {
+                                                                    $('modal.fade').modal('show');
+                                                                }
+                            
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+            
+                                            </div>
+                                            
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-8">
-                        <div class="card border-transparent bg-transparent" style="height: 11rem;">
-                            <div class="col-md-12">
-                            <div class="panel">
-                                <div class="panel-body">
+                        <br>
+            
+                        <!-- Announcements -->
+                        
+                        {% if not announcements %}
+                        <!-- Show if database is empty-->
+                        <div class="container-fluid">
+                            
+                            <div class="row justify-content-md-center">
+                                <div class="col-3">
+                                    <!-- space -->
+                                </div>
+                                <div class="col-8 text-center">
                                     <br>
-                                    <div class="row justify-content-md-center">
-                                        <div class="d-flex aligns-items-center justify-content-center">
-                                            <div class="col-1">
-                                                <br>
-                                                {% if profile_pic %}
-                                                <span class="align-items-center">
-                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
-                                                </span>
-                                                {% else %}
-                                                <span class="align-items-center">
-                                                    <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
-                                                </span>
-                                                {% endif %}
+                                    <h5 style="color: gray">No Announcements Yet</h5>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% else %}
+                        <!-- Show if database is not empty-->
+                        {% for announcement in announcements %}
+                            <div class="container-fluid">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-3">
+                                        <!-- space -->
+                                    </div>
+                                    
+                                    <!-- announcement card -->
+                                    <br>
+                                    <div class="col-8">
+                                        <div class="card border-dark">
+                                            <div class="card-header bg-dark" style="height: 3.5rem">
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-1">
+                                                        
+                                                        {% if profile_pic %}
+                                                        <span style="margin-left: 10px">
+                                                            <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem; border-radius: 50%;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                        </span>
+                                                        {% else %}
+                                                        <span>
+                                                            <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                        </span>
+                                                        {% endif %}
+                                                    </div>
+            
+                                                    <div class="col-10 text-left text-white">
+                                                        <h6 style="font-size: 13px">{{author}}</h6>
+                                                        <h6 style="font-size: 11px">{{announcement.date_posted|date:'M d, Y h:m A'}}</h6>
+                                                    </div>
+                                                </div>
                                             </div>
-    
-                                            <div class="col-11 align-items-center">
-                                                <button class="btn btn-sm btn-light" style="  height: 100px;
-                                                width: 580px;" data-toggle="modal" data-target="#postmodal" onclick="openModal()">
-                                                    <span style="color: gray">
-                                                        Announce something here..
-                                                    </span>
-                                                </button>
-    
-                                                <!-- Post announcement Modal Start-->
-                                                <div class="modal fade" id="postmodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content bg-dark">
-                                                            <div class="modal-header text-white">
-                                                                <h6 class="modal-title">Create Announcement for {{course.course_title}}</h6>
-                                                                <!--Close-->
-                                                                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">×</span>
-                                                                </button>
-                                                            </div>
-                                                            <form method="post" action="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">
-                                                                <div class="modal-body">
-                                                                    <div class="row d-flex align-items-center">
-                                                                        <div class="col-2 text-right" style="margin-left: 12px">
-                                                                            {% if profile_pic %}
-                                                                            <span class="align-items-center">
-                                                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
-                                                                            </span>
-                                                                            {% else %}
-                                                                            <span class="align-items-center">
-                                                                                <img class="img-profile rounded-circle" style="width: 3rem; height: 3rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
-                                                                            </span>
-                                                                            {% endif %}
-                                                                        </div>
-                                                                        <div class="col-md-14 text-left text-white">
-                                                                            <h6 style="font-size: 13px;" class="align-middle">{{author}}</h6>
-                                                                            <h6 style="font-size: 12px;" class="align-middle">Instructor</h6>
-                                                                        </div>
-                                                                    </div>
-                                                                    <br>
-                                                                    <div class="container">
-                                                                        <div class="row">
-                                                                            <div class="col-12">
-                                                                                {% csrf_token %}
-                                                                                <textarea id="announcement_text" class="form-control" rows ="5" placeholder="Post your announcement here.." name="announcement_text"></textarea>
-                                                                                <p id="warning" style="display:none; color: white;">You need to write something!!</p>
-                                                                                
-                                                                                    <script>
-                                                                                    
-                                                                                        function trim_and_remove_blank_lines(string)
-                                                                                        {
-                                                                                            return string.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
-                                                                                        }
-                                                                                            
-                                                                                        function checkTextArea() {
-                                                                                        var text_area = document.getElementById("announcement_text");
-                                                                                        var text = document.getElementById("warning");
-                                                                                        
-                                                                                        if (trim_and_remove_blank_lines(text_area.value)){
-                                                                                            text.style.display = "none";
-                                                                                            return true;
-                                                                                        } else{
-                                                                                            text.style.display = "block";
-                                                                                            return false;
-                                                                                            }
-                                                                                        }
-                                                                                        
-                                                                                    </script>
-                                                                            </div>
-                                                                        </div>
-                                                                        <br>
-                                                                        <button class="btn btn-sm btn-post" style="width:100%;" onclick="return checkTextArea() " type="submit" value="submit">
-                                                                            Post
-                                                                        </button>
-                                                                        <br>
-                                                                    </div>
-    
+            
+                                            <!-- Body -->
+                                            <div class="card-body">
+                                                <div class="col-md-12">
+                                                    <div class="panel">
+                                                        <div class="panel-body">
+                                                            <div class="row ">
+                                                                <!-- Announcement content-->
+                                                                <div id="input" class="col-11">
+                                                                    <span class="align-middle">
+                                                                        {{announcement.announcement_text|linebreaks}}
+                                                                    </span>
                                                                 </div>
-                                                                {% comment %} <div class="modal-footer">
-                                                                    <div class="mar-top clearfix text-right">
-                                                                        
-                                                                        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal">Close</button>
-                                                                    </div>
-                                                                </div> {% endcomment %}
-                                                            </form>
+                            
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- Post announcement Modal End-->
-    
-                                                <script>
-                                                    const openModal = () => {
-                                                        $('modal.fade').modal('show');
-                                                    }
-                
-                                                </script>
                                             </div>
-                                        </div>
-                                        
-                                    </div>
-
-                                </div>
-                                
-                              </div>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-            <br>
-
-            <!-- Announcements -->
             
-            {% if not announcements %}
-            <!-- Show if database is empty-->
-            <div class="container-fluid">
-                
-                <div class="row justify-content-md-center">
-                    <div class="col-3">
-                        <!-- space -->
-                    </div>
-                    <div class="col-8 text-center">
-                        <br>
-                        <h5 style="color: gray">No Announcements Yet</h5>
-                        <br>
-                    </div>
-                </div>
-            </div>
+                                            <!-- Footer -->
+                                            <div class="card-footer text-right">
+                                                <a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}" 
+                                                   data-toggle="tooltip" title="Edit">
+                                                    <i class="ti-pencil"></i>
+                                                </a>
             
-            {% else %}
-            <!-- Show if database is not empty-->
-            {% for announcement in announcements %}
-                <div class="container-fluid">
-                    <div class="row justify-content-md-center">
-                        <div class="col-3">
-                            <!-- space -->
-                        </div>
-                        
-                        <!-- announcement card -->
-                        <br>
-                        <div class="col-8">
-                            <div class="card border-dark">
-                                <div class="card-header bg-dark" style="height: 3.5rem">
-                                    <div class="row d-flex align-items-center">
-                                        <div class="col-1">
-                                            
-                                            {% if profile_pic %}
-                                            <span style="margin-left: 10px">
-                                                <img class="img-profile rounded-circle" style="width: 2.5rem; height: 2.5rem; border-radius: 50%;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
-                                            </span>
-                                            {% else %}
-                                            <span>
-                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
-                                            </span>
-                                            {% endif %}
-                                        </div>
-
-                                        <div class="col-10 text-left text-white">
-                                            <h6 style="font-size: 13px">{{author}}</h6>
-                                            <h6 style="font-size: 11px">{{announcement.date_posted|date:'M d, Y h:m A'}}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Body -->
-                                <div class="card-body">
-                                    <div class="col-md-12">
-                                        <div class="panel">
-                                            <div class="panel-body">
-                                                <div class="row ">
-                                                    <!-- Announcement content-->
-                                                    <div id="input" class="col-11">
-                                                        <span class="align-middle">
-                                                            {{announcement.announcement_text|linebreaks}}
-                                                        </span>
+                                                                                       
+                                                <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" 
+                                                    data-toggle="modal"
+                                                    data-target="#remove-post-modal"
+                                                    onclick="remove_post(this)"
+                                                    > 
+                                                    <i class="ti-trash"></i>
+                                                </a>
+            
+                                                <!-- Delete Modal Start-->
+                                                <div class="modal fade" id="remove-post-modal" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body bg-dark text-center text-white">
+                                                                <br>
+                                                                <p>Are you sure you want to remove this announcement?</p>
+                                                            </div>
+                                                            <div class="container bg-dark text-center">
+                                                                <form method="post" id="remove-post-form">
+                                                                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+                                                                        {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-post btn-sm" id="confirm-remove-post-button">Remove</button>
+                                                                </form>
+                                                                <br>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                
                                                 </div>
+                                                        
+                                                <script>
+                                                    function remove_post(selected_post){
+                                                        document.getElementById("remove-post-form").action = selected_post.href
+                                                    }
+                                                </script>
+                                                <!-- Delete Modal End-->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Footer -->
-                                <div class="card-footer text-right">
-                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}" 
-                                       data-toggle="tooltip" title="Edit">
-                                        <i class="ti-pencil"></i>
-                                    </a>
-
-                                                                           
-                                    <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}" 
-                                        data-toggle="modal"
-                                        data-target="#remove-post-modal"
-                                        onclick="remove_post(this)"
-                                        > 
-                                        <i class="ti-trash"></i>
-                                    </a>
-
-                                    <!-- Delete Modal Start-->
-                                    <div class="modal fade" id="remove-post-modal" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body bg-dark text-center text-white">
-                                                    <br>
-                                                    <p>Are you sure you want to remove this announcement?</p>
-                                                </div>
-                                                <div class="container bg-dark text-center">
-                                                    <form method="post" id="remove-post-form">
-                                                        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
-                                                            {% csrf_token %}
-                                                        <button type="submit" class="btn btn-post btn-sm" id="confirm-remove-post-button">Remove</button>
-                                                    </form>
-                                                    <br>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                            
-                                    <script>
-                                        function remove_post(selected_post){
-                                            document.getElementById("remove-post-form").action = selected_post.href
-                                        }
-                                    </script>
-                                    <!-- Delete Modal End-->
-                                </div>
+                                <br>
+                                
                             </div>
-                        </div>
-                    </div>
-                    <br>
-                    
-
-                    {% comment %} <table>
-                        <tr>
-                            <th>Announcement</th>
-                            <th>Author</th>
-                            <th>Date Posted</th>
-                            <th>Actions</th>
-                        </tr>
-                    <tr>{% for announcement in announcements %}
-                        <td name= 'announcement_text'>{{announcement.announcement_text|linebreaks}}</td>
-                        <td name= 'author_id'>{{author}}</td>
-                        <td name= 'date_posted'>{{announcement.date_posted}}</td>
-                        <td><a href="/sit-instructor/instructor/course/{{ course_batch }}/edit_announcement/{{ announcement.id }}">Edit</a> | <a href="/sit-instructor/instructor/course/{{ course_batch }}/remove_announcement/{{ announcement.id }}">Remove</a></td>
-                    </tr>
                         {% endfor %}
-                    </table>
-
-                    <br><br>
-                    <button><a href="/sit-instructor/instructor/course/{{course_batch}}/create_announcement">Create Announcement</a></button>
-                    <button><a href="/sit-instructor/instructor/view_students/{{course_batch}}">View Students</a></button>
-                    <button><a href="{% url 'view_assignments' course_batch %}">Assignments</a></button>
-                    {% if user.is_authenticated %}
-                    <br><br>
-                    <button><a href="{% url 'view_courses' %}">Back to View Courses</a></button>
-                    <br>
-                    <br>
-                    {% endif %} {% endcomment %}
-                </div>
-            {% endfor %}
-            {% endif %}
-            <br>
-            <br>
-        </div>
+                        {% endif %}
+                        <br>
+                        <br>
+                    </div> <!-- card -->
+    
+                </div> <!-- container -->
+            </div> <!-- row -->
+        </div> 
+        
 
             
 {% endblock %}
