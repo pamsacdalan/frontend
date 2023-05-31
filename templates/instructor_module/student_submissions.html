@@ -18,6 +18,8 @@
             <td><input name ="score" type="number" style="width: 50px;" min="0" max="{{item_count}}"value="{{submission.6}}"></td>
             <td><button type="submit">Save</button></td>
         </form>
+        <td><a href="{% url 'instructor_private_comments' batch.course_batch act.id submission.4 %}">{% if submission.7 %}{{ submission.7|truncatechars:21 }}{% else %}View Private Comments{% endif %}</a></td>
+        
             
             <!-- <td>{{submission.5}}</td> -->
     </tr>
@@ -30,6 +32,7 @@
         <td></td>
         <td></td>
         <td></td>
+        <td><a href="{% url 'instructor_private_comments' batch.course_batch act.id submission.2 %}">{% if submission.3 %}{{ submission.3|truncatechars:21 }}{% else %}View Private Comments{% endif %}</a></td>
     </tr>
     {% endfor %}
 </table>

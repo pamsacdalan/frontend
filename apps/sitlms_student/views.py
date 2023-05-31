@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue
 from django.conf import settings
 import os,json
-from apps.sitlms_instructor.models import Activity_Comments, Course_Activity
+from apps.sitlms_instructor.models import Activity_Comments, ActivityPrivateComments, Course_Activity
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 from apps.sitlms_student.forms import ActivitySubmissionUploadForm
@@ -339,6 +339,7 @@ def student_view_assignment_details(request, id, pk):
     file_url = request.build_absolute_uri(file_relative_url)
     submission_grade = False
     submission_on_time = False
+    private_comments = ActivityPrivateComments.objects.filter(course_activity=Course_Activity.objects.get(id=pk),student=request.user.students_auth,).order_by("timestamp")
     if Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).values('activity_file').exists():
         submission_instance = Activity_Submission.objects.filter(course_activity=activity,student_id=user.students_auth).last()
         current_submission = submission_instance.activity_file
@@ -364,6 +365,7 @@ def student_view_assignment_details(request, id, pk):
         'current_submission_filename':current_submission_filename,
         'submission_grade':submission_grade,
         'submission_on_time': submission_on_time,
+        'private_comments':private_comments,
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
@@ -642,3 +644,22 @@ def report_issues(request):
         # print(f'{firstname} | {lastname} | {student_access}')
         # print(f'{subject} \n {msg}')
     return redirect('/sit-student/student_profile')
+
+@user_passes_test(is_student)
+def add_private_comment_student(request, id, pk):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
+    if request.method=="POST":
+        instance = ActivityPrivateComments(course_activity=Course_Activity.objects.get(pk=pk),student=request.user.students_auth,uid=request.user,content=request.POST.get("comment_content"))
+        instance.save()
+    return redirect('student_view_assignment_details', id=id,pk=pk)
+
+@user_passes_test(is_student)
+def delete_private_comment_student(request, id, pk, comment_id):
+    if is_correct_student_cbatch_id(request.user.students_auth, id):
+        return redirect("student-no-access")
+    instance = ActivityPrivateComments.objects.get(pk=comment_id)
+    if instance.uid != request.user:
+        return redirect("student-no-access")
+    instance.delete()
+    return redirect('student_view_assignment_details', id=id,pk=pk)

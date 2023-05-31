@@ -129,5 +129,27 @@
 <p>Late</p>
 {% endif %}
 
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Timestamp</th>
+    <th>Content</th>
+    <th>...</th>
+  </tr>
+  {% for comment in private_comments %}
+  <tr>
+      <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
+      <td>{{comment.timestamp}}</td>
+      <td>{{comment.content}}</td>
+      {% if comment.uid == request.user %}<td><a href="{% url 'student_delete_private_comment' batch.course_batch act.id comment.pk %}">Delete</a></td> {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+<form action="{% url 'student_add_private_comment' batch.course_batch act.id %}" method="POST">
+  {%csrf_token%}
+  <textarea rows="2" name="comment_content"></textarea><br>  
+  <button type="submit">Send</button>
+</form>
+
 
 </body>
