@@ -1,182 +1,166 @@
 {% extends './index.html' %}
 {% load static %}
 
+
+
+{% block cover %}
+    <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+{% endblock %}
+
+
+{% block course_header %}
+    <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+    <h6 class="subtitle">{{id}}</h6>
+{% endblock %}
+
+
 {% block content %}
-{% comment %} 
-    <div class="container-fluid">
-        <br>
-        <div class="card-header py-3">
-            List of Students for {{id}}
-        </div>
 
-        <br>
-        <div align="right"> <!-- buttons here-->
-            <!-- Back Button -->
-            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses" data-toggle="tooltip" title="Back to Courses">
-                <span>
-                    <i class="ti-control-backward"></i>
-                </span>
-            </a>
-            <!-- Announcement Button-->
-            <a class="btn btn-primary ml-2" href="{% url 'view_instructor_course' id %}" data-toggle="tooltip" title="Announcements">
-                <span>
-                    <i class="ti-announcement"></i>
-                </span>
-            </a>
-            <!-- Assignments Button-->
-            <a class="btn btn-primary ml-2" href="{% url 'view_assignments' id %}" data-toggle="tooltip" title="Assignments">
-                <span>
-                    <i class="ti-files"></i>
-                </span>
-            </a>
-            <!-- Download Button-->
-            <a class="btn btn-primary ml-2" href="/sit-instructor/instructor/view_courses/{{id}}/" data-toggle="tooltip" title="Download Student List">
-                <span>
-                    <i class="ti-download"></i>
-                </span>
-            </a>
-            <br><br>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
-                <thead class="table-dark" align="center">
-
-                    <tr>
-                        <th>Program</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
+        <div class="container-fluid" style="margin-top: 2rem">
+            <div class="row">
+                <div  align="left">
+                    <!-- shortcuts -->
+                </div>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header bg-dark">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
+                                </li>
                         
-                    </tr>
-                </thead>
-            
-                <tr>{% for detail in new_list%}
-                
-                    <td name= 'program_code'>{{detail.program_code}}</td>
-                    <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
-                    <td name= 'email'>{{detail.username}}</td>
+                                <li class="nav-item active">
+                                    <a class="nav-link text-primary active" aria-current="page" href="#">Students</a>
+                                </li>
+                        
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' id %}">Assignments</a>
+                                </li>
+                            </ul>
+                        </div>
                     
-                </tr>
-                {% endfor %}
-            </table>
-            <br>
+                        <!-- Main Content -->
+                        <br>
+                        <br>
+                        <div class="container-fluid">
+                            <div class ="container">
+                                <div class="row ">
+                                    <div class="col-8 align-items-bottom">
+                                        <h4 style="margin-left: 38px">List of Students &#9;</h4>
+                                        {% if count_acts == 1 %}
+                                        <span class="subtitle text-primary" style="margin-left: 38px">{{count}} Student</span>
+                                        {% else %}
+                                        <span class="subtitle text-primary" style="margin-left: 38px">{{count}} Students</span>
+                                        {% endif %}
+                                        
+                                    </div>
+                                    <div class="col-4" align="right">
+                                        <!-- Download Button-->
+                                        <a class="btn btn-primary btn-icon-split btn-sm" href="/sit-instructor/instructor/view_courses/{{id}}/">
+                                            <span>
+                                                <i class="ti-download align-bottom"></i>
+                                            </span>
+                                            <span class="text"> 
+                                                Download List
+                                            </span>
+                                        </a>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
             
-        </div>
-    </div> {% endcomment %}
-        <!-- Course Header-->
-        <br>
-        <div class="card text-center">
-            <div class="card-header" style="height: 11rem">
-                <br>
-                <br>
-                <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
-                <h6 class="subtitle">{{id}}</h6>
-            </div>
-        </div>
-        <!-- End of Course Header-->
-        <br>
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{% url 'view_instructor_course' id %}">Announcements</a>
-                    </li>
+                                <div class="row">
+                                    <div class="container">
+                                        {% if not new_list %}
+                                        <!-- Show if database is empty-->
+                                        <div class="container text-center">
+                                            <br>
+                                            <h5 style="color: gray">No Enrolled Students</h5>
+                                        </div>
             
-                    <li class="nav-item active">
-                        <a class="nav-link active" aria-current="page" href="#">Students</a>
-                    </li>
-            
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'view_assignments' id %}">Assignments</a>
-                    </li>
-                </ul>
-            </div>
-        
-            <!-- Main Content -->
-            <br>
-            <br>
-            <div class="container-fluid">
-                <div class ="container">
-                    <div class="row ">
-                        <div class="col-8 align-items-bottom">
-                            <h4 style="margin-left: 38px">List of Students &#9;<span class="text-primary">[{{count}}]</span></h4>
-                        </div>
-                        <div class="col-4" align="right">
-                            <!-- Download Button-->
-                            <a class="btn btn-primary btn-icon-split btn-sm" href="/sit-instructor/instructor/view_courses/{{id}}/">
-                                <span>
-                                    <i class="ti-download align-bottom"></i>
-                                </span>
-                                <span class="text"> 
-                                    Download List
-                                </span>
-                            </a>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-
-                    <div class="row">
-                        <div class="container">
-                            {% if not new_list %}
-                            <!-- Show if database is empty-->
-                            <div class="container text-center">
-                                <br>
-                                <h5 style="color: gray">No Enrolled Students</h5>
-                            </div>
-
-                            {% else %}
-                            <!-- Show if database is NOT empty-->
-                            <br>
-                            <div class="container">
-                                <div class="col-8">
-                                    {% for detail in new_list%}
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">
-                                                {% if detail.profile_pic %}
-                                                    <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
-                                                {% else %}
-                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
-                                                {% endif %}
-                                                {{detail.last_name}}, {{detail.first_name}} 
-                                            </li>
-                                        </ul>
-                                    {% endfor %}
+                                        {% else %}
+                                        <!-- Show if database is NOT empty-->
+                                        <br>
+                                        <div class="container">
+                                            <div class="col-8">
+                                                {% for detail in new_list%}
+                                                    <table id="Main table">
+                                                        <tr>
+                                                            <td style="width: 1.8rem;"></td>
+                                                            <td name="profile_pic" style="width: 3rem; height: 3rem">
+                                                            {% if detail.profile_pic %}
+                                                                <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
+                                                            {% else %}
+                                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
+                                                            {% endif %}
+                                                            </td>
+                                                            
+                                                            <td class="text-left" name= 'full_name' style="width: 25rem; height: 3rem">{{detail.last_name}}, {{detail.first_name}}</td>
+                                                            {% comment %} <td class="text-left" name= 'email' style="width: 25rem;height: 3rem">{{detail.username}}</td> {% endcomment %}
+                                                            <td class="text-left" name= 'program_code'style="width: 20rem; height: 3rem" >{{detail.program_title}}</td>
+                                                        </tr>
+                                                    </table>
+                                                    <hr>
+                                                     {% comment %} <ul class="list-group list-group-horizontal">
+                                                        <li class="list-group-item">
+                                                            {% if detail.profile_pic %}
+                                                                <img class="img-profile rounded-circle" src="{{ detail.profile_pic }}" alt="Profile Picture" style="width: 2rem; height: 2rem; border-radius: 50%;">
+                                                            {% else %}
+                                                                <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem; border-radius: 50%;" src="{% static '/img/undraw_profile.svg' %}">
+                                                            {% endif %}
+                                                             
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            {{detail.last_name}}, {{detail.first_name}} 
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            &nbsp;
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            {{detail.program_title}}
+                                                        </li>
+                                                    </ul> {% endcomment %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                    </div>
                                 </div>
                             </div>
-                            {% endif %}
+                                    
+            
+                                    {% comment %} <div class="table-responsive">
+                                        <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
+                                            <thead class="table-dark" align="center">
+                                
+                                                <tr>
+                                                    <th>Program</th>
+                                                    <th>Full Name</th>
+                                                    <th>Email</th>
+                                                        
+                                                </tr>
+                                            </thead>
+                                                    
+                                                
+                                                <tr>{% for detail in new_list%}
+                                                
+                                                    <td name= 'program_code'>{{detail.program_code}}</td>
+                                                    <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
+                                                    <td name= 'email'>{{detail.username}}</td>
+                                                    
+                                                </tr>
+                                                    {% endfor %}
+                                        </table>
+                                    </div> {% endcomment %}
+                            <br>
+                            <br>
                         </div>
+                            
                     </div>
                 </div>
-                        
-
-                        {% comment %} <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm" width="100%" cellspacing="0">
-                                <thead class="table-dark" align="center">
-                    
-                                    <tr>
-                                        <th>Program</th>
-                                        <th>Full Name</th>
-                                        <th>Email</th>
-                                            
-                                    </tr>
-                                </thead>
-                                        
-                                    
-                                    <tr>{% for detail in new_list%}
-                                    
-                                        <td name= 'program_code'>{{detail.program_code}}</td>
-                                        <td name= 'full_name'>{{detail.last_name}}, {{detail.first_name}}</td>
-                                        <td name= 'email'>{{detail.username}}</td>
-                                        
-                                    </tr>
-                                        {% endfor %}
-                            </table>
-                        </div> {% endcomment %}
-                <br>
-                <br>
             </div>
-                
+            
         </div>
-    
+            
 {% endblock content %}

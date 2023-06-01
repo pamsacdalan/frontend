@@ -33,16 +33,13 @@
                                     <a class="nav-link" href="/sit-instructor/instructor">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#schedules">Calendar</a>
+                                    <a class="nav-link" href="/sit-instructor/instructor/calendar">Calendar</a>
                                 </li>                 
                                 <li class="nav-item">
                                     <a class="nav-link" href="/sit-instructor/instructor/view_courses">Courses</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/sit-instructor/instructor/view_courses">Notifications</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#report">Report Issue</a>
+                                    <a class="nav-link" href="/sit-instructor/instructor/view_report_issues">Report Issue</a>
                                 </li>
                                 <div class="dropdown">
                                     <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -66,15 +63,37 @@
                 </div>  
         
                 <!-- Page Content -->
-                <section class="section">
+                <section class="section" style="margin-top: 5rem">
                     <div class = "container-fluid">
-                        <div class="container mt-5">
-                            {% block content %}{% endblock content %}
+                        <div class="container">
+                            <div class="text-center">
+                                {% block cover %} {% endblock %}
+                                <div class="card-img-overlay text-white">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    {% block course_header %} {% endblock course_header %}
+                                </div>
+                            </div>
+                            <!-- End of Course Header-->
+                        </div>
+                        <div class="container-fluid center">
+                            <div class="row">
+                                {% comment %} <div class="col-2">
+                                    <div class="container">
+                                        {% include 'instructor_module/shortcuts.html'%}
+                                    </div>
+                                </div> {% endcomment %}
+                                <div class="col">
+                                    {% block content %}{% endblock content %}
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </section>
-        
-        
+                
                 <!-- Logout Modal-->
                 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel"
                 aria-hidden="true">
@@ -95,69 +114,19 @@
                 </div>
 
             </div>
-            <section id="report" class="position-relative section">
-                <div class="container text-center">
-                    <h6 class="subtitle">Report Issues</h6> 
-                    <div class="contact text-left">
-                        <div class="contact-infos">
-                            <div class="item">
-                                <i class="ti-location-pin"></i>
-                                <div class="">
-                                    <h5>Location</h5>
-                                    <p> 27th Floor, The Orient Square Building, 
-                                        Emerald Avenue, Ortigas Center, Pasig City,
-                                        Philippines 1605
-                                    </p>
-                                </div>                          
-                            </div>
-                            <div class="item">
-                                <i class="ti-mobile"></i>
-                                <div>
-                                    <h5>Phone Number</h5>
-                                    <p>PH: +63279157747</p>
-                                </div>                          
-                            </div>
-                            <div class="item">
-                                <i class="ti-email"></i>
-                                <div class="mb-0">
-                                    <h5>Email Address</h5>
-                                    <p>itsupport@example.com</p>
-                                </div>
-                            </div>
-                            <div class="form">
-                                <h6 class="section-title mb-4">Get In Touch</h6>
-                                <form method="POST" action = "/sit-instructor/instructor/report_issues">
-                                    {%csrf_token%}
-                                    <div class="form-group">
-                                        <label>Subject</label>
-                                        <input type="text" name="subject" class="form-control" placeholder="Enter subject" required >
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea name="message" id="" cols="30" rows="5" class="form-control" placeholder="Message"></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-block rounded w-lg">Send Message</button>
-                                </form>
-                            </div> 
-                        </div>                
-                    </div>
-                
-                </div>   
-                <div id="map">
-                    <iframe src="https://snazzymaps.com/embed/61257"></iframe>
-                </div>      
-            </section>
-            <!-- End of Contact Section -->
 
+            <br>
+            <br>
             <!-- Page Footer -->
-            <footer class="sticky-footer">
-                <div class="container">
+            {% comment %} <footer class="sticky-footer">
+                <div class="container text-center">
                     <div class="row align-items-center">
-                        <div class="col-sm-6">
+                        <div class="col">
                             <p>Copyright <script>document.write(new Date().getFullYear())</script> &copy; <a href="http://www.devcrud.com" target="_blank">Frontend Team</a></p>
                         </div>
                     </div>
                 </div>
-            </footer> 
+            </footer>  {% endcomment %}
             <!-- End of page footer -->
 
             </div>

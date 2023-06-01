@@ -16,10 +16,18 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js'></script>
     <!--For Custom popup, delete if not needed-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-pzjw8Lw6d6tiTdB+pe0PLs3LqYlwkBj6c5dXoAjRy+kR3TI+On1uG2En5shF5Ql/" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8Lw6d6tiTdB+pe0PLs3LqYlwkBj6c5dXoAjRy+kR3TI+On1uG2En5shF5Ql/" crossorigin="anonymous"></script>
+
     <style>
         p.small {
             font-size: 15px !important;
             font-style: italic;
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+        background-color: red;
         }
     </style>
 </head>
@@ -112,28 +120,51 @@
     </div>
 </section><!-- End Calendar Section -->
     
-      
-   <!-- ======= Course Section ======= -->
+  <!-- ======= Course Section ======= -->
 <section id="courses" class="section">
     <div class="container mt-5">
       <div class="text-center">
         <h6 class="subtitle">Courses:</h6>
-        <div class="row">
-          {% for item in scheduled_course %}
-          <div class="col-lg-4 col-md-6" data-aos="fade-up">
-            <div class="card mb-4">
-              <img src="{% static 'student/assets/imgs/courses.png'%}" class="card-img-top" alt="{{ item.course_name }}">
-              <div class="card-body">
-                <h4 class="card-title"><a href="/sit-student/student_profile/view_courses/{{ item.course_batch }}">{{ item.course_title }}</a></h4>
+        <div id="courseCarousel" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            {% for item in scheduled_course %}
+            {% if forloop.counter0|divisibleby:3 %}
+            {% if forloop.first %}
+            <div class="carousel-item active">
+              <div class="row">
+            {% else %}
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row">
+            {% endif %}
+            {% endif %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+              <div class="card mb-4">
+                <img src="{% static 'student/assets/imgs/courses.png'%}" class="card-img-top" alt="{{ item.course_name }}">
+                <div class="card-body">
+                  <h4 class="card-title"><a href="/sit-student/student_profile/view_courses/{{ item.course_batch }}">{{ item.course_title }}</a></h4>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
               </div>
             </div>
           </div>
-          {% endfor %}
+          <a class="carousel-control-prev" href="#courseCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#courseCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
         </div>
       </div>
     </div>
   </section>
   <!-- End Course Section -->
+  
   
 
    

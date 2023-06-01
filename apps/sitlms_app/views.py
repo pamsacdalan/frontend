@@ -71,6 +71,13 @@ def dashboard(request):
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
     """ This function renders the admin module dashboard """
+    
+    # return render(request, 'admin_module/dashboard.html')
+    # Instructor
+    instructor_list = Instructor_Auth.objects.all()
+    # sum = Instructor_Auth.objects.all().aggregate(Sum('user_id')).values
+    context = {'instructor_list':instructor_list}
+    # return HttpResponse(template.render(context,request))
     issues = SubmitIssue.objects.all().values()
     count_issues = issues.filter(status=0).count()
     notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()

@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue, Schedule
 from django.conf import settings
 import os,json
 from apps.sitlms_instructor.models import Activity_Comments, ActivityPrivateComments, Course_Activity
@@ -192,51 +192,44 @@ def student_profile(request):
     course_desc = Course_Catalog.objects.filter(course_id__in=course_ids).values()
 
 
-
     # sa may color ng calendar.html change
-    sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
+    sample_colors = [
+        "#800000" , "#722F37", "#800020", "#C8385A", "#7B0000", "#B03060", "#800000", "#800000"
+    ]
+
+
     event_list=[]
+
     for x in range(detail_count):
         course_id = course_details[x]['course_id_id']
-        # get instructor id to fetch first name and last name using user id
+        course_batch = course_details[x]['course_batch']
+        schedules = Schedule.objects.filter(course_batch=course_batch).values()
         instructor_id = course_details[x]['instructor_id_id']
         user_id = Instructor_Auth.objects.get(id=instructor_id).user_id
         firstname = User.objects.get(id=user_id).first_name
         lastname = User.objects.get(id=user_id).last_name
 
-        item = {}
+        start_time = course_details[x]['start_time']
+        end_time = course_details[x]['end_time']
 
-        item['fullname'] = f'{firstname} {lastname}'
-        item['title'] = course_details[x]['course_batch']
-        item['course_id'] = course_details[x]['course_id_id']
-        item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
-        
-        start_date = course_details[x]['start_date']
-        end_date = course_details[x]['end_date'] + timedelta(days=1)
+        for i in schedules:
+            item = {}
+            item['start'] = datetime.combine(i['session_date'], start_time).isoformat()
+            item['end'] = datetime.combine(i['session_date'], end_time).isoformat()
+            item['fullname'] = f'{firstname} {lastname}'
+            item['title'] = course_details[x]['course_batch']
+            item['course_id'] = course_details[x]['course_id_id']
+            item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
+            item['url'] = course_details[x]['session_details'].lower()
+            item['course_batch'] = course_batch
 
-        start_iso = datetime.combine(start_date, course_details[x]['start_time']).isoformat()
-        end_iso = datetime.combine(end_date, course_details[x]['end_time']).isoformat()
-        day_of_week = start_date.weekday()
+            try:
+                item['color'] = sample_colors[x]
+            except:
+                item['color'] = base_color
 
-        ## Day of Week for Python starts with Monday
-        ## Day of Week for JS starts with Sunday
-        ## Pahelp magcheck for Weekly course
+            event_list.append(item)
 
-        frequency = course_details[x]['frequency']
-        if frequency == 0:
-            item['start'] = start_iso
-            item['color'] = sample_colors[x]
-        elif frequency == 1:
-            item['start'] = start_iso
-            item['end'] = end_iso
-            item['color'] = sample_colors[x]
-        else:
-            item['startRecur'] = start_iso
-            item['endRecur'] = end_iso
-            item['daysOfWeek'] = day_of_week - 1
-            item['color'] = sample_colors[x]
-
-        event_list.append(item)
         
         """ Adding Course Desc and Course Title in Context"""
         for item in course_desc:
@@ -250,9 +243,6 @@ def student_profile(request):
                         'completed_count':completed_count,
                         'total_count':total_count,                        
                     }
-
-
-    
 
     # context  = {
     #     'student_details': student_details,
@@ -280,13 +270,6 @@ def student_profile(request):
     month_name = date.strftime('%B')
     year = date.year
 
-    # Prepare the calendar data with event information
-    events = {
-        5: ['Meeting 1', 'Meeting 2'],
-        12: ['Appointment'],
-        20: ['Conference'],
-        25: ['Workshop', 'Training'],
-    }
 
     #DEBUG
     # for j in course_details:
@@ -297,27 +280,28 @@ def student_profile(request):
     #     print(i)
     #     print("---")
 
-    calendar_data = []
-    for week in cal:
-        week_data = []
-        for day in week:
-            if day == 0:
-                week_data.append((" ", []))
-            else:
-                events_for_day = events.get(day, [])
-                week_data.append((day, events_for_day))
-        calendar_data.append(week_data)
+    # calendar_data = []
+    # for week in cal:
+    #     week_data = []
+    #     for day in week:
+    #         if day == 0:
+    #             week_data.append((" ", []))
+    #         else:
+    #             events_for_day = events.get(day, [])
+    #             week_data.append((day, events_for_day))
+    #     calendar_data.append(week_data)
 
+    for i in event_list:
+        print(i)
+        print("---")
     
         
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html', {
-        'calendar': calendar_data,
         'prev_date': prev_date,
         'next_date': next_date,
         'month_name': month_name,
         'year': year,
-        'events': events,
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
@@ -325,6 +309,10 @@ def student_profile(request):
         'scheduled_course':course_detail_list,
         'event_list':json.dumps(event_list),
     })
+
+
+
+
 
 @user_passes_test(is_student) 
 def student_view_assignment_details(request, id, pk):
