@@ -1,322 +1,639 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background:white;
-          }
-        
-        h1 {
-            font-size: 24px;
-        }
-        
-        h2 {
-            font-size: 20px;
-        }
-        
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        
-        a {
-            text-decoration: none;
-            color: blue;
-        }
-        
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            position: relative;
-            background-color: white;
-        }
-        
-        .header img {
-            max-width: 1200px;
-            height: auto;
-        }
-        
-        .header-text {
-            position: absolute;
-            top: 65%;
-            left: 0.1;
-            transform: translate(0, -50%);
-            padding-left: 10px;
-            z-index: 1;
-        }
-        
-        .header-text h1 {
-            font-size: 30px;
-            color: #000;
-            margin: 0;
-        }
-        
-       
-          
-          ul{
-            margin:0;
-            padding:0;
-            display:flex;
-            justify-content: center;
-          }
-          
-          ul li{
-            list-style:none;
-            margin:0 20px;
-            transition:0.5s;
-           
-          }
-          
-          ul li a{
-            display: block;
-            position:relative;
-            text-decoration:none;
-            padding:5px;
-            font-size:18px;
-            font-family: sans-serif;
-            color:black;
-            text-transform:uppercase;
-            transition:0.5s;
-          }
-          
-          ul:hover li a{
-            transform:scale(1);
-            opacity:0.2;
-            filter:blur(5px);
-          }
-          
-          ul li a:hover{
-            transform:scale(1.2);
-            opacity:1;
-            filter:blur(0);
-            text-decoration:none;
-            color:#fff;
-          }
-          
-          ul li a:before{
-            content:'';
-            position:absolute;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            background:#a70000;
-            transition:0.5s;
-            transform-origin:right;
-            transform:scaleX(0);
-            z-index:-1;
-          }
-          
-          ul li a:hover:before{
-            transition:transform 0.5s;
-            transform-origin:left;
-            transform:scaleX(1);
-          }
-        
-    .card {
-        border: 1px solid #f2f2f2;
-        margin-bottom: 16px;
-       
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+    	body {
+    background-color: #f0f6ff;
+    color: #28384d;
 
-    .card-header {
-        cursor: pointer;
-        padding: 8px 16px;
-        background-color: #f2f2f2;
-        font-weight: bold;
-        margin-bottom: 16px; /* Add margin bottom */
-    }
+}
+/*social */
+.card-one {
+    position: relative;
+    width: 300px;
+    background: #fff;
+    box-shadow: 0 10px 7px -5px rgba(0, 0, 0, 0.4);
+}
+.card {
+    margin-bottom: 35px;
+    box-shadow: 0 10px 20px 0 rgba(26, 44, 57, 0.14);
+    border: none;
+}
 
-    .card-body {
-        display: none;
-        margin-bottom: 16px; /* Add margin bottom */
-    }
+.follower-wrapper li {
+    list-style-type: none;
+    color: #fff;
+    display: inline-block;
+    float: left;
+    margin-right: 20px;
+}
 
-    .card-body.show {
-        display: block;
-    }
+.social-profile {
+    color: #fff;
+}
 
-    /* Add margin bottom for section content */
-    .card-body table {
-        margin-bottom: 16px;
-    }
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: white;
-        padding: 10px;
-      }
-      
-      .logo img {
-        height: 40px; /* Adjust the height as needed */
-      }
-      
-      .navbar-links {
-        text-align: right;
-      }
-      
-      .navbar-links a {
-        text-decoration: none;
-        color: black;
-        margin-left: 10px; /* Add spacing between links */
-      }
+.social-profile a {
+    color: #fff;
+}
+
+.social-profile {
+    position: relative;
+    margin-bottom: 150px;
+}
+
+.social-profile .user-profile {
+    position: absolute;
+    bottom: -75px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    left: 50px;
+}
+
+.social-nav {
+    position: absolute;
+    bottom: 0;
+}
+
+.social-prof {
+    color: #333;
+    text-align: center;
+}
+
+.social-prof .wrapper {
+    width: 70%;
+    margin: auto;
+    margin-top: -100px;
+}
+
+.social-prof img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 5px solid #fff;
+    /*border: 10px solid #70b5e6ee;*/
+}
+
+.social-prof h3 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.social-prof p {
+    font-size: 18px;
+}
+
+.social-prof .nav-tabs {
+    border: none;
+}
+
+.card .nav>li {
+    position: relative;
+    display: block;
+}
+
+.card .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    font-weight: 300;
+    border-radius: 4px;
+}
+
+.card .nav>li>a:focus,
+.card .nav>li>a:hover {
+    text-decoration: none;
+    background-color: #eee;
+}
+
+.card .s-nav>li>a.active {
+    text-decoration: none;
+    background-color: #3afe;
+    color: #fff;
+}
+
+.text-blue {
+    color: #3afe;
+}
+
+ul.friend-list {
+    margin: 0;
+    padding: 0;
+}
+
+ul.friend-list li {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+}
+
+ul.friend-list li:hover {
+    background: rgba(0, 0, 0, .1);
+    cursor: pointer;
+}
+
+ul.friend-list .left img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+ul.friend-list li {
+    padding: 10px;
+}
+
+ul.friend-list .right h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+ul.friend-list .right p {
+    font-size: 11px;
+    color: #6c757d;
+    margin: 0;
+}
+
+.social-timeline-card .dropdown-toggle::after {
+    display: none;
+}
+
+.info-card h4 {
+    font-size: 15px;
+}
+
+.info-card h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.social-about .social-info {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.social-about p {
+    margin-bottom: 20px;
+}
+
+.info-card i {
+    color: #3afe;
+}
+
+.card-one {
+    position: relative;
+    width: 300px;
+    background: #fff;
+    box-shadow: 0 10px 7px -5px rgba(0, 0, 0, 0.4);
+}
+
+.card-one .header {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    background-color: #3afe;
+}
+
+.card-one .header::before,
+.card-one .header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: inherit;
+}
+
+.card-one .header::before {
+    -webkit-transform: skewY(-8deg);
+    transform: skewY(-8deg);
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+}
+
+.card-one .header::after {
+    -webkit-transform: skewY(8deg);
+    transform: skewY(8deg);
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+}
+
+.card-one .header .avatar {
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    margin-left: -50px;
+    z-index: 5;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #ccc;
+    border: 3px solid #fff;
+}
+
+.card-one .header .avatar img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: auto;
+}
+
+.card-one h3 {
+    position: relative;
+    margin: 80px 0 30px;
+    text-align: center;
+}
+
+.card-one h3::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    margin-left: -15px;
+    width: 30px;
+    height: 1px;
+    background: #000;
+}
+
+.card-one .desc {
+    padding: 0 1rem 2rem;
+    text-align: center;
+    line-height: 1.5;
+    color: #777;
+}
+
+.card-one .contacts {
+    width: 200px;
+    max-width: 100%;
+    margin: 0 auto 3rem;
+}
+
+.card-one .contacts a {
+    display: block;
+    width: 33.333333%;
+    float: left;
+    text-align: center;
+    color: #c8c;
+}
+
+.card-one .contacts a:hover {
+    color: #333;
+}
+
+.card-one .contacts a:hover .fa::before {
+    color: #fff;
+}
+
+.card-one .contacts a:hover .fa::after {
+    width: 100%;
+    height: 100%;
+}
+
+.card-one .contacts a .fa {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    line-height: 39px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.card-one .contacts a .fa:before {
+    position: relative;
+    z-index: 1;
+}
+
+.card-one .contacts a .fa::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background: #c8c;
+    transition: width .3s, height .3s;
+}
+
+.card-one .contacts a:last-of-type .fa {
+    line-height: 36px;
+}
+
+.card-one .footer {
+    position: relative;
+    padding: 1rem;
+    background-color: #3afe;
+    text-align: center;
+}
+
+.card-one .footer a {
+    padding: 0 1rem;
+    color: #e2e2e2;
+    transition: color .4s;
+}
+
+.card-one .footer a:hover {
+    color: #c8c;
+}
+
+.card-one .footer::before {
+    content: '';
+    position: absolute;
+    top: -27px;
+    left: 50%;
+    margin-left: -15px;
+    border: 15px solid transparent;
+    border-bottom-color: #3afe;
+}
+
+.card-title, .card .card-title, .card-2 .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+a {
+    color: #333;
+}
+.badge {
+    font-size: 12px;
+    line-height: 1;
+    padding: .375rem .5625rem;
+    font-weight: normal;
+}
+
+.badge-primary {
+    color: #447de8;
+    background-color: #e6edff;
+}
+.badge {
+    display: inline-block;
+    padding: .4em .5em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    position: relative;
+    background-color: white;
+}
+
+.header img {
+    width: 1000px;
+    {% comment %} max-length: 1000px; {% endcomment %}
+    
+}
+
+.header-text {
+    position: absolute;
+    top: 65%;
+    left: 0.1;
+    transform: translate(0, -50%);
+    padding-left: 10px;
+    z-index: 1;
+}
+
+.header-text h1 {
+    font-size: 30px;
+    color: #000;
+    margin: 0;
+}
+.content-section {
+    display: none;
+  }
+
+  .active-section {
+    display: block;
+  }
+
+
+/*end social*/
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="{% url 'student_profile' %}">
-          <img src="{% static 'img/logo-red.png' %}" alt="Logo" >
-        </div>
-        <div class="navbar-links">
-          <a href="{% url 'student_profile' %}">Home</a>
-        </div>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<main>
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div class="top-breadcrumb">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+<li class="breadcrumb-item"><a href="{% url 'student_profile' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Course</li>
+</ol>
+</nav>
+</div>
+</div>
+</div>
+<div class="header">
+    <img src="{% static 'student/assets/imgs/Header.png' %}" alt="Course Image">
+    <div class="header-text">
+        <h1>{{ id }}</h1>
+    </div>
+</div>
+<div class="card social-prof">
+<div class="card-body">
+<div class="wrapper">
+
+</div>
+<div class="row ">
+<div class="col-lg-12">
+    <ul class="nav nav-tabs justify-content-center s-nav">
+        <li><a id="announcement-tab" class="active" href="#" onclick="toggleSection('announcement')">Announcement</a></li>
+        <li><a id="course-info-tab" href="#" onclick="toggleSection('course-info')">Course Info</a></li>
+        <li><a id="assignment-tab" href="#" onclick="toggleSection('assignment')">Assignments</a></li>
+      </ul>
+</div>
+</div>
+</div>
+</div>
+<div id="announcement-section" class="content-section active-section">
+<div class="row">
+<div class="col-lg-3">
+<div class="card">
+<div class="card-body">
+<div class="h5 text-blue">Upcoming Deadlines</div>
+<div class="h7"><strong>Safe!</strong></div>
+<p> No deadlines yet </p>
+</div>
+</div>
+</div>
+
+
+
+<div class="col-lg-6 gedf-main">
+
+{% for announcement in announcement_details %}
+
+
+<div class="card social-timeline-card">
+   
+<div class="card-header">
+<div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center">
+<div class="mr-2"> 
+<img class="rounded-circle" width="45" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt>
+</div>
+<div class="ml-2">  
+<!--<div class="h5 m-0 text-blue">@username sana</div>-->
+<div class="h7 text-muted">{{ instructor_name }}</div>
+</div>
+</div>
+<div>
+
+</div>
+</div>
+</div>
+<div class="card-body">
+<div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i>{{ announcement.date_posted }}</div>
+<a class="card-link" href="#">
+<h5 class="card-title">{{ announcement.announcement_text|linebreaks }}</h5>
+</a>
+<img src="img/gallery/1a.jpg" alt class="img-fluid">
+</div>
+<div class="card-footer">
+<a href="#" class="card-link"><i class="fa fa-comment"></i> Respond</a>
+</div>
+</div>
+{% endfor %}
+</div>
+
+
+<div class="col-lg-3">
+    <div class="card social-timeline-card">
+      <div class="card-body">
+        <h5 class="card-title">Classmates</h5>
+        <ul class="friend-list">
+          {% for student in classmate_details %}
+          <li>
+            <div class="left">
+              <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt>
+            </div>
+            <div class="right">
+              <h3>{{ student.full_name }}</h3>
+              <p>{{ student.program_code }}</p>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
-    <div class="header">
-        <img src="{% static 'student/assets/imgs/header.png' %}" alt="Course Image">
-        <div class="header-text">
-            <h1>{{ id }}</h1>
-        </div>
     </div>
-
-        <ul>
-            <li><a onclick="toggleCardBody('course-info')">Course Info</a></li>
-            <li><a onclick="toggleCardBody('announcement')">Announcement</a></li>
-            <li><a onclick="toggleCardBody('assignments')">Assignments</a></li>
-            <li><a onclick="toggleCardBody('classmates')">Classmates</a></li>
-            </ul>
-    
-    
+  </div>
+  
+</div>
+</div>
+<div id="course-info-section" class="content-section">
     <div class="card">
-        <div class="card-body" id="assignments">
-            <table>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Deadline</th>
-                    <th>Grade</th>
-                    <th>Max Score</th>
-                </tr>
-                {% for item in details %}
-                <tr>
-                    <td><a href="{% url 'student_view_assignment_details' id item.act.id %}">{{ item.act.activity_title }}</a></td>
-                    <td>{{ item.act.activity_desc }}</td>
-                    <td>{{ item.act.deadline }}</td>
-                    <td>{{ item.grade }}</td>
-                    <td>{{ item.act.max_score }}</td>
-                </tr>
+        <link rel="stylesheet" href="{% static 'student/assets/css/info.css'%}">
+        <div class="card-body show" id="course-info">
+                <article>
+                    <dl>
+                        {% for course in course_details %}
+                        <div>
+                            <dt>Session Details</dt>
+                            <dd>{{ course.session_details | urlize | safe }}</dd>
+                        </div>
+                        <div>
+                            <dt>Course Mode</dt>
+                            <dd>{% if course.course_mode == 0 %}Webinar
+                                {% elif course.course_mode == 1 %}Onsite
+                                {% else %}Self-Paced
+                                {% endif %}</dd>
+                        </div>
+                        <div>
+                            <dt>Start Date</dt>
+                            <dd>{{ course.start_date }}</dd>
+                        </div>
+                        <div>
+                            <dt>End Date</dt>
+                            <dd>{{ course.end_time }}</dd>
+                        </div>
+                        <div>
+                            <dt>Frequency</dt>
+                            <dd> {% if course.frequency == 0 %}Once
+                                {% elif course.frequency == 1 %}Daily
+                                {% else %}Weekly
+                                {% endif %}</dd>
+                        </div>
+                        <div>
+                            <dt>Instructor</dt>
+                            <dd>{{ instructor_name }}</dd>
+                        </div>
+                    </dl>
+                </article>
                 {% endfor %}
-            </table>
         </div>
     </div>
+  </div>
+</div>
+<div id="assignment-section" class="content-section">
+<div class="card">
+    <div class="card-body" id="assignments">
+        <div class="tasks">
+            <!-- task 1 -->
+            {% for item in details %}
 
-    <div class="card">
-        <div class="card-body" id="announcement">
-            <table border="1">
-                <tr>
-                    <th>Announcement</th>
-                    <th>Author</th>
-                    <th>Date Posted</th>
-                </tr>
-                {% for announcement in announcement_details %}
-                <tr>
-                    <td name="announcement_text">{{ announcement.announcement_text|linebreaks }}</td>
-                    <td name="author">{{ instructor_name }}</td>
-                    <td name="date_posted">{{ announcement.date_posted }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+            <input id='label-1' type='checkbox' checked/>
+            <label for='label-1'>
+              <h2><a href="{% url 'student_view_assignment_details' id item.act.id %}">{{ item.act.activity_title }}</a>
+                <span>{{ item.act.activity_desc }} &amp; {{ item.act.deadline }}</span>
+                <span>{{ item.grade }}&amp; {{ item.act.max_score }}</span>
+              </h2>   
+            </label>
+          </div>
+          {% endfor %}
     </div>
+</div>
+</div>
+</main>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript"></script>
+<script>
+    function toggleSection(sectionId) {
+      // Hide all content sections
+      var sections = document.getElementsByClassName('content-section');
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].style.display = 'none';
+      }
 
-    <div class="card">
-        <div class="card-body" id="course-info">
-            <table border="1">
-                <tr>
-                    <th>Session Details</th>
-                    <th>Course Mode</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Frequency</th>
-                    <th>Instructor</th>
-                </tr>
-                {% for course in course_details %}
-                <tr>
-                    <td name='session_details'>{{ course.session_details | urlize | safe }}</td>
-                    <td name='course_mode'>
-                        {% if course.course_mode == 0 %}Webinar
-                        {% elif course.course_mode == 1 %}Onsite
-                        {% else %}Self-Paced
-                        {% endif %}
-                    </td>
-                    <td name='start_date'>{{ course.start_date }}</td>
-                    <td name='end_date'>{{ course.end_date }}</td>
-                    <td name='start_time'>{{ course.start_time }}</td>
-                    <td name='end_time'>{{ course.end_time }}</td>
-                    <td name='frequency'>
-                        {% if course.frequency == 0 %}Once
-                        {% elif course.frequency == 1 %}Daily
-                        {% else %}Weekly
-                        {% endif %}
-                    </td>
-                    <td name="instructor">{{ instructor_name }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
+      // Show the selected section
+      var selectedSection = document.getElementById(sectionId + '-section');
+      selectedSection.style.display = 'block';
 
-    <div class="card">
-        <div class="card-body" id="classmates">
-            <table border="1">
-                <tr>
-                    <th>Name</th>
-                    <th>Program</th>
-                </tr>
-                {% for student in classmate_details %}
-                <tr>
-                    <td name="fullname">{{ student.full_name }}</td>
-                    <td name="program">{{ student.program_code }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
-    
-    <script>
-        function toggleCardBody(cardId) {
-            var cardBodies = document.getElementsByClassName("card-body");
-            for (var i = 0; i < cardBodies.length; i++) {
-                var cardBody = cardBodies[i];
-                if (cardBody.id === cardId) {
-                    cardBody.classList.add("show");
-                } else {
-                    cardBody.classList.remove("show");
-                }
-            }
+      // Update the active tab
+      var tabs = document.getElementsByClassName('nav-tabs')[0].getElementsByTagName('a');
+      for (var j = 0; j < tabs.length; j++) {
+        if (tabs[j].id === sectionId + '-tab') {
+          tabs[j].classList.add('active');
+        } else {
+          tabs[j].classList.remove('active');
         }
-    </script>
+      }
+    }
+  </script>
 </body>
 </html>
