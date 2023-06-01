@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue, Schedule
 from django.conf import settings
 import os,json
 from apps.sitlms_instructor.models import Activity_Comments, ActivityPrivateComments, Course_Activity
@@ -192,56 +192,104 @@ def student_profile(request):
     course_desc = Course_Catalog.objects.filter(course_id__in=course_ids).values()
 
 
-
     # sa may color ng calendar.html change
-    sample_colors = ["#FF6F59","#254441","#43AA8B","#B2B09B","#EF3054","#462255","#313B72","#62A87C","#7EE081","#C3F3C0"]
+    sample_colors = [
+        "#800000" , "#722F37", "#800020", "#C8385A", "#7B0000", "#B03060", "#800000", "#800000"
+    ]
+
+
     event_list=[]
+
     for x in range(detail_count):
         course_id = course_details[x]['course_id_id']
-        # get instructor id to fetch first name and last name using user id
+        course_batch = course_details[x]['course_batch']
+        schedules = Schedule.objects.filter(course_batch=course_batch).values()
         instructor_id = course_details[x]['instructor_id_id']
         user_id = Instructor_Auth.objects.get(id=instructor_id).user_id
         firstname = User.objects.get(id=user_id).first_name
         lastname = User.objects.get(id=user_id).last_name
 
-        item = {}
+        start_time = course_details[x]['start_time']
+        end_time = course_details[x]['end_time']
 
-        item['fullname'] = f'{firstname} {lastname}'
-        item['title'] = course_details[x]['course_batch']
-        item['course_id'] = course_details[x]['course_id_id']
-        item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
+        for i in schedules:
+            item = {}
+            item['start'] = datetime.combine(i['session_date'], start_time).isoformat()
+            item['end'] = datetime.combine(i['session_date'], end_time).isoformat()
+            item['fullname'] = f'{firstname} {lastname}'
+            item['title'] = course_details[x]['course_batch']
+            item['course_id'] = course_details[x]['course_id_id']
+            item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
+            item['url'] = course_details[x]['session_details'].lower()
+            item['course_batch'] = course_batch
+
+            try:
+                item['color'] = sample_colors[x]
+            except:
+                item['color'] = base_color
+
+            event_list.append(item)
         
-        start_date = course_details[x]['start_date']
-        end_date = course_details[x]['end_date'] + timedelta(days=1)
+    # scheds = []
 
-        start_iso = datetime.combine(start_date, course_details[x]['start_time']).isoformat()
-        end_iso = datetime.combine(end_date, course_details[x]['end_time']).isoformat()
-        day_of_week = start_date.weekday()
+    # for x in range(detail_count):
+    #     course_id = course_details[x]['course_id_id']
+    #     # get instructor id to fetch first name and last name using user id
+    #     instructor_id = course_details[x]['instructor_id_id']
+    #     user_id = Instructor_Auth.objects.get(id=instructor_id).user_id
+    #     firstname = User.objects.get(id=user_id).first_name
+    #     lastname = User.objects.get(id=user_id).last_name
+    #     course_batch = course_details[x]['course_batch']
+    #     schedules = Schedule.objects.filter(course_batch_id=course_details[x]['course_batch']).values()
+    #     for i in schedules:
+    #         scheds.append(i)
 
-        ## Day of Week for Python starts with Monday
-        ## Day of Week for JS starts with Sunday
-        ## Pahelp magcheck for Weekly course
-
-        frequency = course_details[x]['frequency']
-        if frequency == 0:
-            item['start'] = start_iso
-            item['color'] = sample_colors[x]
-        elif frequency == 1:
-            item['start'] = start_iso
-            item['end'] = end_iso
-            item['color'] = sample_colors[x]
-        else:
-            item['startRecur'] = start_iso
-            item['endRecur'] = end_iso
-            item['daysOfWeek'] = day_of_week - 1
-            item['color'] = sample_colors[x]
-
-        event_list.append(item)
+    #     ## check if course_id is in event_list, do not add if found
+    #     # if any(obj['course_id'] == course_id for obj in event_list):
+    #     #     print('Course Enrolled',course_id)
         
-        """ Adding Course Desc and Course Title in Context"""
-        for item in course_desc:
-            if course_details[x]['course_id_id'] == item['course_id']:
-                course_detail_list.append({**course_details[x], **item})
+    #     # cannot enroll in the same course_batch
+    #     if any(obj['course_batch'] == course_batch for obj in event_list):
+    #         print('Course Batch Enrolled',course_batch)
+    #     else:
+    #         item = {}
+
+    #         item['fullname'] = f'{firstname} {lastname}'
+    #         item['title'] = course_details[x]['course_batch']
+    #         item['course_id'] = course_details[x]['course_id_id']
+    #         item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary
+    #         item['url'] = course_details[x]['session_details'].lower()
+    #         item['course_batch'] = course_batch
+
+    #         start_date = course_details[x]['start_date']
+    #         end_date = course_details[x]['end_date'] + timedelta(days=1)
+
+    #         start_iso = datetime.combine(start_date, course_details[x]['start_time']).isoformat()
+    #         end_iso = datetime.combine(end_date, course_details[x]['end_time']).isoformat()
+    #         day_of_week = start_date.weekday()
+
+    #         # assign color based on the array, set to default if color runs out
+    #         try:
+    #             item['color'] = sample_colors[x]
+    #         except:
+    #             item['color'] = base_color
+
+    #         ## Day of Week for Python starts with Monday
+    #         ## Day of Week for JS starts with Sunday
+    #         frequency = course_details[x]['frequency']
+    #         if frequency == 0:
+    #             item['start'] = start_iso
+    #         elif frequency == 1:
+    #             item['start'] = start_iso
+    #             item['end'] = end_iso
+    #             item['weekends'] = False
+    #         else:
+    #             item['startRecur'] = start_iso
+    #             item['endRecur'] = end_iso
+    #             item['daysOfWeek'] = day_of_week - 1
+
+    #         event_list.append(item)
+
 
     student_details ={ 'first_name':student_auth_details.user.first_name, 
                         'last_name':student_auth_details.user.last_name,
@@ -252,15 +300,6 @@ def student_profile(request):
                     }
 
 
-    
-
-    # context  = {
-    #     'student_details': student_details,
-    #     'course_enrolled_list':courses,
-    #     'stud_id':user_id,
-    #     'course_count':enrolled_courses,
-    #     'scheduled_course':course_details,
-    #            }
 
     # Get the current date from the URL parameters
     date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
@@ -280,49 +319,21 @@ def student_profile(request):
     month_name = date.strftime('%B')
     year = date.year
 
-    # Prepare the calendar data with event information
-    events = {
-        5: ['Meeting 1', 'Meeting 2'],
-        12: ['Appointment'],
-        20: ['Conference'],
-        25: ['Workshop', 'Training'],
-    }
+    for i in event_list:
+        print(i)
+        print("---")
 
-    #DEBUG
-    # for j in course_details:
-    #     print(j)
-    #     print("---")
-
-    # for i in event_list:
-    #     print(i)
-    #     print("---")
-
-    calendar_data = []
-    for week in cal:
-        week_data = []
-        for day in week:
-            if day == 0:
-                week_data.append((" ", []))
-            else:
-                events_for_day = events.get(day, [])
-                week_data.append((day, events_for_day))
-        calendar_data.append(week_data)
-
-    
-        
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html', {
-        'calendar': calendar_data,
         'prev_date': prev_date,
         'next_date': next_date,
         'month_name': month_name,
         'year': year,
-        'events': events,
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
         'course_count':enrolled_courses,
-        'scheduled_course':course_detail_list,
+        'scheduled_course':course_details,
         'event_list':json.dumps(event_list),
     })
 
