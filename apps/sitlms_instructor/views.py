@@ -516,10 +516,19 @@ def activity_comments(request, id, pk):
     # Construct the absolute URL by prepending the protocol and domain
     file_url = request.build_absolute_uri(file_relative_url)
 
+    comment_items_w_pic = []
+    for x in comment_items:
+        if x.uid.pk in Student_Profile.objects.values_list('user_id', flat=True):
+            profile_path = Student_Profile.objects.get(user_id=x.uid).profile_pic
+            comment_items_w_pic.append({'items':x,'profile_pic':profile_path})
+        else:
+            comment_items_w_pic.append({'items':x,'profile_pic':False})
+
     context = {
         'batch':batch,
         'act':activity,
-        'cmt':comment_items,
+        #'cmt':comment_items,
+        'cmt':comment_items_w_pic,
         'file_url':file_url,
         'count': count,
         'course': course
