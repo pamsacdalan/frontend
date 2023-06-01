@@ -1,33 +1,208 @@
+{% extends './index.html' %}
+{% load static %}
 
-<button><a href="{% url 'view_assignments' batch.course_batch %}">Back</a></button>
-<button><a href="{% url 'student_work' batch.course_batch act.id %}">Student Work</a></button>
-<form method="POST">
-    {%csrf_token%}
-    <h3 name="act_id">Activity ID: {{act.id}}</h3>
-    <h3>Activity Title: {{act.activity_title}}</h3>
-    {% if act.activity_attachment %}<h3>Activity Attachment: <a href="{% url 'download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>{% endif %}
-    <h3>Activity Given Date: {{act.start_date}}</h3>
-    <h3>Activity Due Date: {{act.deadline}}</h3>  
-    <h3>Activity Total Items: {{act.max_score}}</h3>
-    <h3>Activity Grading: {{act.grading_percentage}}</h3>
 
-    <h5>Comment here!</h5>
-    <textarea rows="5" name="msg_area"></textarea><br>  
-    <button type="submit">Send</button>
-</form>
+<!-- cover photo -->
+{% block cover %}
+    <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+{% endblock %}
 
-<table>
-    <th>Author</th>
-    <th>Message</th>
-    <th>Timestamp</th>
-    {% for items in cmt  %}
-    <tr>
-        <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
-        <td>{{items.content}}</td>
-        <td>{{items.timestamp}}</td>
-        
-        <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
-        <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
-    </tr>
-    {% endfor %}
-</table>
+
+<!-- Course header -->
+{% block course_header %}
+    <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+    <h6 class="subtitle">{{batch}}</h6>
+{% endblock %}
+
+
+<!-- Main content -->
+{% block content %}
+<div class="container-fluid" style="margin-top: 2rem">
+    <div class="row">
+        <div  align="left">
+            <!-- shortcuts -->
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link text-white " aria-current="page" href="{% url 'view_instructor_course' batch %}">Announcements</a>
+                        </li>
+                
+                        <li class="nav-item">
+                            <a class="nav-link text-white" aria-current="page" href="{% url 'view_students' batch %}">Students</a>
+                        </li>
+                
+                        <li class="nav-item  active">
+                            <a class="nav-link text-primary active" aria-current="page" href="#">Assignments</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="container-fluid">
+                    <div class="container">
+                        <form method="POST">
+                            {%csrf_token%}
+                            <br>
+                            <br>
+                            <div class="col text-right">
+                                <a class="btn btn-primary btn-sm" href="{% url 'view_assignments' batch.course_batch %}">Back</a>
+                                <a class="btn btn-primary btn-sm" href="{% url 'student_work' batch.course_batch act.id %}">Student Work</a>
+                            </div>
+                            
+                            <hr>
+                            <br>
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="card" style="max-width: 750px">
+                                        <div class="card-header bg-dark">
+                                            <div class="row">
+                                                <div class="col text-white">
+                                                    <h6>{{act.activity_title}}</h6>
+                                                </div>
+                                                <div class="col text-right text-white">
+                                                    <h6>Due Date: {{act.deadline|date:'M d, Y h:m A'}}</h6>  
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <span>{{act.start_date|date:'M d, Y'}}</span>
+                                            <br>
+                                            <span>{{act.max_score}} Points </span>, &nbsp; <span>{{act.grading_percentage}}%</span>
+                                            <br>
+                                            <hr>
+                                            <span>{{act.activity_desc|linebreaks}}</span>
+                                            {% if act.activity_attachment %}
+                                                <div class="card mb-3" style="max-width: 400px; height: 150px; margin-top: 1rem;">
+                                                    <div class="row g-0 align-items-center">
+                                                        <div class="col-md-4 center">
+                                                            <img src="{% static 'assets/attachment.png' %}" class="img-fluid rounded-start" alt="...">
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title center">Attachment</h6>
+                                                                <p class="card-text center"><a class="btn btn-post btn-sm" href="{% url 'download_activity_attachment' batch.course_batch act.id %}" download>Download</a></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="card-footer text-right text-white center">
+                                            <a href="#comments" class="btn btn-primary btn-sm position-relative" data-toggle="collapse" role="button">
+                                                <h6 style="font-size: 13px">Comments{% comment %} <i class="ti-comments"></i> {% endcomment %}
+                                                <span class="badge bg-dark" style="font-size: 10px">
+                                                    {{count}}
+                                                </span>
+                                            </h6>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="collapse" id="comments" style="width: 660px;"> <!-- Comments section -->
+                                        <div class="container">
+                                            {% for items in cmt  %}
+                                            <div class="card" style="margin-right: 2rem">
+                                                <div class="card-header bg-dark text-white center">
+                                                    <div class="row align-items-center">
+                                                        <div class="d-flex aligns-items-center justify-content-center">
+                                                            <div class="col-1">
+                                                                {% if profile_pic %}
+                                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                                {% else %}
+                                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col" style="margin-left: 0.5rem">
+                                                                <h6 style="font-size: 13px">{{items.uid.first_name}} {{items.uid.last_name}}</h6>
+                                                                <h6 style="font-size: 11px">{{items.timestamp|date:'M d, Y h:m A'}}</h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card-body">
+                                                    {{items.content}}
+                                                </div>
+
+                                                <div class="card-footer text-right">
+                                                    {% if items.uid == request.user %}
+                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}' data-toggle="tooltip" title="Edit">
+                                                            <i class="ti-pencil"></i></a>
+                                                        {% endif %}
+                                                    {% if items.uid == request.user %}
+                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'data-toggle="tooltip" title="Delete">
+                                                            <i class="ti-trash"></i></a>
+                                                        {% endif %}
+                                                </div>
+                                            </div>
+                                            <br>
+                                            {% endfor %}
+    
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col">
+                                    <div class="card" style="margin-right: 2rem">
+                                        <div class="card-header bg-dark text-white center">
+                                            <h6><i class="ti-comment"></i> &nbsp;&nbsp;Post comment</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <textarea class="form-control" style="border-radius: 0; margin-bottom: 0" rows="3" cols="50" name="msg_area"></textarea>
+                                        </div>
+                                        <div class="card-footer text-right">
+                                            <button class="btn btn-post btn-sm" type="submit">Send</button>  
+                                        </div>
+                                    </div>
+                                    <br>
+                                    {% comment %} <div class="container">
+                                        {% for items in cmt  %}
+                                        <div class="card" style="margin-right: 2rem">
+                                            <div class="card-header bg-dark text-white center">
+                                                {{items.uid.first_name}} {{items.uid.last_name}}
+                                                {{items.timestamp}}
+    
+                                            </div>
+                                            <div class="card-body">
+                                                {{items.content}}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        {% endfor %}
+
+                                    </div> {% endcomment %}
+                        </form>
+                                    {% comment %} <table>
+                                        <th>Author</th>
+                                        <th>Message</th>
+                                        <th>Timestamp</th>
+                                        {% for items in cmt  %}
+                                        <tr>
+                                            <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
+                                            <td>{{items.content}}</td>
+                                            <td>{{items.timestamp}}</td>
+                                            
+                                            <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
+                                            <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table> {% endcomment %}
+                                </div>
+                            </div>
+                                
+                    </div>
+                </div>
+                <br>
+                <br>
+            </div> <!-- end of card body  -->
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

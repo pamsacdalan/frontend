@@ -22,7 +22,7 @@
             </div>
 
             <div class="container">
-                <div class="card" style="width: 99%">
+                <div class="card">
                     <div class="card-header bg-dark">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
@@ -70,7 +70,7 @@
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content bg-dark">
                                         <div class="modal-header text-white">
-                                            <h6 class="modal-title">Post Assignment for {{course.course_title}}</h6>
+                                            <h6 class="modal-title"style="margin-left: 1.5rem">Post Assignment for {{course.course_title}}</h6>
                                             <!--Close-->
                                             <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
@@ -80,7 +80,7 @@
                                                 <br>
                                                 <div class="container">
                                                     <div class="row">
-                                                        <div class="container text-white">
+                                                        <div class="container text-white" style="margin-left: 2rem; margin-right: 2rem">
                                                             {{ error_msg }}
             
                                                             <form method="POST" action="{% url 'add_assignment' id %}" enctype="multipart/form-data">
@@ -121,7 +121,7 @@
                                                                         {% comment %} {{form.deadline}} {% endcomment %}
                                                                     </div> 
                                                                     <div class="col-3 text-left">
-                                                                        <label>Deadline *</label>
+                                                                        <label>Time *</label>
                                                                         <br>
                                                                         <input class="form-control form-control-sm" type="time" name="deadline_1" required id="id_deadline_1">
                                                                         {% comment %} {{form.scores}} {% endcomment %}
@@ -208,15 +208,12 @@
                                             <div class="card-body">
                                                 <h5 class="card-title">{{activity.activity_title}}</h5>
                                                 {% comment %} <span style="font-size: 13px;" class="card-text">Date Posted:</span> {% endcomment %}
-                                                <p style="font-size: 13px;" class="card-text">{{activity.activity_desc}}</p>
-                                                <br>
+                                                <span style="font-size: 12px;" class="card-text">Due date:</span>
+                                                <p style="font-size: 12px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
+                                                
                                                 <div class="row align-items-center">
                                                     <div class="col">
                                                         <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post btn-sm">View</a>
-                                                    </div>
-                                                    <div class="col-7 text-right">
-                                                        <span style="font-size: 12px;" class="card-text">Due date:</span>
-                                                        <p style="font-size: 12px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
                                                     </div>
                                                 </div>
                                             </div>

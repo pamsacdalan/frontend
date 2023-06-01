@@ -521,8 +521,11 @@ def activity_comments(request, id, pk):
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
+    count = comment_items.values().count() #ADDED for display of no. of comments
     file_relative_url = activity.activity_attachment.url if activity.activity_attachment else "#" # Get the relative URL of the uploaded file
-
+    course_id = Course_Enrollment.objects.filter(course_batch=batch).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    
     # Construct the absolute URL by prepending the protocol and domain
     file_url = request.build_absolute_uri(file_relative_url)
 
@@ -530,7 +533,9 @@ def activity_comments(request, id, pk):
         'batch':batch,
         'act':activity,
         'cmt':comment_items,
-        'file_url':file_url
+        'file_url':file_url,
+        'count': count,
+        'course': course
              }
     if request.method == "POST":
         msg = request.POST['msg_area']
@@ -862,6 +867,7 @@ def report_issues(request):
         # print(f'{firstname} | {lastname} | {student_access}')
         # print(f'{subject} \n {msg}')
     return redirect('/sit-instructor/instructor')
+
 
 @user_passes_test(is_instructor)
 def private_comments(request, id, pk, student):
