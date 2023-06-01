@@ -50,6 +50,7 @@ def custom_403_1(request):
 # Create your views here.
 @user_passes_test(is_instructor)
 def instructor(request):
+
     """ This function renders the instructor page """
     form = ActivityForms(request.POST)
     acts = Course_Activity.objects.all()
@@ -95,6 +96,12 @@ def post_activity(request):
 
 @user_passes_test(is_instructor)
 def instructor_view_enrolled_course(request):
+    
+    # admins = User.objects.filter(is_superuser=True)
+    # for a in admins:
+    #     print(a.id)
+
+
     template = loader.get_template('instructor_module/instructor_view_enrolled_course.html')
 
     user = request.user
@@ -195,10 +202,6 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
     # template = loader.get_template('instructor_module/instructor_change_schedule.html')
     enrolled_course = Course_Enrollment.objects.get(course_batch=id) #ex: Python101
     course_batch = enrolled_course.course_batch
-    # course_id = enrolled_course.course_id
-    # instructor_id = enrolled_course.instructor_id
-    # session_details = enrolled_course.session_details 
-    # course_mode = enrolled_course.course_mode 
     old_sd = enrolled_course.start_date
     old_ed = enrolled_course.end_date
     old_st = enrolled_course.start_time
@@ -249,28 +252,12 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
             new_start_time = start_time,
             new_end_time = end_time,
             new_frequency = new_frequency
-        )
-       
+        )   
         change_schedule.save()
 
-        # enrolled_course.course_batch = course_batch
-        # enrolled_course.start_date =start_date
-        # enrolled_course.end_date = end_date
-        # enrolled_course.start_time = start_time
-        # enrolled_course.end_time = end_time
-        # enrolled_course.frequency = frequency
-        # enrolled_course.save()      
+        notif_type = "Change Schedule"
 
-
-
-        #DELETES THE RECORD IN SCHEDULED TABLE, THEN SAVE ANOTHER RECORD
-        # scheduled_course = list(Schedule.objects.filter(**{'course_batch':course_batch}).values()) #gets each entry of the argument id from schedule table
-
-        # for record in scheduled_course:
-        #     deleted_scheduled_course = Schedule.objects.get(schedule_id=record['schedule_id'])
-        #     deleted_scheduled_course.delete()
-        
-        # string_to_date(str(frequency), start_date, end_date, start_time, end_time, course_batch)  
+        Notify(request, id, notif_type)
 
         return redirect('view_courses')   
     
@@ -884,3 +871,26 @@ def delete_private_comment_instructor(request, id, pk, student, comment_id):
     instance = ActivityPrivateComments.objects.get(pk=comment_id)
     instance.delete()
     return redirect('instructor_private_comments', id=id,pk=pk,student=student)
+
+
+def Notify(request, id, notif_type):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+    instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
+    instructor_id = Instructor_Auth.objects.filter(user_id=user_id).values('id')
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values_list('course_id_id', flat=True)
+    course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
+    course_title = course_title[0]['course_title']
+
+    
+    if notif_type == "Change Schedule":
+        admins = User.objects.filter(is_staff=True)
+        for a in admins:
+            notification = Notification(
+                            recipient = User.objects.get(id=a.id),
+                            message = f"Change Schedule Request for {course_title} from {instructor_auth_details.user.first_name}",
+                            sender = user_id,
+                            notif_type = notif_type,
+            )
+            notification.save()

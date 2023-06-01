@@ -1,0 +1,38 @@
+<!-- 
+<h1>Notifications</h1>
+<table>
+    <th>Message</th>
+    <th>Date</th>
+    {%for items in notifications%}
+    <tr>
+        <td>{{items.message}}</td>
+        <td>{{items.timestamp}}</td>
+    </tr>
+    {%endfor%}
+</table> -->
+
+
+<style>
+    table {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+
+<h1>Notifications</h1>
+<table>
+    <th>Message</th>
+    <th>Date</th>
+    {% for item in notifications %}
+    <tr>
+        <td><a href="/sit-admin/course_enrollment/change_schedule/">{{ item.message }}</a></td>
+        <td>{{ item.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
