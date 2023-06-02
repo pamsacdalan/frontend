@@ -1,0 +1,142 @@
+{
+    "2023-01-01": {
+        "description": "New Year's Day",
+        "type": "Regular Holidays"
+    },
+    "2023-04-10": {
+        "description": "Araw ng Kagitingan",
+        "type": "Regular Holidays"
+    },
+    "2023-04-06": {
+        "description": "Maundy Thursday",
+        "type": "Regular Holidays"
+    },
+    "2023-04-07": {
+        "description": "Good Friday",
+        "type": "Regular Holidays"
+    },
+    "2023-04-21": {
+        "description": "Eid'l Fitr",
+        "type": "Regular Holidays"
+    },
+    "2023-05-01": {
+        "description": "Labor Day",
+        "type": "Regular Holidays"
+    },
+    "2023-06-12": {
+        "description": "Independence Day",
+        "type": "Regular Holidays"
+    },
+    "2023-08-28": {
+        "description": "National Heroes Day",
+        "type": "Regular Holidays"
+    },
+    "2023-11-27": {
+        "description": "Bonifacio Day",
+        "type": "Regular Holidays"
+    },
+    "2023-12-25": {
+        "description": "Christmas Day",
+        "type": "Regular Holidays"
+    },
+    "2023-12-30": {
+        "description": "Rizal Day",
+        "type": "Regular Holidays"
+    },
+    "2023-02-24": {
+        "description": "EDSA People Power Revolution Anniversary",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-04-08": {
+        "description": "Black Saturday",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-08-21": {
+        "description": "Ninoy Aquino Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-11-01": {
+        "description": "All Saints' Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-12-08": {
+        "description": "Feast of the Immaculate Conception of Mary",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-12-31": {
+        "description": "New Year's Eve",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-01-02": {
+        "description": "Additional Special (Non-Working) Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2023-11-02": {
+        "description": "Additional Special (Non-Working) Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-01-01": {
+        "description": "New Year's Day",
+        "type": "Regular Holidays"
+    },
+    "2024-02-25": {
+        "description": "EDSA People Power Revolution Anniversary",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-03-28": {
+        "description": "Maundy Thursday",
+        "type": "Regular Holidays"
+    },
+    "2024-03-29": {
+        "description": "Good Friday",
+        "type": "Regular Holidays"
+    },
+    "2024-03-30": {
+        "description": "Black Saturday",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-05-01": {
+        "description": "Labor Day",
+        "type": "Regular Holidays"
+    },
+    "2024-06-12": {
+        "description": "Independence Day",
+        "type": "Regular Holidays"
+    },
+    "2024-08-21": {
+        "description": "Ninoy Aquino Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-08-26": {
+        "description": "National Heroes Day",
+        "type": "Regular Holidays"
+    },
+    "2024-11-01": {
+        "description": "All Saints' Day",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-11-30": {
+        "description": "Bonifacio Day",
+        "type": "Regular Holidays"
+    },
+    "2024-12-08": {
+        "description": "Feast of the Immaculate Conception of Mary",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-12-25": {
+        "description": "Christmas Day",
+        "type": "Regular Holidays"
+    },
+    "2024-12-30": {
+        "description": "Rizal Day",
+        "type": "Regular Holidays"
+    },
+    "2024-12-31": {
+        "description": "New Year's Eve",
+        "type": "Special (Non-Working) Holidays"
+    },
+    "2024-04-10": {
+        "description": "Eid'l Fitr",
+        "type": "Regular Holidays"
+    }
+}

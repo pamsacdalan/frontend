@@ -24,6 +24,7 @@ from datetime import datetime, date
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 import pandas as pd
+from . import scraper
 
 
 
@@ -47,6 +48,7 @@ def home(request):
     """ This function renders the home page """
     messages.success(request,'You have successfully logged in.')
     if hasattr(request.user,'admin'):
+        scraper.holiday_scrape()
         return redirect('sit_admin_dashboard')
     elif hasattr(request.user,'instructor_auth'):
         return redirect('instructor')

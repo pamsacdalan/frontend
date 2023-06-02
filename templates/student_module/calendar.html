@@ -38,25 +38,31 @@
       background-color: #fddde2 !important; /* Replace #e2b2b9 with the desired color code */
     }
 
-</style>
+    /* Highlighting the current day */
+    /* .fc-day-today .fc-daygrid-day-frame { */
+    .fc-day-today .fc-daygrid-day-number {
+      font-weight: bold;
+      font-size: 23px;
+    }
+  </style>
 
 
   <script>
 
-     var sample_events = {{event_list|safe}};
+     var event_list = {{event_list|safe}};
      var url_regex = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?([^ ])+");
 
-      for (var i = 0; i<sample_events.length; i++){
+      for (var i = 0; i<event_list.length; i++){
         try{
-          link_search = sample_events[i].url.match(url_regex);
+          link_search = event_list[i].url.match(url_regex);
           if (link_search.length > 0){
             link = link_search[0];
             url  = (link.indexOf('://') === -1) ? 'http://' + link : link; //prepend http to urls without it
-            sample_events[i].url = url;
+            event_list[i].url = url;
           }
         }
         catch {
-          delete sample_events[i].url;
+          delete event_list[i].url;
         }
       }
 
@@ -81,20 +87,36 @@
 
             info.jsEvent.preventDefault(); // prevents browser from following link in current tab.
           } else {
-            // custom popup; change if not needed
-            Swal.fire({
-            title: eventObj.title,
-            html: `
-              <b>Description:</b> ${eventObj.extendedProps.full_desc}<br>
-              <b>Start Time:</b> ${eventObj.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
-              <b>End Time:</b> ${eventObj.end.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
-              <b>Instructor:</b> ${eventObj.extendedProps.fullname}
-            `,
-          });
+            try {
+              // custom popup; change if not needed
+              Swal.fire({
+                title: eventObj.title,
+                html: `
+                  <b>Description:</b> ${eventObj.extendedProps.full_desc}<br>
+                  <b>Start Time:</b> ${eventObj.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+                  <b>End Time:</b> ${eventObj.end.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<br>
+                  <b>Instructor:</b> ${eventObj.extendedProps.fullname}
+                `,
+              });
+            } catch {
+              console.log(eventObj.title);
+            }
           }
-        },  
-        // weekends: false, // hide the weekends
-        events: sample_events,
+          },  
+        events: event_list,
+        eventTimeFormat: {
+          hour: '2-digit',
+          minute: '2-digit',
+          meridiem: 'short'
+        },
+        dayRender: function(dayRenderInfo) {
+          var today = new Date();
+          var currentDay = dayRenderInfo.date;
+
+          if (currentDay.toDateString() === today.toDateString()) {
+            dayRenderInfo.el.classList.add('fc-day-today');
+          }
+        }
       });
     
       calendar.render();
