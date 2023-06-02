@@ -1,100 +1,233 @@
-<h1>Hello</h1>
-
-<form method="post">
-    {% csrf_token %}
-
-    <h3>Old Start Date: {{enrolled_course.start_date}}</h3>
-    <h3>Old End Date: {{enrolled_course.end_date}}</h3>
-    <h3>Old Start Time: {{enrolled_course.start_time}}</h3>
-    <h3>Old End Time: {{enrolled_course.end_time}}</h3>
-    <h3>Old Frequency: {{old_frequency}}</h3>
-
-    
-
-    <label for="start_date">Start Date</label>
-    <input type="date" id="start_date" name="start_date" required>
-    <br><br>
-
-    <label for="end_date">End Date</label>
-    <input type="date" id="end_date" name="end_date"  required>
-    <br><br>
+{% extends './index.html' %}
+{% load static %}
 
 
-    
-    <label for="start_time">Start Time</label>
-    <input type="time" id="start_time" name="start_time"  required>
+{% block cover %}
+    <img class="card-img-top" style="height: 15rem" src="{% static 'assets/coverphoto.png' %}">
+{% endblock %}
 
-    <br><br>
-    <label for="end_time">End Time</label>
-    <input type="time" id="end_time" name="end_time"  required>
-    
-    <br><br>
-    <label for="new_frequency">New Frequency:</label>
-    <select id="new_frequency" name= "new_frequency" required>
-        <option selected hidden >{{old_frequency}}</option>
-        {% for value in lof%}
-        <option value="{{value}}">{{value}}</option>
-         {% endfor %}
-    </select>
+{% block course_header %}
+    <h6 class="title">[{{course.course_title}}] - {{course.course_desc}}</h6>
+    <h6 class="subtitle">{{course_batch}}</h6>
+{% endblock %}
 
 
-    <br><br>
-    <a href='/sit-instructor/instructor/view_courses'></a>
-    <input class="button" type="submit" value="Save" onclick="return validateDates()">
-    <div id="error-message" style="color: red;"></div>
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid" style="margin-top: 2rem">
+    <div class="row">
+        <div  align="left">
+            <!-- shortcuts -->
+        </div>
 
-</form>
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link text-white " aria-current="page" href="{% url 'view_instructor_course' course_batch %}">Announcements</a>
+                        </li>
+                
+                        <li class="nav-item">
+                            <a class="nav-link text-white" aria-current="page" href="{% url 'view_students' course_batch %}">Students</a>
+                        </li>
+                
+                        <li class="nav-item">
+                            <a class="nav-link text-white" aria-current="page" href="{% url 'view_assignments' course_batch %}">Assignments</a>
+                        </li>
 
-
-<br><br>
-
-<br>
-<button><a style="color:#000; " href="/sit-instructor/instructor/view_courses">Back</a></button>
-
-
-<script>
-
-    function validateDates() {
-    var errorMessage = document.getElementById('error-message');
-    var startDate = new Date(document.getElementById("start_date").value);
-    var endDate = new Date(document.getElementById("end_date").value);
-    var startTime = document.getElementById("start_time").value;
-    var endTime = document.getElementById("end_time").value;
-    var frequency = document.getElementById("frequency").value; 
-
-    if (startDate > endDate) {
-        errorMessage.textContent = 'End date must be after start date.';
-        return false;
-
-        }
-
-    
-    else if (startDate < endDate) {
-        if (frequency == 0) {
-        errorMessage.textContent = 'Startdate should be equal to endDate.';
-        return false;
-        }
-
-        else{    
-        errorMessage.textContent = ''; // Clear the error message
-        return true;
-        }
-
+                        <li class="nav-item  active">
+                            <a class="nav-link text-primary active" aria-current="page" href="#">Schedule</a>
+                        </li>
+                    </ul>
+                </div>
+                <br>
+                <div class="container-fluid">
+                    <div class="container">
+                        <br>
+                        <div class="row">
+                            <div class="col-8 align-items-bottom">
+                                <h4>Course Schedule &#9;</h4>
+                            </div>
+                            <div class="col-4" align="right">
+                                <!-- Button-->
+                                <a  class="btn btn-primary btn-sm" href="/sit-instructor/instructor/view_courses">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
         
-        }
-    else { //equal ang dates
-        
-        if (startTime > endTime) {
-            errorMessage.textContent = 'End time must be after start time.';
-            return false;
-        }    
-        if (frequency !== 0 ) {
-            errorMessage.textContent = 'Frequency should be Once since start date = end date';
-            return false;
-        }
-        errorMessage.textContent = ''; // Clear the error message
-        return true;
+                    <div class="container">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row pt-5">
+                                <div class="col-sm d-flex align-items-stretch" style="margin-bottom: 1rem;">
+                                    <div class="card text-dark" style="width: 100%;">
+                                        <div class="card-header">
+                                            <h6 class="title" style="font-size: 20px">Current Schedule</h6>  
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" type="text"  id="old_start_date" name="old_start_date" placeholder="{{enrolled_course.start_date|date:'M d, Y'}}" value="{{enrolled_course.start_date|date:'M d, Y'}}"readonly="readonly">
+                                                        <label for="old_start_date">Start Date:</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" type="text"  id="old_end_date" name="old_end_date" placeholder="{{enrolled_course.end_date|date:'M d, Y'}}" value="{{enrolled_course.end_date|date:'M d, Y'}}"readonly="readonly">
+                                                        <label for="old_start_date">End Date:</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" type="text"  id="old_start_time" name="old_start_time" placeholder="{{enrolled_course.start_time|time:'h:i A'}}" value="{{enrolled_course.start_time|time:'h:i A'}}"readonly="readonly">
+                                                        <label for="old_start_time">Start Time:</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" type="text"  id="old_end_time" name="old_end_time" placeholder="{{enrolled_course.end_time|time:'h:i A'}}" value="{{enrolled_course.end_time|time:'h:i A'}}"readonly="readonly">
+                                                        <label for="old_end_time">End Time:</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" type="text"  id="old_frequency" name="old_frequency" placeholder="{{old_frequency}}" value="{{old_frequency}}"readonly="readonly">
+                                                        <label for="old_frequency">Frequency:</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% comment %} <h6 class="subtitle" style="font-size: 13px">Start Date:{{enrolled_course.start_date}}</h6>
+                                            <h6>Old End Date: {{enrolled_course.end_date}}</h6>
+                                            <h6>Old Start Time: {{enrolled_course.start_time}}</h6>
+                                            <h6>Old End Time: {{enrolled_course.end_time}}</h6>
+                                            <h6>Old Frequency: {{old_frequency}}</h6> {% endcomment %}
+                                        </div>
+                                    </div>
+                                </div>
 
-    }
-    }    
-</script>
+                                <div class="col-sm d-flex align-items-stretch" style="margin-bottom: 1rem;">
+                                    <div class="card" style="width: 100%;">
+                                        <div class="card-header">
+                                            <h6 class="title" style="font-size: 20px">New Schedule</h6>  
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    {% comment %} <span class="input-group-text bg-secondary"><i class="ti-calendar"></i></span> {% endcomment %}
+                                                    <div class="form-floating">
+                                                        <input type="date" class="form-control" id="start_date" name="start_date"  required>
+                                                        <label for="start_date">Start Date</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    {% comment %} <span class="input-group-text bg-secondary"><i class="ti-calendar"></i></span> {% endcomment %}
+                                                    <div class="form-floating">
+                                                        <input class="form-control form-control-sm" type="date" id="end_date" name="end_date"  required>
+                                                        <label for="end_date">End Date</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    {% comment %} <span class="input-group-text bg-secondary"><i class="ti-alarm-clock"></i></span> {% endcomment %}
+                                                    <div class="form-floating">
+                                                        <input type="time" class="form-control form-control-sm" id="start_time" name="start_time"  required>
+                                                        <label for="start_time">Start Time</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    {% comment %} <span class="input-group-text bg-secondary"><i class="ti-alarm-clock"></i></span> {% endcomment %}
+                                                    <div class="form-floating">
+                                                        <input class="form-control form-control-sm" type="time" id="end_time" name="end_time"  required>
+                                                        <label for="end_time">End Time</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <div class="form-floating">
+                                                        <select class="form-control" id="new_frequency" name= "new_frequency" required>
+                                                            <option selected hidden >{{old_frequency}}</option>
+                                                            {% for value in lof%}
+                                                            <option value="{{value}}">{{value}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="new_frequency">New Frequency:</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <a href='/sit-instructor/instructor/view_courses'></a>
+                                            <input class="btn btn-post btn-sm" style="width: 100%" type="submit" value="Save" onclick="return validateDates()">
+                                            <div id="error-message" style="color: red;"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+                        <br>
+
+                        <script>
+                            
+                            function validateDates() {
+                            var errorMessage = document.getElementById('error-message');
+                            var startDate = new Date(document.getElementById("start_date").value);
+                            var endDate = new Date(document.getElementById("end_date").value);
+                            var startTime = document.getElementById("start_time").value;
+                            var endTime = document.getElementById("end_time").value;
+                            var frequency = document.getElementById("frequency").value; 
+                        
+                            if (startDate > endDate) {
+                                errorMessage.textContent = 'End date must be after start date.';
+                                return false;
+                        
+                                }
+                        
+                            
+                            else if (startDate < endDate) {
+                                if (frequency == 0) {
+                                errorMessage.textContent = 'Startdate should be equal to endDate.';
+                                return false;
+                                }
+                        
+                                else{    
+                                errorMessage.textContent = ''; // Clear the error message
+                                return true;
+                                }
+                        
+                                
+                                }
+                            else { //equal ang dates
+                                
+                                if (startTime > endTime) {
+                                    errorMessage.textContent = 'End time must be after start time.';
+                                    return false;
+                                }    
+                                if (frequency !== 0 ) {
+                                    errorMessage.textContent = 'Frequency should be Once since start date = end date';
+                                    return false;
+                                }
+                                errorMessage.textContent = ''; // Clear the error message
+                                return true;
+                        
+                            }
+                            }    
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -235,6 +235,12 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
     # template = loader.get_template('instructor_module/instructor_change_schedule.html')
     enrolled_course = Course_Enrollment.objects.get(course_batch=id) #ex: Python101
     course_batch = enrolled_course.course_batch
+    course_id = Course_Enrollment.objects.filter(course_batch=id).values('course_id_id')[0]['course_id_id']
+    course = Course_Catalog.objects.filter(course_id=course_id).values()[0]
+    # course_id = enrolled_course.course_id
+    # instructor_id = enrolled_course.instructor_id
+    # session_details = enrolled_course.session_details 
+    # course_mode = enrolled_course.course_mode 
     old_sd = enrolled_course.start_date
     old_ed = enrolled_course.end_date
     old_st = enrolled_course.start_time
@@ -253,7 +259,9 @@ def change_schedule(request, id): #need notif na nasend na yung request.. helllp
         'old_et' : old_et,
         'enrolled_course' : enrolled_course,
         'old_frequency': old_frequency,
-        'lof': list_frequency
+        'lof': list_frequency,
+        'course_batch': course_batch,
+        'course': course
     }
 
     if request.method == "POST":
@@ -658,7 +666,7 @@ def delete_comments(request,id,pk,fk):
     if request.method == 'POST':
         comment_id.delete()
         return redirect('activity_comments',id=id,pk=pk)
-    return render(request, 'instructor_module/activity_comment.html',context)
+    return render(request, 'instructor_module/delete_comments.html',context)
 
 @user_passes_test(is_instructor)
 def download_student_activity_submission(request, id, pk, student):
