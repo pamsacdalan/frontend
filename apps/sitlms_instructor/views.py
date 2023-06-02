@@ -73,11 +73,18 @@ def instructor(request):
 
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
+    ongoing_course = Course_Enrollment.objects.filter(instructor_id=instructor_id,start_date__lte=datetime.today(),end_date__gte=datetime.today()).values().distinct()
+    ongoing_count = len(ongoing_course)
+    completed_course = Course_Enrollment.objects.filter(instructor_id=instructor_id,end_date__lte=datetime.today()).values('course_batch').distinct()
+    completed_count = len(completed_course)
+
     
     context={
         'acts':acts,
         'form':form,
         'count_courses': count_courses,
+        'ongoing_count': ongoing_count,
+        'completed_count': completed_count
     }
     
     return render(request, 'instructor_module/instructor.html',context)
@@ -923,6 +930,10 @@ def delete_private_comment_instructor(request, id, pk, student, comment_id):
 
 def calendar(request):
     """ function to render the schedule of the instructor on a calendar"""
+
+    with open('./static/holidays.json', 'r') as openfile:
+        sample_holiday_list = json.load(openfile)
+    
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
@@ -939,6 +950,13 @@ def calendar(request):
 
     event_list = []
 
+    for i in sample_holiday_list:
+        item = {}
+        item['start'] = str(i)
+        item['title'] = sample_holiday_list[i]['description']
+        item['color'] = '#1C0118' # holiday background color
+        event_list.append(item)
+
     for x in range(course_count):
         course_id = instructor_courses[x]['course_id_id']
         course_batch = instructor_courses[x]['course_batch']
@@ -949,8 +967,11 @@ def calendar(request):
 
         for i in schedules:
             item = {}
+            session_date_str = str(i['session_date'])
             item['start'] = datetime.combine(i['session_date'], start_time).isoformat()
             item['end'] = datetime.combine(i['session_date'], end_time).isoformat()
+            if session_date_str in sample_holiday_list:
+                continue
             item['title'] = instructor_courses[x]['course_batch']
             item['course_id'] = instructor_courses[x]['course_id_id']
             item['full_desc'] = Course_Catalog.objects.get(course_id = course_id).course_desc # add course desc to dictionary

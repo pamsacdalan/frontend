@@ -152,6 +152,9 @@ def student_view_course(request,id):
 def student_profile(request):    
     
     """ This function renders the student page """
+
+    with open('./static/holidays.json', 'r') as openfile:
+        sample_holiday_list = json.load(openfile)
     
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
@@ -160,8 +163,6 @@ def student_profile(request):
 
     courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
     enrolled_courses = Student_Enrollment.objects.filter(student_id=student_auth_details).count
-    
-
 
     program_id = student_auth_details.program_id_id
     program = Program.objects.get(program_id=program_id)
@@ -170,7 +171,6 @@ def student_profile(request):
     completed_count = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Completed').count()
     total_count = ongoing_count + completed_count
    
-    
     ongoing_enrollments = Student_Enrollment.objects.filter(student_id=student_auth_details, status='Ongoing')
     # for enrollment in ongoing_enrollments:
     #     print(f"Enrollment ID {enrollment.enrollment_id}, Course Batch: {enrollment.course_batch}")
@@ -200,6 +200,13 @@ def student_profile(request):
 
     event_list=[]
 
+    for i in sample_holiday_list:
+        item = {}
+        item['start'] = str(i)
+        item['title'] = sample_holiday_list[i]['description']
+        item['color'] = '#1C0118' # holiday background color
+        event_list.append(item)
+
     for x in range(detail_count):
         course_id = course_details[x]['course_id_id']
         course_batch = course_details[x]['course_batch']
@@ -214,6 +221,9 @@ def student_profile(request):
 
         for i in schedules:
             item = {}
+            session_date_str = str(i['session_date'])
+            if session_date_str in sample_holiday_list:
+                continue
             item['start'] = datetime.combine(i['session_date'], start_time).isoformat()
             item['end'] = datetime.combine(i['session_date'], end_time).isoformat()
             item['fullname'] = f'{firstname} {lastname}'
@@ -226,7 +236,7 @@ def student_profile(request):
             try:
                 item['color'] = sample_colors[x]
             except:
-                item['color'] = base_color
+               item['color'] = '#A7000'
 
             event_list.append(item)
 
@@ -244,64 +254,36 @@ def student_profile(request):
                         'total_count':total_count,                        
                     }
 
-    # context  = {
-    #     'student_details': student_details,
-    #     'course_enrolled_list':courses,
-    #     'stud_id':user_id,
-    #     'course_count':enrolled_courses,
-    #     'scheduled_course':course_details,
-    #            }
+    # # Get the current date from the URL parameters
+    # date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
+    # date = datetime.strptime(date_str, '%Y-%m-%d')
 
-    # Get the current date from the URL parameters
-    date_str = request.GET.get('date', datetime.now().strftime('%Y-%m-%d'))
-    date = datetime.strptime(date_str, '%Y-%m-%d')
+    # # Calculate the previous and next month values
+    # prev_month = date - relativedelta(months=1)
+    # next_month = date + relativedelta(months=1)
 
-    # Calculate the previous and next month values
-    prev_month = date - relativedelta(months=1)
-    next_month = date + relativedelta(months=1)
+    # prev_date = prev_month.replace(day=1).strftime('%Y-%m-%d')
+    # next_date = next_month.replace(day=1).strftime('%Y-%m-%d')
 
-    prev_date = prev_month.replace(day=1).strftime('%Y-%m-%d')
-    next_date = next_month.replace(day=1).strftime('%Y-%m-%d')
+    # # Generate the calendar data for the specified month
+    # cal = calendar.monthcalendar(date.year, date.month)
 
-    # Generate the calendar data for the specified month
-    cal = calendar.monthcalendar(date.year, date.month)
+    # # Get the current month's name and year
+    # month_name = date.strftime('%B')
+    # year = date.year
 
-    # Get the current month's name and year
-    month_name = date.strftime('%B')
-    year = date.year
-
-
-    #DEBUG
-    # for j in course_details:
-    #     print(j)
-    #     print("---")
 
     # for i in event_list:
     #     print(i)
     #     print("---")
-
-    # calendar_data = []
-    # for week in cal:
-    #     week_data = []
-    #     for day in week:
-    #         if day == 0:
-    #             week_data.append((" ", []))
-    #         else:
-    #             events_for_day = events.get(day, [])
-    #             week_data.append((day, events_for_day))
-    #     calendar_data.append(week_data)
-
-    for i in event_list:
-        print(i)
-        print("---")
     
         
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html', {
-        'prev_date': prev_date,
-        'next_date': next_date,
-        'month_name': month_name,
-        'year': year,
+        # 'prev_date': prev_date,
+        # 'next_date': next_date,
+        # 'month_name': month_name,
+        # 'year': year,
         'student_details': student_details,
         'course_enrolled_list':courses,
         'stud_id':user_id,
