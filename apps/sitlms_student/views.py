@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import redirect, render, redirect
 from django.contrib.auth import get_user_model
-from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue, Schedule
+from apps.sitlms_app.models import Course_Enrollment,  Students_Auth, Student_Enrollment, Student_Profile, Program, Course_Catalog,Instructor_Auth, SubmitIssue, Schedule, Notification
 from django.conf import settings
 import os,json
 from apps.sitlms_instructor.models import Activity_Comments, ActivityPrivateComments, Course_Activity
@@ -156,6 +156,12 @@ def student_profile(request):
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
+
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    count_notifs = notifs.count()
+
+
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
 
     courses = Student_Enrollment.objects.filter(student_id=student_auth_details).values()
@@ -291,13 +297,11 @@ def student_profile(request):
     #             week_data.append((day, events_for_day))
     #     calendar_data.append(week_data)
 
-    for i in event_list:
-        print(i)
-        print("---")
-    
-        
-    # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
-    return render(request, 'student_module/student.html', {
+    # for i in event_list:
+    #     print(i)
+    #     print("---")
+
+    context ={
         'prev_date': prev_date,
         'next_date': next_date,
         'month_name': month_name,
@@ -308,7 +312,11 @@ def student_profile(request):
         'course_count':enrolled_courses,
         'scheduled_course':course_detail_list,
         'event_list':json.dumps(event_list),
-    })
+        'notifs': notifs,
+        'count_notifs': count_notifs
+    }  
+    # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
+    return render(request, 'student_module/student.html',context)
 
 
 
@@ -484,6 +492,10 @@ def student_edit_profile(request):
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
 
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    count_notifs = notifs.count()
+
     """ This function renders the student edit profile"""
     student_auth_details = Students_Auth.objects.get(user_id=user_id)
     # print(student_auth_details.user_id, user_id)
@@ -526,7 +538,9 @@ def student_edit_profile(request):
     
     
     
-    context = {'student_details': student_details      
+    context = {'student_details': student_details,
+               'notifs': notifs,
+               'count_notifs': count_notifs
     }
 
     if request.method == 'POST':
@@ -651,3 +665,22 @@ def delete_private_comment_student(request, id, pk, comment_id):
         return redirect("student-no-access")
     instance.delete()
     return redirect('student_view_assignment_details', id=id,pk=pk)
+
+
+def read_notif(request, id):
+    notifications = Notification.objects.get(id=id)
+    notifications.is_read = True
+    notifications.save()
+    course_title = notifications.message.split()[3]
+    full_name = notifications.message.split()[5:]   #['Apolinario', 'Jaime','Mabini']
+    last_name = full_name[-1]   #Mabini
+    first_name = ''.join(full_name[:-1])  #['Apolinario'm 'Jaime']
+    instructor_id = User.objects.get(first_name=first_name, last_name=last_name).id
+    instructor_id = Instructor_Auth.objects.get(user_id=instructor_id).id
+    course_id = Course_Catalog.objects.get(course_title=course_title).course_id
+    course_batch = Course_Enrollment.objects.get(course_id_id=course_id, instructor_id_id=instructor_id).course_batch
+
+    if  notifications.notif_type== "Post Assignment":
+         return redirect("view_courses", id=course_batch)
+    
+    # return redirect ("student_profile")
