@@ -35,6 +35,7 @@ from django.template.loader import render_to_string
 from dateutil.relativedelta import relativedelta
 
 from apps.sitlms_student.models import Activity_Submission
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def is_instructor(user):
     try:
@@ -198,11 +199,24 @@ def view_students(request, id):
     new_list = sorted(new_list, key=sort_by_name)
     # print(new_list)
 
+    # for pagination
+    page = request.GET.get('page', 1) # default page (default to first page)
+        
+    items_per_page = 10
+    paginator = Paginator(new_list, items_per_page)
+    
+    try:
+            student_list = paginator.page(page)
+    except PageNotAnInteger:
+            student_list = paginator.page(1)
+    except EmptyPage:
+            student_list = paginator.page(paginator.num_pages)
 
     context = {'new_list': new_list,
                'id':id,
                'count': count,
                'course': course,
+               'student_list': student_list,
                 }
     
     return HttpResponse(template.render(context,request))  
@@ -637,7 +651,7 @@ def delete_comments(request,id,pk,fk):
     if request.method == 'POST':
         comment_id.delete()
         return redirect('activity_comments',id=id,pk=pk)
-    return render(request, 'instructor_module/delete_comments.html',context)
+    return render(request, 'instructor_module/activity_comment.html',context)
 
 @user_passes_test(is_instructor)
 def download_student_activity_submission(request, id, pk, student):
