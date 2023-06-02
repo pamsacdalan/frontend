@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard,name="sit_admin_dashboard"),
     path('dashboard/view_issues',views.view_issues, name='view_issues'),
     path('dashboard/view_issues/details/<int:id>',views.view_issues_details, name='view_issues_details'),
+    path('dashboard/view_notifications',views.view_notifs, name='view_notifications'),
     path('registration/reset_pw_email',views.reset_pw_request_success, name="request_reset_pw"),
     path('sit-admin/list', sit_admin.AdminList.as_view(), name="adminlist"),
     path('sit-admin/create', sit_admin.sitadmin_register, name="admincreate"),
@@ -55,7 +56,9 @@ urlpatterns = [
     path('course_enrollment/change_schedule/view_history/', views.view_history, name='view_history'),
     path('accounts/password_reset_v2',access_test.CustomPasswordResetView.as_view(), name='password_reset_v2'),
     path('sit-admin/admin_profile',views.edit_profile,name="admin_edit_profile"),
-   
+
+    path('course_enrollment/change_schedule/<int:id>', views.read_notif, name="read_notif")
+
     
 ]
 

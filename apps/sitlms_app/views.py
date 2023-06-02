@@ -8,7 +8,7 @@ from django.template import loader
 from django.contrib.auth.forms import PasswordResetForm
 from apps.sitlms_app.crud.student import view_students
 from .forms import CsvModelForm
-from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile, SubmitIssue
+from .models import Csv, Change_Schedule, Schedule, Course_Enrollment, Instructor_Auth, Student_Profile, SubmitIssue, Notification
 import csv 
 from django.contrib.auth.models import User 
 from .models import Students_Auth, Program
@@ -69,7 +69,9 @@ def home(request):
 
 @user_passes_test(is_admin)
 def dashboard(request):
-    
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
     """ This function renders the admin module dashboard """
     
     # return render(request, 'admin_module/dashboard.html')
@@ -80,11 +82,20 @@ def dashboard(request):
     # return HttpResponse(template.render(context,request))
     issues = SubmitIssue.objects.all().values()
     count_issues = issues.filter(status=0).count()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    count_notifs = notifs.count()
     context = {
         'issues':issues,
-        'alerts':count_issues,     
+        'alerts':count_issues,
+        'notifs': notifs,
+        'count_notifs':count_notifs     
     }
+
     return render(request, 'admin_module/dashboard.html',context)
+
+
+
+
 
 
 def password_reset(request, data):
@@ -439,4 +450,24 @@ def view_issues_details(request, id):
         issues.save(update_fields=['status'])
         return redirect('/sit-admin/dashboard')
     return render(request,'admin_module/issue_details.html', context)
+
+
+def view_notifs(request):
+    """Details to display issues page"""
+    notifications = Notification.objects.all().values()
+    context = {
+        'notifications': notifications
+    }
+    return render(request,'admin_module/view_notifs.html', context)
+
+
+def read_notif(request, id):
+    notifications = Notification.objects.get(id=id)
+    notifications.is_read = True
+    notifications.save()
+
+    return redirect("change_schedule")
+     
+
+
 

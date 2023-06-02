@@ -81,7 +81,7 @@
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw" style="color: black"></i>
+                                <i class="fas fa-bug fa-fw" style="color: black"></i>
                                 <!-- Counter - Alerts -->
                                 {%if alerts == 0%}
                                 
@@ -127,6 +127,57 @@
                                 {%endif%}
                                 {% endfor %}
                                 <a class="dropdown-item text-center small text-gray-500" href="view_issues">Show All Alerts</a>
+                            </div>
+                           
+                        </li>
+                        
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw" style="color: black"></i>
+                                <!-- Counter - notifs -->
+                                {%if count_notifs == 0%}
+                                
+                                {%else%}
+                                <span class="badge badge-danger badge-counter">{{count_notifs}}</span>
+                                {%endif%}
+                                
+                            </a>
+                            <!-- Dropdown - notifs -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notification
+                                </h6>
+
+                                <!--notif LIST-->  
+                                {%if count_notifs == 0%}
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <span>No new notification!</span>
+                                </a>
+                                {%endif%}
+
+                                {% for items in notifs %}   
+                                
+                                    <a class="dropdown-item d-flex align-items-center" href="/sit-admin/course_enrollment/change_schedule/{{items.id}}">
+                                        
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-primary">
+                                                <i class="fas fa-file-alt text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <!-- Notification 1 -->
+                                            <div class="small text-gray-500">{{items.timestamp}}</div>
+                                            <span class="font-weight-bold">{{items.message}}</span>
+                                            {%if items.status == 0%}
+                                            <span>Status:</span><span style="color:rgb(2, 54, 37);"> Ongoing</span>
+                                            {%endif%}
+                                        </div>
+                                    
+                                    </a>
+                                {% endfor %}
+                                <a class="dropdown-item text-center small text-gray-500" href="view_notifications">Show All Notifications</a>
                             </div>
                            
                         </li>                        

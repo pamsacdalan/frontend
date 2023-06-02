@@ -213,3 +213,11 @@ class SubmitIssue(models.Model):
     sender_message = models.CharField()
     status = models.IntegerField(default=0)
     timestamp = models.DateTimeField(default=datetime.now)
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    sender = models.IntegerField(null=True)
+    notif_type = models.CharField(max_length=255, null=True)
