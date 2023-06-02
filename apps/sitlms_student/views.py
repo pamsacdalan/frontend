@@ -298,7 +298,7 @@ def student_profile(request):
         'event_list':json.dumps(event_list),
         'notifs': notifs,
         'count_notifs': count_notifs
-    }  
+    })
     # Render the calendar template with the calendar data, navigation parameters, month name/year, and events
     return render(request, 'student_module/student.html',context)
 

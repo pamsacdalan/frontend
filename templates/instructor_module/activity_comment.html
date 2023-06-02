@@ -113,22 +113,22 @@
                                                     <div class="row align-items-center">
                                                         <div class="d-flex aligns-items-center justify-content-center">
                                                             <div class="col-1">
-                                                                {% if profile_pic %}
-                                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem;" src="{{ profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
+                                                                {% if items.profile_pic %}
+                                                                    <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem;" src="{{ items.profile_pic }}" alt="" class="img-thumbnail mb-4" id="image-preview">
                                                                 {% else %}
                                                                     <img class="img-profile rounded-circle" style="width: 2rem; height: 2rem" src="{% static '/img/undraw_profile.svg' %}" alt="" id="image-preview">
                                                                 {% endif %}
                                                             </div>
                                                             <div class="col" style="margin-left: 0.5rem">
-                                                                <h6 style="font-size: 13px">{{items.uid.first_name}} {{items.uid.last_name}}</h6>
-                                                                <h6 style="font-size: 11px">{{items.timestamp|date:'M d, Y h:m A'}}</h6>
+                                                                <h6 style="font-size: 13px">{{items.items.uid.first_name}} {{items.items.uid.last_name}}</h6>
+                                                                <h6 style="font-size: 11px">{{items.items.timestamp|date:'M d, Y h:m A'}}</h6>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                 </div>
                                                 <div class="card-body">
-                                                    {{items.content}}
+                                                    {{items.items.content}}
                                                 </div>
 
                                                 <div class="card-footer text-right">
@@ -151,7 +151,7 @@
                                 </div>
 
                                 <div class="col">
-                                    <div class="card">
+                                    <div class="card" style="margin-right: 2rem">
                                         <div class="card-header bg-dark text-white center">
                                             <h6><i class="ti-comment"></i> &nbsp;&nbsp;Post comment</h6>
                                         </div>
