@@ -73,7 +73,7 @@ def instructor(request):
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
     
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
 
@@ -129,7 +129,7 @@ def instructor_view_enrolled_course(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
@@ -743,7 +743,7 @@ def edit_profile(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
@@ -877,7 +877,7 @@ def view_report_issues(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     context = {'notifs': notifs,
@@ -891,7 +891,7 @@ def report_issues(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     if request.method == "POST":
@@ -959,7 +959,7 @@ def calendar(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
@@ -1089,7 +1089,7 @@ def Notify(request, id, notif_type):
                                     notif_type = notif_type,
                     )
                 notification.save()
-                
+
         elif notif_type == "Update Assignment":
             for student in students:
                 notification = Notification(

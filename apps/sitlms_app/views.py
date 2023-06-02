@@ -81,7 +81,7 @@ def dashboard(request):
     # return HttpResponse(template.render(context,request))
     issues = SubmitIssue.objects.all().values()
     count_issues = issues.filter(status=0).count()
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
     context = {
         'issues':issues,

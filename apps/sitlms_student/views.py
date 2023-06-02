@@ -158,7 +158,7 @@ def student_profile(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
 
@@ -493,7 +493,7 @@ def student_edit_profile(request):
     user_id = queryset.first().id
 
     #adds notif counts
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
 
     """ This function renders the student edit profile"""
