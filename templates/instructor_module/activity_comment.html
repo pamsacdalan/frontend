@@ -132,12 +132,12 @@
                                                 </div>
 
                                                 <div class="card-footer text-right">
-                                                    {% if items.uid == request.user %}
-                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}' data-toggle="tooltip" title="Edit">
+                                                    {% if items.items.uid == request.user %}
+                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.items.pk}}' data-toggle="tooltip" title="Edit">
                                                             <i class="ti-pencil"></i></a>
                                                         {% endif %}
-                                                    {% if items.uid == request.user %}
-                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'data-toggle="tooltip" title="Delete">
+                                                    {% if items.items.uid == request.user %}
+                                                        <a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.items.pk}}'data-toggle="tooltip" title="Delete">
                                                             <i class="ti-trash"></i></a>
                                                         {% endif %}
                                                 </div>

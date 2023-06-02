@@ -73,19 +73,21 @@ def instructor(request):
 
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     count_courses= Course_Enrollment.objects.filter(instructor_id=instructor_id).count()
-    ongoing_course = Course_Enrollment.objects.filter(instructor_id=instructor_id,start_date__lte=datetime.today(),end_date__gte=datetime.today()).values().distinct()
-    ongoing_count = len(ongoing_course)
-    completed_course = Course_Enrollment.objects.filter(instructor_id=instructor_id,end_date__lte=datetime.today()).values('course_batch').distinct()
-    completed_count = len(completed_course)
-
     
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
+
+
     context={
         'acts':acts,
         'form':form,
         'count_courses': count_courses,
-        'ongoing_count': ongoing_count,
-        'completed_count': completed_count
+        'notifs':notifs,
+        'count_notifs':count_notifs
     }
+    print(instructor_id)
+    print("Notifs",notifs)
+    print("Count Notifs",count_notifs)
     
     return render(request, 'instructor_module/instructor.html',context)
 
@@ -127,6 +129,9 @@ def instructor_view_enrolled_course(request):
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
 
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
 
     instructor_id = Instructor_Auth.objects.get(user_id=user_id)
     course_enrolled = Course_Enrollment.objects.filter(instructor_id=instructor_id).values()
@@ -142,6 +147,8 @@ def instructor_view_enrolled_course(request):
     # print(course_enrolled)
 
     context = {'course_enrolled_list':course_enrolled,
+               'notifs': notifs,
+               'count_notifs': count_notifs
                 }
     
 
@@ -346,6 +353,11 @@ def view_assignments (request,id):
 def add_assignment(request, id):
     if is_correct_instructor_cbatch_id(request.user.instructor_auth, id):
         return redirect("instructor-no-access")
+    #id here is course_batch ex: test102
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+    #user_id is the user id of the instructor
     if request.method == "POST":
         form = ActivityForms(request.POST, request.FILES)
         
@@ -359,16 +371,19 @@ def add_assignment(request, id):
         date_object = timezone.make_aware(datetime.strptime(deadline, '%Y-%m-%d %H:%M'))
         score = request.POST['scores']
         percent = request.POST['percentage']
-
+        notif_type = "Post Assignment"
         if date_object <= timezone.now():
             # return render(request, 'instructor_module/add_assignment.html',{'form':form, 'id': id, 'error_msg': 'Deadline should be in the future'})
             messages.error(request,'Deadline should be in the future. Please re-create assignment.')
+            
+            Notify(request, id, notif_type)
             return redirect("view_assignments",  id=id)
         elif attachment is not None and attachment.size > 25 * 1024 * 1024:
             messages.error(request,'Maximum file size is 25MB. Please re-create assignment.')
         else:
             activity_post = Course_Activity(course_batch = batch,activity_title = title,activity_desc = desc,activity_attachment = attachment,deadline = date_object, max_score = score, grading_percentage = percent)
             activity_post.save()
+            Notify(request, id, notif_type)
             messages.success(request,"Success!")
             return redirect("view_assignments",  id=id)
     else:
@@ -395,8 +410,6 @@ def update_assignment(request,id,pk):
         dt = end_date+" "+end_time
         items = request.POST['items']
         grade = request.POST['gr']
-        
-
         act.activity_title = title
         act.activity_desc = desc
         # act.activity_attachment = attach
@@ -404,6 +417,10 @@ def update_assignment(request,id,pk):
         act.grading_percentage = grade
         act.max_score = items
         act.save(update_fields=['activity_title','activity_desc','deadline','grading_percentage','max_score'])
+
+        notif_type = "Update Assignment"
+        Notify(request, id, notif_type)
+
         return HttpResponseRedirect(reverse('view_assignments', kwargs={'id': id}))
     return render(request, "instructor_module/edit_assignment.html", context)
 
@@ -747,6 +764,10 @@ def edit_profile(request):
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
 
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
+
     instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
 
     if user_id in Student_Profile.objects.values_list('user_id', flat=True):
@@ -782,7 +803,9 @@ def edit_profile(request):
                         'emp_no': instructor_auth_details.user_id
                     }   
         
-    context = {'instructor_details': instructor_details      
+    context = {'instructor_details': instructor_details,
+                'notifs': notifs,
+                'count_notifs': count_notifs
     }
 
     if request.method == 'POST':
@@ -871,12 +894,27 @@ def edit_profile(request):
     return render(request, 'instructor_module/edit_profile.html', context)
 
 def view_report_issues(request):
-    return render(request, 'instructor_module/report_issue.html')
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
+
+    context = {'notifs': notifs,
+    'count_notifs': count_notifs}
+
+    return render(request, 'instructor_module/report_issue.html', context)
 
 def report_issues(request):
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
+
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
 
     if request.method == "POST":
         student_report_issues = Instructor_Auth.objects.get(user_id=user_id)
@@ -946,6 +984,10 @@ def calendar(request):
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
 
+    #adds notif counts
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
+    count_notifs = notifs.count()
+
     instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
     instructor_id = instructor_auth_details.id
     instructor_courses = Course_Enrollment.objects.filter(instructor_id_id=instructor_id).values()
@@ -995,21 +1037,25 @@ def calendar(request):
 
     return render(request, 'instructor_module/calendar.html', {
         'event_list':json.dumps(event_list),
+        'notifs': notifs,
+        'count_notifs': count_notifs
     })
 
 
 def Notify(request, id, notif_type):
+    #This is the sender
     user = request.user
     queryset = get_user_model().objects.filter(id=user.id)
     user_id = queryset.first().id
-    instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
-    instructor_id = Instructor_Auth.objects.filter(user_id=user_id).values('id')
-    course_id = Course_Enrollment.objects.filter(course_batch=id).values_list('course_id_id', flat=True)
-    course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
-    course_title = course_title[0]['course_title']
+    sender_name = User.objects.get(id=user_id).first_name + " " + User.objects.get(id=user_id).last_name
 
-    
     if notif_type == "Change Schedule":
+        instructor_auth_details = Instructor_Auth.objects.get(user_id=user_id)
+        instructor_id = Instructor_Auth.objects.filter(user_id=user_id).values('id')
+        course_id = Course_Enrollment.objects.filter(course_batch=id).values_list('course_id_id', flat=True)
+        course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
+        course_title = course_title[0]['course_title']
+
         admins = User.objects.filter(is_staff=True)
         for a in admins:
             notification = Notification(
@@ -1019,3 +1065,89 @@ def Notify(request, id, notif_type):
                             notif_type = notif_type,
             )
             notification.save()
+    # print("Entering 981")
+    if notif_type == "Approved Request":
+            # print("Entering 983")
+            change_schedule = Change_Schedule.objects.get(id=id)
+            course_batch = change_schedule.course_batch
+            instructor_id = Course_Enrollment.objects.get(course_batch=course_batch).instructor_id.user
+            
+            course_id = Course_Enrollment.objects.filter(course_batch=course_batch).values_list('course_id_id', flat=True)
+            course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
+            course_title = course_title[0]['course_title']
+            notification = Notification(
+                            recipient = instructor_id,
+                            message = f"Approved schedule request for {course_title} by {sender_name}",
+                            sender = user_id,
+                            notif_type = notif_type,
+            )
+            notification.save()
+    
+    if notif_type == "Rejected Request":
+            change_schedule = Change_Schedule.objects.get(id=id)
+            course_batch = change_schedule.course_batch
+            instructor_id = Course_Enrollment.objects.get(course_batch=course_batch).instructor_id.user
+            print(instructor_id)
+            sender_name = User.objects.get(id=user_id).first_name + " " + User.objects.get(id=user_id).last_name
+            
+            course_id = Course_Enrollment.objects.filter(course_batch=course_batch).values_list('course_id_id', flat=True)
+            course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
+            course_title = course_title[0]['course_title']
+            notification = Notification(
+                            recipient = instructor_id,
+                            message = f"Rejected schedule request for {course_title} by {sender_name}",
+                            sender = user_id,
+                            notif_type = notif_type,
+            )
+            notification.save()
+    
+    if notif_type == "Post Assignment" or notif_type=="Update Assignment":
+        #id here is course_batch
+        start_date = Course_Activity.objects.filter(course_batch_id = id)
+        dates = [x.start_date for x in start_date]
+        max_date = max(dates)
+        print("start_date: ", max_date)
+        course_activity = Course_Activity.objects.get(course_batch_id = id, start_date=max_date).id
+        print(course_activity)
+
+        students = Student_Enrollment.objects.filter(course_batch_id=id).values("student_id_id")
+        print(students)
+        course_id = Course_Enrollment.objects.filter(course_batch=id).values_list('course_id_id', flat=True)
+        course_title = Course_Catalog.objects.filter(course_id=course_id[0]).values('course_title')
+        course_title = course_title[0]['course_title']
+        
+        if notif_type == "Post Assignment":
+            for student in students:
+                notification = Notification(
+                                    recipient = Student_Enrollment.objects.get(student_id_id =student["student_id_id"], course_batch = id).student_id.user,
+                                    message = f"New Assignment for {course_title} by {sender_name}",
+                                    sender = user_id,
+                                    notif_type = notif_type,
+                    )
+                notification.save()
+
+        elif notif_type == "Update Assignment":
+            for student in students:
+                notification = Notification(
+                                    recipient = Student_Enrollment.objects.get(student_id_id =student["student_id_id"], course_batch = id).student_id.user,
+                                    message = f"Updated Assignment for {course_title} by {sender_name}",
+                                    sender = user_id,
+                                    notif_type = notif_type,
+                    )
+                notification.save()
+
+
+    # if notif_type=="Update Assignment":
+
+
+
+
+def read_notif(request, id):
+
+    notifications = Notification.objects.get(id=id)
+    notifications.is_read = True
+    notifications.save()
+
+    print(notifications.notif_type)
+    if  notifications.notif_type== "Approved Request" or notifications.notif_type== "Rejected Request":
+        return redirect("view_pending_requests")
