@@ -330,9 +330,11 @@ def student_view_assignment_details(request, id, pk):
     batch = Course_Enrollment.objects.get(pk=id)
     activity = Course_Activity.objects.get(id=pk)
     comment_items = Activity_Comments.objects.filter(course_activity=activity).order_by('timestamp')
-    file_relative_url = activity.activity_attachment.url 
-
-    file_url = request.build_absolute_uri(file_relative_url)
+    if activity.activity_attachment:
+        file_relative_url = activity.activity_attachment.url 
+        file_url = request.build_absolute_uri(file_relative_url)
+    else:
+        file_url = False
     submission_grade = False
     submission_on_time = False
     private_comments = ActivityPrivateComments.objects.filter(course_activity=Course_Activity.objects.get(id=pk),student=request.user.students_auth,).order_by("timestamp")
