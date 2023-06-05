@@ -36,6 +36,10 @@
                             <li class="nav-item  active">
                                 <a class="nav-link text-primary active" aria-current="page" href="#">Assignments</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white" aria-current="page" href="{% url 'change_schedule' id %}">Schedule</a>
+                            </li>
                         </ul>
                     </div>
                     <br>
@@ -199,18 +203,17 @@
                                         {% endif %}
                                     </div>
                                     {% endfor %}
-                                    <br>
                                 {% endif %}
-                                <div class="row">
+                                <div class="row pt-5">
                                     {% for activity in acts %}
-                                    <div class="col-sm-4">
-                                        <div class="card bg-dark text-white" style="margin-left: 39px; width: 20rem">
+                                    <div class="col-sm-4 d-flex align-items-stretch" style="margin-bottom: 1rem;">
+                                        <div class="card bg-dark text-white" style="width: 100%;">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{activity.activity_title}}</h5>
                                                 {% comment %} <span style="font-size: 13px;" class="card-text">Date Posted:</span> {% endcomment %}
                                                 <span style="font-size: 12px;" class="card-text">Due date:</span>
-                                                <p style="font-size: 12px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</p>
-                                                
+                                                <h6 style="font-size: 12px;" class="card-text">{{activity.deadline|date:'M d, Y h:m A'}}</h6>
+                                                <br>
                                                 <div class="row align-items-center">
                                                     <div class="col">
                                                         <a href="{% url 'activity_comments' id activity.pk %}" class="btn btn-post btn-sm">View</a>
@@ -223,11 +226,13 @@
                                                         {% comment %} <div class="col text-left text-gray-dark"> {% endcomment %}
                                                         <!-- Date Posted -->
                                                         <div class="col-5">
-                                                            <h6 style="font-size: 11px; margin-left: 0">{{activity.start_date|date:'M d, Y h:m A'}}</h6>
+                                                            <h6 style="font-size: 11px; margin-left: 0">{{activity.start_date|date:'M d, Y'}}</h6>
+                                                            <h6 style="font-size: 11px; margin-left: 0">{{activity.start_date|date:'h:m A'}}</h6>
                                                         </div>
                                                         {% comment %} </div> {% endcomment %}
             
                                                         <div class="col text-right text-white">
+                                                            <!-- Edit button -->
                                                             <a class="text-white" href="/sit-instructor/instructor/view_courses/{{id}}/assignments/edit/{{activity.pk}}">
                                                                 <i class="ti-pencil"></i>
                                                             </a>

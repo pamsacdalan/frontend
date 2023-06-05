@@ -24,6 +24,7 @@ from datetime import datetime, date
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 import pandas as pd
+from apps.sitlms_instructor.views import Notify
 from . import scraper
 
 
@@ -82,7 +83,7 @@ def dashboard(request):
     # return HttpResponse(template.render(context,request))
     issues = SubmitIssue.objects.all().values()
     count_issues = issues.filter(status=0).count()
-    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).values()
+    notifs =Notification.objects.filter(is_read=False, recipient_id=user_id).order_by('-timestamp').values()
     count_notifs = notifs.count()
     context = {
         'issues':issues,
@@ -228,10 +229,20 @@ def change_schedule_approval(request):
 
 
 def approve_change_schedule(request, id):
-
+    #id is the pk in change sched table
     # For changing status from pending to approved
     change_schedule = Change_Schedule.objects.filter(id=id)
     change_schedule.update(status="Approved", approval_date = datetime.now())
+
+
+
+
+    #Notifies the instructor about the approval
+    notif_type = "Approved Request"
+    # course_batch = change_schedule.course_batch
+    # instructor_id = Course_Enrollment.objects.get(course_batch=course_batch).instructor_id_id
+    Notify(request, id, notif_type)
+
 
 
     # For changing schedules in course enrollment table
@@ -274,6 +285,9 @@ def reject_change_schedule(request, id):
     change_schedule = Change_Schedule.objects.filter(id=id)
     change_schedule.update(status="Rejected", approval_date = datetime.now())
 
+    notif_type = "Rejected Request"
+    Notify(request, id, notif_type)
+
     return redirect('/sit-admin/course_enrollment/change_schedule/')
 
 def view_history(request):
@@ -285,9 +299,6 @@ def view_history(request):
     context = {'change_schedule_list':history_list}
 
     return HttpResponse(template.render(context,request))
-
-
-
 
 def edit_profile(request):
     
@@ -453,8 +464,13 @@ def view_issues_details(request, id):
 
 
 def view_notifs(request):
+    user = request.user
+    queryset = get_user_model().objects.filter(id=user.id)
+    user_id = queryset.first().id
+    print(user_id)
     """Details to display issues page"""
-    notifications = Notification.objects.all().values()
+    notifications = Notification.objects.filter(recipient=user_id).values()
+    print(notifications)
     context = {
         'notifications': notifications
     }

@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('student_profile', views.student_profile,name="student_profile"),
+    path('student_profile/<int:id>', views.read_notif, name="read_notif"),
     path('student_profile/course_details/', views.student_course_details,name="course_details"),
     path('student_profile/report_issues', views.report_issues,name="report_issues"),
     path('student_profile/edit_profile/', views.student_edit_profile,name="edit_profile"),

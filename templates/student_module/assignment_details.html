@@ -59,7 +59,9 @@
     {%csrf_token%}
     <!-- <h3 name="act_id">Assignment ID: {{act.id}}</h3> -->
     <h3>Title: {{act.activity_title}}</h3>
+    {% if file_url %}
     <h3>Attachment: <a href="{% url 'student_download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
+    {% endif %}
     <h3>Description</h3>
     <p>{{act.activity_desc}}</p><br>
     <h3>Given Date: {{act.start_date}}</h3>

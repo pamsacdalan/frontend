@@ -14,6 +14,7 @@
     <!-- Bootstrap + Steller main styles -->
 	<link rel="stylesheet" href="{% static 'instructor/css/index.css'%}">
 
+
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
@@ -41,6 +42,58 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/sit-instructor/instructor/view_report_issues">Report Issue</a>
                                 </li>
+
+                                <li class="nav-item dropdown no-arrow mx-1">
+                                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="ti-bell" style="color: black"></i>
+                                        <!-- Counter - notifs -->
+                                        {%if count_notifs == 0%}
+                                        
+                                        {%else%}
+                                        <span class="badge badge-danger badge-counter">{{count_notifs}}</span>
+                                        {%endif%}
+                                        
+                                    </a>
+                                    <!-- Dropdown - notifs -->
+                                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                        aria-labelledby="alertsDropdown">
+                                        <h6 class="dropdown-header">
+                                            Notification
+                                        </h6>
+        
+                                        <!--notif LIST-->  
+                                        {%if count_notifs == 0%}
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <span>No new notification!</span>
+                                        </a>
+                                        {%endif%}
+        
+                                        {% for items in notifs %}   
+                                        
+                                            <a class="dropdown-item d-flex align-items-center" href="/sit-instructor/instructor/view_courses/view_pending_requests/{{items.id}}">
+                                                
+                                                <div class="mr-3">
+                                                    <div class="icon-circle">
+                                                        <i class="ti-file"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <!-- Notification 1 -->
+                                                    <div class="small text-gray-500">{{items.timestamp}}</div>
+                                                    <span class="font-weight-bold">{{items.message}}</span>
+                                                    {%if items.status == 0%}
+                                                    <span>Status:</span><span style="color:rgb(2, 54, 37);"> Ongoing</span>
+                                                    {%endif%}
+                                                </div>
+                                            
+                                            </a>
+                                        {% endfor %}
+                                        <a class="dropdown-item text-center small text-gray-500" href="view_notifications">Show All Notifications</a>
+                                    </div>
+                                   
+                                </li> 
+                                
                                 <div class="dropdown">
                                     <button class="- btn btn-primary rounded ml-4 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{ user.first_name }}
