@@ -428,6 +428,13 @@ a {
     display: block;
   }
 
+.card-header,
+.card-body {
+    width: 100%;
+}
+
+
+
 
 /*end social*/
     </style>
@@ -463,7 +470,7 @@ a {
 <div class="col-lg-12">
     <ul class="nav nav-tabs justify-content-center s-nav">
         <li><a id="announcement-tab" class="active" href="#" onclick="toggleSection('announcement')">Announcement</a></li>
-        <li><a id="course-info-tab" href="#" onclick="toggleSection('course-info')">Course Info</a></li>
+        <!--<li><a id="course-info-tab" href="#" onclick="toggleSection('course-info')">Course Info</a></li>-->
         <li><a id="assignment-tab" href="#" onclick="toggleSection('assignment')">Assignments</a></li>
       </ul>
 </div>
@@ -474,12 +481,24 @@ a {
     <div class="row">
       <div class="col-lg-3">
         <div class="card">
+            {% for course in course_details %}
           <div class="card-body">
-            <div class="h5 text-blue">Upcoming Deadlines</div>
-            <div class="h7"><strong>Safe!</strong></div>
-            <p>No deadlines yet</p>
+            <div class="h5 text">Course Info</div>
+            <div class="h7"><strong>Session Details: </strong>{{ course.session_details | urlize | safe }}</div>
+            <div class="h7"><strong>Course Mode: </strong>{% if course.course_mode == 0 %}Webinar
+                {% elif course.course_mode == 1 %}Onsite
+                {% else %}Self-Paced
+                {% endif %}</div>
+            <div class="h7"><strong>Start Date: </strong>{{ course.start_date }}</div>
+            <div class="h7"><strong>End Date: </strong>{{ course.end_time }}</div>
+            <div class="h7"><strong>Frequency: </strong>{% if course.frequency == 0 %}Once
+                {% elif course.frequency == 1 %}Daily
+                {% else %}Weekly
+                {% endif %}</div>
+            <div class="h7"><strong>Instructor: </strong>{{ instructor_name }}</div>
           </div>
         </div>
+        {% endfor %}
       </div>
   
       <div class="col-lg-6 gedf-main">
@@ -505,7 +524,7 @@ a {
               <a class="card-link" href="#">
                 <h5 class="card-title">{{ announcement.announcement_text|linebreaks }}</h5>
               </a>
-              <img src="img/gallery/1a.jpg" alt class="img-fluid">
+             
             </div>
             <div class="card-footer">
               <a href="#" class="card-link"><i class="fa fa-comment"></i> Respond</a>
@@ -544,7 +563,7 @@ a {
   
     </div>
   </div>
-<div id="course-info-section" class="content-section">
+<!--<div id="course-info-section" class="content-section">
     <div class="card">
         <link rel="stylesheet" href="{% static 'student/assets/css/info.css'%}">
         <div class="card-body show" id="course-info">
@@ -587,26 +606,37 @@ a {
         </div>
     </div>
   </div>
-</div>
+</div> -->
 <div id="assignment-section" class="content-section">
     <div class="row">
+        {% if details %}
         {% for item in details %}
-        <div class="col-md-3">
+        <div class="col-lg-12">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h5 class="card-title">{{ item.act.activity_title }}</h5>
-                    <p class="card-text">Description:{{ item.act.activity_desc }}</p>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Description: {{ item.act.activity_desc }}</p>
                     <p class="card-text">Deadline: {{ item.act.deadline }}</p>
                     <p class="card-text">Grade: {{ item.grade }}</p>
                     <p class="card-text">Max Score: {{ item.act.max_score}}</p>
-                    <a href="{% url 'student_view_assignment_details' id item.act.id %}" class="btn btn-primary">Submit Assignment</a>
                 </div>
-               
+                <div class="card-footer text-right">
+                    <a  href="{% url 'student_view_assignment_details' id item.act.id %}" class="btn btn-primary">Submit Assignment</a>
+                </div>
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <div class="card social-timeline-card">
+          <div class="card-body text-center">
+            <img src="{% static 'student/assets/imgs/no.png' %}" alt="No Assignment" style="max-width: 300px; display: block; margin: 0 auto;">
+          </div>
+        </div>
+      {% endif %}
     </div>
-    </div>
+</div>
 </main>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>

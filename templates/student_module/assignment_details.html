@@ -1,157 +1,164 @@
 {% load static %}
 
-<head>
-<link rel="stylesheet" href="{% static 'student/assets/css/student.css'%}">
-<style>
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    padding: 10px;
-  }
-  
-  .logo img {
-    height: 40px; /* Adjust the height as needed */
-  }
-  
-  .navbar-links {
-    text-align: right;
-  }
-  
-  .navbar-links a {
-    text-decoration: none;
-    color: black;
-    margin-left: 10px; /* Add spacing between links */
-  }
-</style>
-</head>
-
-
-<body>
-    <div class="navbar">
-    <div class="logo">
-        <a href="{% url 'student_profile' %}">
-      <img src="{% static 'img/logo-red.png' %}" alt="Logo" >
-    </div>
-    <div class="navbar-links">
-      <a href="{% url 'view_courses' batch.course_batch %}">Back to Course Details</a>
-    </div>
-  </div>
-
-
-
-
-
-   <!-- Page Header -->
-   <header class="header" id="home">
-    <div class="container">
-        <div class="infos">
-            <h6 class="subtitle">Hi,</h6>
-            <h6 class="title">{{user.first_name}} </h6>
-            <p>Ready to sumbit your assignment?</p>
-        </div>              
-        <div class="img-holder">
-            <img src="{% static 'student/assets/imgs/man.svg' %}" alt="">
-        </div>      
-    </div>  
-<form method="POST">
-    {%csrf_token%}
-    <!-- <h3 name="act_id">Assignment ID: {{act.id}}</h3> -->
-    <h3>Title: {{act.activity_title}}</h3>
-    {% if file_url %}
-    <h3>Attachment: <a href="{% url 'student_download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
-    {% endif %}
-    <h3>Description</h3>
-    <p>{{act.activity_desc}}</p><br>
-    <h3>Given Date: {{act.start_date}}</h3>
-    <h3>Due Date: {{act.deadline}}</h3>  
-    <h3>Items: {{act.max_score}}</h3>
-    <!-- <h3>Activity Grading: {{act.grading_percentage}}</h3> -->
-    <br>
-    <br>
-    <br>    
-    <h5>Comment here!</h5>
-    <textarea rows="5" name="msg_area"></textarea><br>  
-    <button type="submit">Send</button>
-</form>
-
-
-    
-    
-
-<table>
-    <th>Author</th>
-    <th>Message</th>
-    <th>Timestamp</th>
-    {% for items in cmt  %}
-    <tr>
-        <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
-        <td>{{items.content}}</td>
-        <td>{{items.timestamp}}</td>
-        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
-        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<form method="POST" enctype="multipart/form-data" action="{% url 'upload_activity_submission' batch.course_batch act.id %}">
-    {% csrf_token %}
-    <h3>Your Work: <a href="{% url 'download_activity_submission' batch.course_batch act.id %}" download>
-        {% if current_submission_filename %} 
-        {{current_submission_filename}} 
-        {% else %}
-        {% endif %}
-    </a></h3>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
-            {% if message.tags == "error" %}
-            {{ message }}
-            {% endif %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <!-- Favicon-->
+        <link rel="icon" href="{% static 'img/logo-red.png'%}" type="image/x-icon" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'student/assets/css/assignment.css'%}" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/logo-red.png' %}" width = 150, height=65, alt="77SIT Logo" height="35"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'view_courses' batch.course_batch %}">Back to Course Details</a></li>
+                    </ul>
+                </div>
             </div>
-        {% endfor %}
-    {% endif %}
-    {% if not submission_grade %}
-    {{ submission_upload_form.as_p }}
-    <button type="submit">Submit</button>
-    {% endif %}
-</form>
-
-{% if submission_grade %}
-<p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
-{% else %}
-<p>Submission Score: Not graded yet/{{act.max_score}}</p>
-{% endif %}
-
-{% if not current_submission_filename %}
-{% elif submission_on_time %}
-<p>On time</p>
-{% else %}
-<p>Late</p>
-{% endif %}
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Timestamp</th>
-    <th>Content</th>
-    <th>...</th>
-  </tr>
-  {% for comment in private_comments %}
-  <tr>
-      <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
-      <td>{{comment.timestamp}}</td>
-      <td>{{comment.content}}</td>
-      {% if comment.uid == request.user %}<td><a href="{% url 'student_delete_private_comment' batch.course_batch act.id comment.pk %}">Delete</a></td> {% endif %}
-  </tr>
-  {% endfor %}
-</table>
-<form action="{% url 'student_add_private_comment' batch.course_batch act.id %}" method="POST">
-  {%csrf_token%}
-  <textarea rows="2" name="comment_content"></textarea><br>  
-  <button type="submit">Send</button>
-</form>
-
-
-</body>
+        </nav>
+        <form method="POST">
+          {%csrf_token%}
+        <!-- Page content-->
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Post content-->
+                    <article>
+                        <!-- Post header-->
+                        <header class="mb-4">
+                            <!-- Post title-->
+                            <h1 class="fw-bolder mb-1">{{act.activity_title}}</h1>
+                            <!-- Post meta content-->
+                            <div class="text-muted fst-italic mb-2">Posted on {{act.start_date}} Duedate: {{act.deadline}}</div>
+                        </header>
+                        <!-- Preview image figure-->
+                        <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                        <!-- Post content-->
+                        <section class="mb-5">
+                            <p class="fs-5 mb-4">{{act.activity_desc}}</p>
+                        </section>
+                    </article>
+                    <!-- Comments section-->
+                    <section class="mb-5">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <!-- Comment form-->
+                                 <class="mb-4"><textarea class="form-control" rows="3" name="msg_area" placeholder="Join the discussion and leave a comment!"></textarea>
+                                <button type="submit">Send</button> 
+                            
+                              </form> 
+                                <!-- Single comment-->
+                                {% for items in cmt  %}
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">{{items.uid.first_name}} {{items.uid.last_name}} <a class="text-muted fst-italic mb-2">  {{items.timestamp}}</a></div>
+                                        {{items.content}}
+                                        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
+                                        <td>{% if items.uid == request.user %}<a href='/sit-student/student_profile/view_courses/{{batch.course_batch}}/assignment/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+              
+                <!-- Side widgets-->
+                <div class="col-lg-4">
+                    <!-- Search widget-->
+                    {% if file_url %}
+                    <div class="card mb-4">
+                        <div class="card-header">Attachment</div>
+                        <h3>Items: {{act.max_score}}</h3>
+                        <div class="card-body">
+                            <div class="input-group">
+                              <a href="{% url 'student_download_activity_attachment' batch.course_batch act.id %}" download>Download</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                  
+                    <!-- Categories widget-->
+                    <div class="card mb-4">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'upload_activity_submission' batch.course_batch act.id %}">
+                          {% csrf_token %}
+                          <h3>Your Work: <a href="{% url 'download_activity_submission' batch.course_batch act.id %}" download>
+                              {% if current_submission_filename %} 
+                              {{current_submission_filename}} 
+                              {% else %}
+                              {% endif %}
+                          </a></h3>
+                          {% if messages %}
+                              {% for message in messages %}
+                                  <div class="message {% if message.tags %}{{ message.tags }} {% endif %}">
+                                  {% if message.tags == "error" %}
+                                  {{ message }}
+                                  {% endif %}
+                                  </div>
+                              {% endfor %}
+                          {% endif %}
+                          {% if not submission_grade %}
+                          {{ submission_upload_form.as_p }}
+                          <button type="submit">Submit</button>
+                          {% endif %}
+                      </form>
+                      {% if submission_grade %}
+                      <p>Submission Score: {{ submission_grade }}/{{act.max_score}}</p>
+                      {% else %}
+                      <p>Submission Score: Not graded yet/{{act.max_score}}</p>
+                      {% endif %}
+                      {% if not current_submission_filename %}
+                      {% elif submission_on_time %}
+                      <p>On time</p>
+                      {% else %}
+                      <p>Late</p>
+                      {% endif %}
+                    </div>
+                    <!-- Side widget-->
+                    <div class="card mb-4">
+                      <div class="card-header">Private Comments</div>
+                      <table>
+                        <tr>
+                          <th>Name</th>
+                          <th>Timestamp</th>
+                          <th>Content</th>
+                          <th>...</th>
+                        </tr>
+                        {% for comment in private_comments %}
+                        <tr>
+                            <td>{{comment.uid.first_name}} {{comment.uid.last_name}}</td>
+                            <td>{{comment.timestamp}}</td>
+                            <td>{{comment.content}}</td>
+                            {% if comment.uid == request.user %}<td><a href="{% url 'student_delete_private_comment' batch.course_batch act.id comment.pk %}">Delete</a></td> {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </table>
+                      <form action="{% url 'student_add_private_comment' batch.course_batch act.id %}" method="POST">
+                        {%csrf_token%}
+                        <textarea rows="2" name="comment_content"></textarea><br>  
+                        <button type="submit">Send</button>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{% static 'student/assets/js/assignment.js'%}"></script>
+    </body>
+</html>
