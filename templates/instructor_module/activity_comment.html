@@ -57,9 +57,9 @@
                             
                             <hr>
                             <br>
-                            <div class="row">
-                                <div class="col-7">
-                                    <div class="card" style="max-width: 750px">
+                            {% comment %} <div class="row"> {% endcomment %}
+                                <div class="container">
+                                    <div class="card">
                                         <div class="card-header bg-dark">
                                             <div class="row">
                                                 <div class="col text-white">
@@ -76,12 +76,13 @@
                                             <span>{{act.max_score}} Points </span>, &nbsp; <span>{{act.grading_percentage}}%</span>
                                             <br>
                                             <hr>
-                                            <span>{{act.activity_desc|linebreaks}}</span>
-                                            {% if act.activity_attachment %}
-                                                <div class="card mb-3" style="max-width: 400px; height: 150px; margin-top: 1rem;">
+                                            <div class="col" style="margin-left: 2rem; margin-right: 7rem;">
+                                                <span>{{act.activity_desc|linebreaks}}</span>
+                                                {% if act.activity_attachment %}
+                                                <div class="card mb-3" style="max-width: 400px; height: 150px; margin-top: 2rem;">
                                                     <div class="row g-0 align-items-center">
                                                         <div class="col-md-4 center">
-                                                            <img src="{% static 'assets/attachment.png' %}" class="img-fluid rounded-start" alt="...">
+                                                            <img src="{% static 'assets/attachment.png' %}" class="img-fluid rounded-start center" alt="...">
                                                         </div>
                                                         <div class="col-md-8">
                                                             <div class="card-body">
@@ -91,18 +92,57 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            
                                         </div>
 
-                                        <div class="card-footer text-right text-white center">
-                                            <a href="#comments" class="btn btn-primary btn-sm position-relative" data-toggle="collapse" role="button">
-                                                <h6 style="font-size: 13px">Comments{% comment %} <i class="ti-comments"></i> {% endcomment %}
-                                                <span class="badge bg-dark" style="font-size: 10px">
-                                                    {{count}}
-                                                </span>
-                                            </h6>
-                                            </a>
+                                        <div class="card-footer text-white center">
+                                            <div class="row align-items-center">
+                                                <div class="col text-dark">
+                                                    
+                                                    <a class="btn btn-outline-secondary btn-sm" href="#" style="width: 100%" data-toggle="modal" data-target="#replymodal"> <i class="ti-comment"></i>
+                                                        <span style="font-size: 13px"> &nbsp;Comment </span>
+                                                    </a>
+
+                                                </div>
+                                                <div class="col text-center text-dark">
+                                                    <a href="#" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" role="button" style="width: 100%;">Student Submissions</a>
+                                                </div>
+                                                <div class="col text-right">
+                                                    <a href="#comments" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" role="button" style="width: 100%;">
+                                                        Class Comments
+                                                        <span class="badge bg-dark text-white" style="font-size: 10px">
+                                                            {{count}}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
+
+                                        <!-- Comment Modal-->
+                                        <div class="modal fade" id="replymodal" data-backdrop="static" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content bg-dark">
+                                                        <div class="modal-header text-white">
+                                                            <h6 class="modal-title" style="margin-left: 7rem">Post Comment for {{course.course_title}}</h6>
+                                                                <!--Close-->
+                                                                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                <div class="card-body">
+                                                                    <textarea class="form-control" style="border-radius: 0; margin-bottom: 0" rows="3" cols="50" name="msg_area"></textarea>
+                                                                    <br>
+                                                                    <button class="btn btn-post btn-sm" style="width: 100%"type="submit">Send</button>  
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </div>
                                     <br>
                                     <div class="collapse" id="comments" style="width: 660px;"> <!-- Comments section -->
@@ -127,8 +167,8 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="card-body">
-                                                    {{items.items.content}}
+                                                <div class="card-body" >
+                                                    {{items.items.content}}                                          
                                                 </div>
 
                                                 <div class="card-footer text-right">
@@ -150,54 +190,8 @@
                                     
                                 </div>
 
-                                <div class="col">
-                                    <div class="card" style="margin-right: 2rem">
-                                        <div class="card-header bg-dark text-white center">
-                                            <h6><i class="ti-comment"></i> &nbsp;&nbsp;Post comment</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <textarea class="form-control" style="border-radius: 0; margin-bottom: 0" rows="3" cols="50" name="msg_area"></textarea>
-                                        </div>
-                                        <div class="card-footer text-right">
-                                            <button class="btn btn-post btn-sm" type="submit">Send</button>  
-                                        </div>
-                                    </div>
-                                    <br>
-                                    {% comment %} <div class="container">
-                                        {% for items in cmt  %}
-                                        <div class="card" style="margin-right: 2rem">
-                                            <div class="card-header bg-dark text-white center">
-                                                {{items.uid.first_name}} {{items.uid.last_name}}
-                                                {{items.timestamp}}
-    
-                                            </div>
-                                            <div class="card-body">
-                                                {{items.content}}
-                                            </div>
-                                        </div>
-                                        <br>
-                                        {% endfor %}
-
-                                    </div> {% endcomment %}
-                        </form>
-                                    {% comment %} <table>
-                                        <th>Author</th>
-                                        <th>Message</th>
-                                        <th>Timestamp</th>
-                                        {% for items in cmt  %}
-                                        <tr>
-                                            <td>{{items.uid.first_name}} {{items.uid.last_name}}</td>
-                                            <td>{{items.content}}</td>
-                                            <td>{{items.timestamp}}</td>
-                                            
-                                            <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/edit/{{items.pk}}'>Edit</a>{% endif %}</td>
-                                            <td>{% if items.uid == request.user %}<a href='/sit-instructor/instructor/view_courses/{{batch.course_batch}}/assignments/comments/{{act.id}}/delete/{{items.pk}}'>Delete</a>{% endif %}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </table> {% endcomment %}
-                                </div>
-                            </div>
-                                
+                            </form>
+                            {% comment %} </div> <!-- end row--> {% endcomment %}
                     </div>
                 </div>
                 <br>
